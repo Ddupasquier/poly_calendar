@@ -1,12 +1,11 @@
 <script>
+	import Logo from "$lib/components/logo/Logo.svelte";
 	import Nav from "$lib/components/navigation/Nav.svelte";
 	import "./styles.scss";
 </script>
 
 <div class="app">
-	<h1>
-		<a href="/">Poly-Calendar</a>
-	</h1>
+	<Logo />
 	<Nav />
 
 	<main>
@@ -48,13 +47,6 @@
 
 	footer a {
 		font-weight: bold;
-	}
-
-	h1 {
-		position: absolute;
-		margin: 0;
-		padding: .25rem 2rem;
-		color: white;
 	}
 
 	@media (min-width: 480px) {

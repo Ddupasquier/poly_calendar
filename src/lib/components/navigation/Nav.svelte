@@ -43,12 +43,12 @@
 		justify-content: flex-end;
 		align-items: center;
 		height: 100%;
-		width: 90%;
+		width: 95%;
 		padding-top: 1rem;
 	}
 
 	nav :global(.tab) {
-		margin-right: -20px;
+		margin-right: -30px;
 		&:last-child {
 			margin-right: 0;
 		}

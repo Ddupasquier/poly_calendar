@@ -28,7 +28,7 @@
 
     .tab {
         position: relative;
-        padding: 0.5rem 1rem;
+        padding: .7rem 2rem .2rem .6rem;
         height: 100%;
         width: 5rem;
     }
@@ -39,7 +39,7 @@
         top: 0;
         left: 0;
         transform-origin: bottom left;
-        transform: scale(0.9);
+        transform: scale(0.85);
         border-radius: 5px 5px 0 0;
         box-shadow: -5px 0 5px -2px rgba(0, 0, 0, 0.5);
         width: 100%;
