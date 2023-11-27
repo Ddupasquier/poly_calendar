@@ -1,0 +1,181 @@
+@import '@fontsource/fira-mono';
+
+@mixin modernist-art {
+	$terracotta: #E27D60;
+	$jade-green: #16A085;
+
+	--color-bg-0: #828A95;
+	/* Basalt Gray */
+	--color-bg-1: #2980B9;
+	/* Skyline Blue */
+	--color-bg-2: #FFFFFF;
+	/* Marble White */
+	--color-theme-1-1: #{$terracotta};
+	/* Terracotta */
+	--color-theme-1-2: #{darken($terracotta, 10%)};
+	/* Slightly darker Terracotta */
+	--color-theme-1-3: #{lighten($terracotta, 10%)};
+	/* Slightly lighter Terracotta */
+	--color-theme-2-1: #{$jade-green};
+	/* Jade Green */
+	--color-theme-2-2: #{darken($jade-green, 10%)};
+	/* Slightly darker Jade Green */
+	--color-theme-2-3: #{lighten($jade-green, 10%)};
+	/* Slightly lighter Jade Green */
+	--color-text: #141414;
+	/* Lava Stone */
+	--color-text-light: #4E4E50;
+	/* Light Lava Stone */
+}
+
+@mixin urban-contrast {
+	$rust-red: #E74C3C;
+	$sunset-orange: #F39C12;
+
+	--color-bg-0: #95A5A6;
+	/* Concrete Gray */
+	--color-bg-1: #4A6FA5;
+	/* Steel Blue */
+	--color-bg-2: #D5C4A1;
+	/* Sandy Beige */
+	--color-theme-1-1: #E74C3C;
+	/* Rust Red */
+	--color-theme-1-2: #{darken($rust-red, 10%)};
+	/* Slightly darker Rust Red */
+	--color-theme-1-3: #{lighten($rust-red, 10%)};
+	/* Slightly lighter Rust Red */
+	--color-theme-2-1: #F39C12;
+	/* Sunset Orange */
+	--color-theme-2-2: #{darken($sunset-orange, 10%)};
+	/* Slightly darker Sunset Orange */
+	--color-theme-2-3: #{lighten($sunset-orange, 10%)};
+	/* Slightly lighter Sunset Orange */
+	--color-text: #2C3E50;
+	/* Midnight Black */
+}
+
+@mixin industrial-monochrome {
+	$charcoal-black: #2D3436;
+	$oyster: #AEBD38;
+
+	--color-bg-0: #636E72;
+	/* Smog Gray */
+	--color-bg-1: #B2BEC3;
+	/* Iron Silver */
+	--color-bg-2: #D8D8D8;
+	/* Ash White */
+	--color-theme-1-1: #2D3436;
+	/* Charcoal Black */
+	--color-theme-1-2: #{darken($charcoal-black, 10%)};
+	/* Slightly darker Charcoal Black */
+	--color-theme-1-3: #{lighten($charcoal-black, 10%)};
+	/* Slightly lighter Charcoal Black */
+	--color-theme-2-1: #AEBD38;
+	/* Oyster */
+	--color-theme-2-2: #{darken($oyster, 10%)};
+	/* Slightly darker Oyster */
+	--color-theme-2-3: #{lighten($oyster, 10%)};
+	/* Slightly lighter Oyster */
+	--color-text: #333F48;
+	/* Graphite Shadow */
+}
+
+
+
+:root {
+	@include modernist-art();
+	--font-body: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	--font-mono: 'Fira Mono', monospace;
+	font-family: var(--font-body);
+	color: var(--color-text);
+	--column-width: 42rem;
+	--column-margin-top: 4rem;
+}
+
+body {
+	min-height: 100vh;
+	margin: 0;
+	background-attachment: fixed;
+	background-color: var(--color-bg-1);
+	background-size: 100vw 100vh;
+	background-image: radial-gradient(50% 50% at 50% 50%,
+			rgba(255, 255, 255, 0.75) 0%,
+			rgba(255, 255, 255, 0) 100%),
+		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
+}
+
+h1,
+h2,
+p {
+	font-weight: 400;
+}
+
+p {
+	line-height: 1.5;
+}
+
+a {
+	color: var(--color-theme-1);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	font-size: 2rem;
+	text-align: center;
+}
+
+h2 {
+	font-size: 1rem;
+}
+
+pre {
+	font-size: 16px;
+	font-family: var(--font-mono);
+	background-color: rgba(255, 255, 255, 0.45);
+	border-radius: 3px;
+	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
+	padding: 0.5em;
+	overflow-x: auto;
+	color: var(--color-text);
+}
+
+.text-column {
+	display: flex;
+	max-width: 48rem;
+	flex: 0.6;
+	flex-direction: column;
+	justify-content: center;
+	margin: 0 auto;
+}
+
+input,
+button {
+	font-size: inherit;
+	font-family: inherit;
+}
+
+button:focus:not(:focus-visible) {
+	outline: none;
+}
+
+@media (min-width: 720px) {
+	h1 {
+		font-size: 2.4rem;
+	}
+}
+
+.visually-hidden {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: auto;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	white-space: nowrap;
+}

@@ -1,0 +1,133 @@
+<script lang="ts">
+	import { page } from "$app/stores";
+	import NavTab from "./nav-tab.svelte";
+
+	$: currentTab = $page.url.pathname;
+
+	const tabs = [
+		{
+			name: "Profile",
+			path: "/profile",
+		},
+		{
+			name: "Partners",
+			path: "/partners",
+		},
+		{
+			name: "Calendar",
+			path: "/calendar",
+		},
+		{
+			name: "Albums",
+			path: "/albums",
+		},
+	];
+</script>
+
+<header>
+	<nav>
+		{#each tabs as tab}
+			<NavTab tabName={tab.name} tabPath={tab.path} {currentTab} />
+		{/each}
+	</nav>
+	<div class="bars">
+		<div class="bar1" />
+		<div class="bar2" />
+		<div class="bar3" />
+	</div>
+</header>
+
+<style lang="scss">
+	nav {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		height: 100%;
+		width: 90%;
+		padding-top: 1rem;
+	}
+
+	nav :global(.tab) {
+		margin-right: -20px;
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+
+	@mixin bar($top, $width, $color, $animation-name, $animation-speed) {
+		position: absolute;
+		top: $top;
+		right: 0;
+		height: 2px;
+		width: $width;
+		background-color: $color;
+		animation: $animation-name $animation-speed infinite alternate
+			ease-in-out;
+	}
+
+	.bars {
+		position: relative;
+		margin-right: 2rem;
+
+		.bar1 {
+			@include bar(0, 65%, var(--color-theme-1-1), animate-bar1, 12s);
+		}
+
+		.bar2 {
+			@include bar(0.4rem, 55%, var(--color-theme-1-2), animate-bar2, 14s);
+		}
+
+		.bar3 {
+			@include bar(0.8rem, 45%, var(--color-theme-1-3), animate-bar3, 10s);
+		}
+	}
+
+	@keyframes animate-bar1 {
+		0%,
+		100% {
+			width: 65%;
+		}
+		50% {
+			width: 75%;
+		}
+	}
+
+	@keyframes animate-bar2 {
+		0%,
+		100% {
+			width: 55%;
+		}
+		50% {
+			width: 65%;
+		}
+	}
+
+	@keyframes animate-bar3 {
+		0%,
+		100% {
+			width: 45%;
+		}
+		50% {
+			width: 55%;
+		}
+	}
+
+	@media (max-width: 480px) {
+		nav {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		nav :global(.tab) {
+			margin-right: 0;
+			margin-bottom: -20px;
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		hr {
+			width: 0;
+		}
+	}
+</style>
