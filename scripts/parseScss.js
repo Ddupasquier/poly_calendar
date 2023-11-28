@@ -13,10 +13,8 @@ const camelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 async function convertScssToTs(scssFilePath, tsFilePath) {
     let scssContent = await readFile(scssFilePath, 'utf8');
 
-    // Normalize line endings to Unix-style
     scssContent = scssContent.replace(/\r\n/g, '\n');
 
-    // Use the provided regex that worked in the past
     const rootRegex = /:root\s*{\s*@include\s*([\w-]+)/;
     const rootMatch = scssContent.match(rootRegex);
 
@@ -51,7 +49,7 @@ async function convertScssToTs(scssFilePath, tsFilePath) {
         }
     });
 
-    const isRgb = (color) => color.startsWith('rgb(') || color.startsWith('rgba(');
+    const isHsl = (color) => color.startsWith('hsl(') || color.startsWith('hsla(');
 
     let tsContent = 'import { darken, lighten } from \'./utils\';\n\n';
     for (const [varName, value] of Object.entries(scssVars)) {
@@ -69,7 +67,7 @@ async function convertScssToTs(scssFilePath, tsFilePath) {
         if (value.includes('darken(') || value.includes('lighten(')) {
             let color = removeSymbols(value);
             tsContent += `    "${varName}": ${camelCase(color)},\n`;
-        } else if (!isRgb(value)) {
+        } else if (!isHsl(value)) {
             let color = removeSymbols(value);
             tsContent += `    "${varName}": ${camelCase(color)},\n`;
         }

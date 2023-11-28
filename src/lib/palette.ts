@@ -1,22 +1,22 @@
 import { darken, lighten } from './utils';
 
-const terracotta = "rgb(226, 125, 96)";
-const jadeGreen = "rgb(22, 160, 133)";
+const terracotta = "hsl(13, 69%, 63%)";
+const jadeGreen = "hsl(168, 76%, 36%)";
 
 const colors = {
     terracotta,
     jadeGreen,
-    "--color-bg-0": "rgb(130, 138, 149)",
-    "--color-bg-1": "rgb(41, 128, 185)",
-    "--color-bg-2": "rgb(255, 255, 255)",
+    "--color-bg-0": "hsl(215, 8, 55)",
+    "--color-bg-1": "hsl(204, 64, 44)",
+    "--color-bg-2": "hsl(0, 0, 100)",
     "--color-theme-1": terracotta,
     "--color-theme-1-D1": darken(terracotta, 10),
     "--color-theme-1-L1": lighten(terracotta, 10),
     "--color-theme-2": jadeGreen,
     "--color-theme-2-D1": darken(jadeGreen, 10),
     "--color-theme-2-L1": lighten(jadeGreen, 10),
-    "--color-text": "rgb(20, 20, 20)",
-    "--color-text-light": "rgb(78, 78, 80)",
+    "--color-text": "hsl(0, 0, 8)",
+    "--color-text-light": "hsl(240, 1, 31)",
 };
 
 export { colors };

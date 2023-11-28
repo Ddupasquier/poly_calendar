@@ -70,12 +70,12 @@
     {/if}
     <div class="button-group">
         <Button
-            background={colors["--color-theme-1"]}
+            background={colors["--color-theme-2"]}
             on:click={() => handleLogin("REGISTER")}>Sign Up</Button
         >
         <Button
             on:click={() => handleLogin("LOGIN")}
-            background={colors["--color-theme-1"]}>Sign In</Button
+            background={colors["--color-theme-2"]}>Sign In</Button
         >
     </div>
     <!-- <div class="divider">

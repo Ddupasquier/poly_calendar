@@ -2,9 +2,10 @@
     import { supabase } from "$lib/supabase";
 
     import { userUser, userSession } from "$lib/stores/userStore";
-    
+
     import Auth from "$lib/components/auth/Auth.svelte";
     import { Button } from "mysvelte-ui";
+    import { colors } from "$lib/palette";
 
     async function logout() {
         const { error } = await supabase.auth.signOut();
@@ -20,5 +21,7 @@
 {#if !$userUser}
     <Auth />
 {:else}
-    <Button on:click={logout}>Logout</Button>
+    <Button on:click={logout} background={colors["--color-theme-2-D1"]}
+        >Logout</Button
+    >
 {/if}

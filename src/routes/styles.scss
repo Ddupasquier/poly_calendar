@@ -1,14 +1,14 @@
 @import '@fontsource/fira-mono';
 
 @mixin modernist-art {
-	$terracotta: rgb(226, 125, 96);
-	$jade-green: rgb(22, 160, 133);
+	$terracotta: hsl(13, 69%, 63%);
+	$jade-green: hsl(168, 76%, 36%);
 
-	--color-bg-0: rgb(130, 138, 149);
+	--color-bg-0: hsl(215, 8%, 55%);
 	/* Basalt Gray */
-	--color-bg-1: rgb(41, 128, 185);
+	--color-bg-1: hsl(204, 64%, 44%);
 	/* Skyline Blue */
-	--color-bg-2: rgb(255, 255, 255);
+	--color-bg-2: hsl(0, 0%, 100%);
 	/* Marble White */
 	--color-theme-1: #{$terracotta};
 	/* Terracotta */
@@ -22,21 +22,21 @@
 	/* Slightly darker Jade Green */
 	--color-theme-2-L1: #{lighten($jade-green, 10%)};
 	/* Slightly lighter Jade Green */
-	--color-text: rgb(20, 20, 20);
+	--color-text: hsl(0, 0%, 8%);
 	/* Lava Stone */
-	--color-text-light: rgb(78, 78, 80);
+	--color-text-light: hsl(240, 1%, 31%);
 	/* Light Lava Stone */
 }
 
 @mixin urban-contrast {
-	$rust-red: rgb(231, 76, 60);
-	$sunset-orange: rgb(243, 156, 18);
+	$rust-red: hsl(6, 78%, 57%);
+	$sunset-orange: hsl(37, 90%, 51%);
 
-	--color-bg-0: rgb(149, 165, 166);
+	--color-bg-0: hsl(184, 9%, 62%);
 	/* Concrete Gray */
-	--color-bg-1: rgb(74, 111, 165);
+	--color-bg-1: hsl(216, 38%, 47%);
 	/* Steel Blue */
-	--color-bg-2: rgb(213, 196, 161);
+	--color-bg-2: hsl(40, 38%, 73%);
 	/* Sandy Beige */
 	--color-theme-1: #{$rust-red};
 	/* Rust Red */
@@ -50,19 +50,19 @@
 	/* Slightly darker Sunset Orange */
 	--color-theme-2-L1: #{lighten($sunset-orange, 10%)};
 	/* Slightly lighter Sunset Orange */
-	--color-text: rgb(44, 62, 80);
+	--color-text: hsl(210, 29%, 24%);
 	/* Midnight Black */
 }
 
 @mixin industrial-monochrome {
-	$charcoal-black: rgb(45, 52, 54);
-	$oyster: rgb(174, 189, 56);
+	$charcoal-black: hsl(193, 9%, 19%);
+	$oyster: hsl(67, 54%, 48%);
 
-	--color-bg-0: rgb(99, 110, 114);
+	--color-bg-0: hsl(196, 7%, 42%);
 	/* Smog Gray */
-	--color-bg-1: rgb(178, 190, 195);
+	--color-bg-1: hsl(198, 12%, 73%);
 	/* Iron Silver */
-	--color-bg-2: rgb(216, 216, 216);
+	--color-bg-2: hsl(0, 0%, 85%);
 	/* Ash White */
 	--color-theme-1: #{$charcoal-black};
 	/* Charcoal Black */
@@ -76,7 +76,7 @@
 	/* Slightly darker Oyster */
 	--color-theme-2-L1: #{lighten($oyster, 10%)};
 	/* Slightly lighter Oyster */
-	--color-text: rgb(51, 63, 72);
+	--color-text: hsl(206, 17%, 24%);
 	/* Graphite Shadow */
 }
 

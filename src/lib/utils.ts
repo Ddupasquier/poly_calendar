@@ -1,40 +1,43 @@
-type RGB = {
-    r: number;
-    g: number;
-    b: number;
+type HSL = {
+    h: number;
+    s: number;
+    l: number;
 };
 
-const parseRGB = (rgbString: string): RGB => {
-    const components = rgbString.match(/\d+/g);
+const parseHSL = (hslString: string): HSL => {
+    const components = hslString.match(/\d+\.?\d*/g);
     if (!components || components.length !== 3) {
-        throw new Error('Invalid RGB format');
+        throw new Error('Invalid HSL format');
     }
     return {
-        r: parseInt(components[0], 10),
-        g: parseInt(components[1], 10),
-        b: parseInt(components[2], 10)
+        h: parseInt(components[0], 10), // Hue is a degree between 0 and 360
+        s: parseInt(components[1], 10), // Saturation is a percentage
+        l: parseInt(components[2], 10)  // Lightness is a percentage
     };
 };
 
-const clamp = (value: number): number => Math.min(255, Math.max(0, value));
+const clampPercentage = (value: number): number => Math.min(100, Math.max(0, value));
 
-const adjustColor = (rgb: RGB, percentage: number): RGB => ({
-    r: clamp(rgb.r + rgb.r * percentage),
-    g: clamp(rgb.g + rgb.g * percentage),
-    b: clamp(rgb.b + rgb.b * percentage)
-});
-
-const lighten = (rgbString: string, percentage: number): string => {
-    const rgb = parseRGB(rgbString);
-    const adjusted = adjustColor(rgb, percentage / 100);
-    return `rgb(${adjusted.r}, ${adjusted.g}, ${adjusted.b})`;
+const adjustLightness = (hsl: HSL, factor: number): HSL => {
+    return {
+        h: hsl.h, // Hue does not change when lightening or darkening
+        s: hsl.s, // Saturation does not change when lightening or darkening
+        l: clampPercentage(hsl.l + factor) // Adjust lightness by the factor, clamping between 0% and 100%
+    };
 };
 
-const darken = (rgbString: string, percentage: number): string =>
-    lighten(rgbString, -percentage);
+//#region conversions
+const lighten = (hslString: string, factor: number): string => {
+    const hsl = parseHSL(hslString);
+    const adjusted = adjustLightness(hsl, factor);
+    return `hsl(${adjusted.h}, ${adjusted.s}%, ${adjusted.l}%)`;
+};
 
-// Usage examples:
-console.log(lighten('rgb(100, 100, 100)', 10)); // Lighten by 10%
-console.log(darken('rgb(100, 100, 100)', 10));  // Darken by 10%
+const darken = (hslString: string, factor: number): string => {
+    const hsl = parseHSL(hslString);
+    const adjusted = adjustLightness(hsl, -factor);
+    return `hsl(${adjusted.h}, ${adjusted.s}%, ${adjusted.l}%)`;
+};
+//#endregion
 
 export { lighten, darken };
