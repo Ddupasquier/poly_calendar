@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import NavTab from "./nav-tab.svelte";
+	import NavTab from "$lib/components/navigation/Nav-Tab.svelte";
 
 	$: currentTab = $page.url.pathname;
 
@@ -66,19 +66,32 @@
 	}
 
 	.bars {
+		display: block;
 		position: relative;
 		margin-right: 2rem;
 
 		.bar1 {
-			@include bar(0, 65%, var(--color-theme-1-1), animate-bar1, 12s);
+			@include bar(0, 65%, var(--color-theme-1), animate-bar1, 12s);
 		}
 
 		.bar2 {
-			@include bar(0.4rem, 55%, var(--color-theme-1-2), animate-bar2, 14s);
+			@include bar(
+				0.4rem,
+				55%,
+				var(--color-theme-1-D1),
+				animate-bar2,
+				14s
+			);
 		}
 
 		.bar3 {
-			@include bar(0.8rem, 45%, var(--color-theme-1-3), animate-bar3, 10s);
+			@include bar(
+				0.8rem,
+				45%,
+				var(--color-theme-1-L1),
+				animate-bar3,
+				10s
+			);
 		}
 	}
 
@@ -112,22 +125,25 @@
 		}
 	}
 
-	@media (max-width: 480px) {
+	@media (max-width: 870px) {
+		.bars {
+			top: -5.5rem;
+			left: 1rem;
+			transform: scaleX(-1);
+		}
+
 		nav {
 			flex-direction: column;
-			align-items: flex-start;
+			align-items: flex-end;
+			width: 100%;
 		}
 
 		nav :global(.tab) {
 			margin-right: 0;
-			margin-bottom: -20px;
+			margin-bottom: -7px;
 			&:last-child {
 				margin-bottom: 0;
 			}
-		}
-
-		hr {
-			width: 0;
 		}
 	}
 </style>

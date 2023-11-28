@@ -1,82 +1,82 @@
 @import '@fontsource/fira-mono';
 
 @mixin modernist-art {
-	$terracotta: #E27D60;
-	$jade-green: #16A085;
+	$terracotta: rgb(226, 125, 96);
+	$jade-green: rgb(22, 160, 133);
 
-	--color-bg-0: #828A95;
+	--color-bg-0: rgb(130, 138, 149);
 	/* Basalt Gray */
-	--color-bg-1: #2980B9;
+	--color-bg-1: rgb(41, 128, 185);
 	/* Skyline Blue */
-	--color-bg-2: #FFFFFF;
+	--color-bg-2: rgb(255, 255, 255);
 	/* Marble White */
-	--color-theme-1-1: #{$terracotta};
+	--color-theme-1: #{$terracotta};
 	/* Terracotta */
-	--color-theme-1-2: #{darken($terracotta, 10%)};
+	--color-theme-1-D1: #{darken($terracotta, 10%)};
 	/* Slightly darker Terracotta */
-	--color-theme-1-3: #{lighten($terracotta, 10%)};
+	--color-theme-1-L1: #{lighten($terracotta, 10%)};
 	/* Slightly lighter Terracotta */
-	--color-theme-2-1: #{$jade-green};
+	--color-theme-2: #{$jade-green};
 	/* Jade Green */
-	--color-theme-2-2: #{darken($jade-green, 10%)};
+	--color-theme-2-D1: #{darken($jade-green, 10%)};
 	/* Slightly darker Jade Green */
-	--color-theme-2-3: #{lighten($jade-green, 10%)};
+	--color-theme-2-L1: #{lighten($jade-green, 10%)};
 	/* Slightly lighter Jade Green */
-	--color-text: #141414;
+	--color-text: rgb(20, 20, 20);
 	/* Lava Stone */
-	--color-text-light: #4E4E50;
+	--color-text-light: rgb(78, 78, 80);
 	/* Light Lava Stone */
 }
 
 @mixin urban-contrast {
-	$rust-red: #E74C3C;
-	$sunset-orange: #F39C12;
+	$rust-red: rgb(231, 76, 60);
+	$sunset-orange: rgb(243, 156, 18);
 
-	--color-bg-0: #95A5A6;
+	--color-bg-0: rgb(149, 165, 166);
 	/* Concrete Gray */
-	--color-bg-1: #4A6FA5;
+	--color-bg-1: rgb(74, 111, 165);
 	/* Steel Blue */
-	--color-bg-2: #D5C4A1;
+	--color-bg-2: rgb(213, 196, 161);
 	/* Sandy Beige */
-	--color-theme-1-1: #E74C3C;
+	--color-theme-1: #{$rust-red};
 	/* Rust Red */
-	--color-theme-1-2: #{darken($rust-red, 10%)};
+	--color-theme-1-D1: #{darken($rust-red, 10%)};
 	/* Slightly darker Rust Red */
-	--color-theme-1-3: #{lighten($rust-red, 10%)};
+	--color-theme-1-L1: #{lighten($rust-red, 10%)};
 	/* Slightly lighter Rust Red */
-	--color-theme-2-1: #F39C12;
+	--color-theme-2: #{$sunset-orange};
 	/* Sunset Orange */
-	--color-theme-2-2: #{darken($sunset-orange, 10%)};
+	--color-theme-2-D1: #{darken($sunset-orange, 10%)};
 	/* Slightly darker Sunset Orange */
-	--color-theme-2-3: #{lighten($sunset-orange, 10%)};
+	--color-theme-2-L1: #{lighten($sunset-orange, 10%)};
 	/* Slightly lighter Sunset Orange */
-	--color-text: #2C3E50;
+	--color-text: rgb(44, 62, 80);
 	/* Midnight Black */
 }
 
 @mixin industrial-monochrome {
-	$charcoal-black: #2D3436;
-	$oyster: #AEBD38;
+	$charcoal-black: rgb(45, 52, 54);
+	$oyster: rgb(174, 189, 56);
 
-	--color-bg-0: #636E72;
+	--color-bg-0: rgb(99, 110, 114);
 	/* Smog Gray */
-	--color-bg-1: #B2BEC3;
+	--color-bg-1: rgb(178, 190, 195);
 	/* Iron Silver */
-	--color-bg-2: #D8D8D8;
+	--color-bg-2: rgb(216, 216, 216);
 	/* Ash White */
-	--color-theme-1-1: #2D3436;
+	--color-theme-1: #{$charcoal-black};
 	/* Charcoal Black */
-	--color-theme-1-2: #{darken($charcoal-black, 10%)};
+	--color-theme-1-D1: #{darken($charcoal-black, 10%)};
 	/* Slightly darker Charcoal Black */
-	--color-theme-1-3: #{lighten($charcoal-black, 10%)};
+	--color-theme-1-L1: #{lighten($charcoal-black, 10%)};
 	/* Slightly lighter Charcoal Black */
-	--color-theme-2-1: #AEBD38;
+	--color-theme-2: #{$oyster};
 	/* Oyster */
-	--color-theme-2-2: #{darken($oyster, 10%)};
+	--color-theme-2-D1: #{darken($oyster, 10%)};
 	/* Slightly darker Oyster */
-	--color-theme-2-3: #{lighten($oyster, 10%)};
+	--color-theme-2-L1: #{lighten($oyster, 10%)};
 	/* Slightly lighter Oyster */
-	--color-text: #333F48;
+	--color-text: rgb(51, 63, 72);
 	/* Graphite Shadow */
 }
 
@@ -158,12 +158,6 @@ button {
 
 button:focus:not(:focus-visible) {
 	outline: none;
-}
-
-@media (min-width: 720px) {
-	h1 {
-		font-size: 2.4rem;
-	}
 }
 
 .visually-hidden {

@@ -22,4 +22,10 @@
             text-decoration: none;
         }
     }
+
+    @media (min-width: 870px) {
+        h1 {
+            font-size: 2.4rem;
+        }
+    }
 </style>
