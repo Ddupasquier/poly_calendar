@@ -4,8 +4,11 @@
 
     import { userUser, userSession } from "$lib/stores/userStore";
 
-    import { Button } from "mysvelte-ui";
+    import { Button, Card } from "mysvelte-ui";
+    import Input from "../inputs/EmailInput.svelte";
     import { colors } from "$lib/palette";
+    import EmailInput from "../inputs/EmailInput.svelte";
+    import PasswordInput from "../inputs/PasswordInput.svelte";
 
     interface HelperText {
         error: boolean;
@@ -53,127 +56,86 @@
     // };
 </script>
 
-<div class="login-container">
-    <h1>Login</h1>
-    <div class="form-group">
-        <label for="email">Email:</label>
-        <input id="email" type="email" bind:value={email} required />
-    </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input id="password" type="password" bind:value={password} required />
-    </div>
+<Card background={colors["--color-bg-2"]}>
+    <Card.Head style="text-align: center">Lets get you logged in!</Card.Head>
+    <Card.Content>
+        <div class="form-group">
+            <EmailInput
+                bind:value={email}
+                color={colors["--color-theme-2"]}
+                background="transparent"
+                placeholder="Email"
+            />
+            <PasswordInput
+                bind:value={password}
+                color={colors["--color-theme-2"]}
+                background="transparent"
+                placeholder="Password"
+            />
+        </div>
+    </Card.Content>
+    <Card.Foot>
+        <div class="button-group">
+            <Button
+                background={colors["--color-theme-2"]}
+                on:click={() => handleLogin("REGISTER")}>Sign Up</Button
+            >
+            <Button
+                on:click={() => handleLogin("LOGIN")}
+                background={colors["--color-theme-2"]}>Sign In</Button
+            >
+        </div>
+        <!-- <div class="divider">
+            <span>Or continue with</span>
+        </div> -->
+        <!-- <div class="oauth-buttons">
+            <button on:click={() => handleOAuthLogin("github")}>GitHub</button>
+            <button on:click={() => handleOAuthLogin("google")}>Google</button>
+        </div> -->
+    </Card.Foot>
     {#if !!helperText.text}
         <div class="helper-text">
             {helperText.text}
         </div>
     {/if}
-    <div class="button-group">
-        <Button
-            background={colors["--color-theme-2"]}
-            on:click={() => handleLogin("REGISTER")}>Sign Up</Button
-        >
-        <Button
-            on:click={() => handleLogin("LOGIN")}
-            background={colors["--color-theme-2"]}>Sign In</Button
-        >
-    </div>
-    <!-- <div class="divider">
-        <span>Or continue with</span>
-    </div> -->
-    <!-- <div class="oauth-buttons">
-        <button on:click={() => handleOAuthLogin("github")}>GitHub</button>
-        <button on:click={() => handleOAuthLogin("google")}>Google</button>
-    </div> -->
-</div>
+</Card>
 
 <style lang="scss">
-    .login-container {
-        max-width: 20rem;
-        padding: 1.25rem;
-        background-color: white;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        flex-direction: column;
-        font-size: 1rem;
-
-        h1 {
-            text-align: center;
-            margin-bottom: 0.25rem;
-        }
-
-        .form-group {
-            margin-top: 1rem;
-            label {
-                font-weight: bold;
-            }
-            input {
-                background-color: #f7f7f7;
-                border: 1px solid #ddd;
-                padding: 0.25rem 0.5rem;
-                width: 100%;
-            }
-        }
-
-        .helper-text {
-            padding: 0.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            background-color: #ffdddd;
-            border: 1px solid #ffcccc;
-        }
-
-        .button-group {
-            margin-top: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-
-            button {
-                border: 1px solid #007bff;
-                background-color: #fff;
-                color: #007bff;
-                padding: 0.5rem 1rem;
-                cursor: pointer;
-                &:hover {
-                    background-color: #f0f8ff;
-                }
-            }
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin-top: 1rem;
-
-            &:before,
-            &:after {
-                content: "";
-                flex: 1;
-                border-bottom: 1px solid #ddd;
-            }
-
-            span {
-                margin: 0 0.5rem;
-                background-color: white;
-                color: #aaa;
-                padding: 0 0.5rem;
-            }
-        }
-
-        .oauth-buttons {
-            button {
-                width: 70%;
-                margin: 0.75rem auto;
-                display: block;
-                padding: 0.5rem 1rem;
-                background-color: #007bff;
-                color: #fff;
-                border: none;
-                &:hover {
-                    background-color: #0056b3;
-                }
-            }
-        }
+    .button-group {
+        display: flex;
+        justify-content: space-between;
     }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .helper-text {
+        padding: 0.5rem;
+        text-align: center;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        background-color: var(--color-theme-1);
+        border: 1px solid var(--color-theme-1-D1);
+        border-top: 0;
+        border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+    // .oauth-buttons {
+    //     button {
+    //         width: 70%;
+    //         margin: 0.75rem auto;
+    //         display: block;
+    //         padding: 0.5rem 1rem;
+    //         background-color: #007bff;
+    //         color: #fff;
+    //         border: none;
+    //         &:hover {
+    //             background-color: #0056b3;
+    //         }
+    //     }
+    // }
 </style>

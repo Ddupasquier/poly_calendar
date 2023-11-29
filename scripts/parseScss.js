@@ -61,18 +61,22 @@ async function convertScssToTs(scssFilePath, tsFilePath) {
         tsContent += `    ${varName},\n`;
     }
 
-    const removeSymbols = (str) => str.replace(/[#${}%]/g, '');
+    const removeSymbols = (str, isHslColor) => {
+        return isHslColor ? str.replace(/[#${}]/g, '') : str.replace(/[#${}%]/g, '');
+    };
 
     for (const [varName, value] of Object.entries(cssVars)) {
+        const isHslColor = isHsl(value);
+
         if (value.includes('darken(') || value.includes('lighten(')) {
-            let color = removeSymbols(value);
+            let color = removeSymbols(value, isHslColor);
             tsContent += `    "${varName}": ${camelCase(color)},\n`;
         } else if (!isHsl(value)) {
-            let color = removeSymbols(value);
+            let color = removeSymbols(value, isHslColor);
             tsContent += `    "${varName}": ${camelCase(color)},\n`;
         }
         else {
-            let color = removeSymbols(value);
+            let color = removeSymbols(value, isHslColor);
             tsContent += `    "${varName}": "${color}",\n`;
         }
     }
