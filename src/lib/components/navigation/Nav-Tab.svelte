@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { userUser } from "$lib/stores/userStore";
+    import { authUser } from "$lib/stores/userStore";
 
     export let tabName: string;
     export let tabPath: string;
@@ -11,9 +11,9 @@
 <div aria-current={thisTabActive ? "page" : undefined} class="tab" role="tab">
     <div class="folder-tab" />
     <a href={tabPath}>
-        {#if tabName === "Profile" && $userUser}
+        {#if tabName === "Profile" && $authUser}
             {tabName}
-        {:else if tabName === "Profile" && !$userUser}
+        {:else if tabName === "Profile" && !$authUser}
             Login
         {:else}
             {tabName}

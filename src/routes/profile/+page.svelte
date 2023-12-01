@@ -3,7 +3,7 @@
 
     import { onMount } from "svelte";
 
-    import { userUser, userSession } from "$lib/stores/userStore";
+    import { authUser, authSession } from "$lib/stores/userStore";
 
     import Auth from "$lib/components/auth/Auth.svelte";
     import { Button } from "mysvelte-ui";
@@ -11,7 +11,7 @@
     import { navigationButtons } from "./constants";
 
     onMount(() => {
-        if (!userUser) {
+        if (!authUser) {
             const urlParams = new URLSearchParams(window.location.search);
             const login = urlParams.get("login");
 
@@ -28,8 +28,8 @@
         if (error) {
             console.error("Error logging out:", error);
         } else {
-            userUser.set(null);
-            userSession.set(null);
+            authUser.set(null);
+            authSession.set(null);
         }
     };
 
@@ -40,7 +40,7 @@
     `;
 </script>
 
-{#if !$userUser}
+{#if !$authUser}
     <Auth />
 {:else}
     <div class="container">

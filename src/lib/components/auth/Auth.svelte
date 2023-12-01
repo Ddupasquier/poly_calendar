@@ -1,82 +1,15 @@
 <script lang="ts">
-    import { supabase } from "$lib/supabase";
-    import { userUser, userSession } from "$lib/stores/userStore";
+    import { authenticationService } from "$lib/services/authentication-service";
+    import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
     import { Button, Card } from "mysvelte-ui";
     import { colors } from "$lib/palette";
     import EmailInput from "../inputs/EmailInput.svelte";
     import PasswordInput from "../inputs/PasswordInput.svelte";
 
-    interface HelperText {
-        error: boolean;
-        text: string | null;
-    }
+    const { signUp, signIn } = authenticationService;
 
     let email: string = "";
     let password: string = "";
-    let helperText: HelperText = { error: false, text: null };
-    let countdown: string | number | NodeJS.Timeout | null | undefined;
-    let remainingSeconds = 0;
-
-    const handleLogin = async (type: string) => {
-        let result;
-        if (type === "LOGIN") {
-            result = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-        } else {
-            result = await supabase.auth.signUp({ email, password });
-
-            // TODO: creater sweet alert component to use for alerts
-            if (result.data) {
-                alert("Please check your email for a confirmation link.");
-            }
-
-            return;
-        }
-
-        const { data, error } = result;
-
-        if (error) {
-            console.error("Error:", error);
-            const rateLimitMatch = error.message.match(/after (\d+) seconds/);
-            if (rateLimitMatch) {
-                startCountdown(parseInt(rateLimitMatch[1], 10));
-            } else {
-                helperText = { error: true, text: error.message };
-            }
-        } else if (data && !data.user) {
-            helperText = {
-                error: false,
-                text: "An email has been sent to you for verification!",
-            };
-        } else if (data && data.user) {
-            console.log("User:", data.user);
-            userUser.set(data.user);
-            userSession.set(data.session!);
-        }
-    };
-
-    function startCountdown(seconds: number) {
-        remainingSeconds = seconds;
-        countdown = setInterval(() => {
-            if (remainingSeconds > 0) {
-                helperText = {
-                    error: true,
-                    text: `Please wait for ${remainingSeconds} seconds.`,
-                };
-                remainingSeconds--;
-            } else {
-                stopCountdown();
-            }
-        }, 1000);
-    }
-
-    function stopCountdown() {
-        clearInterval(countdown as NodeJS.Timeout);
-        countdown = null;
-        helperText = { error: false, text: null };
-    }
 
     // const handleOAuthLogin = async (provider: Provider) => {
     //     // You need to enable the third party auth you want in Authentication > Settings
@@ -110,10 +43,10 @@
             <div class="button-group">
                 <Button
                     background={colors["--color-theme-2"]}
-                    on:click={() => handleLogin("REGISTER")}>Sign Up</Button
+                    on:click={() => signUp(email, password)}>Sign Up</Button
                 >
                 <Button
-                    on:click={() => handleLogin("LOGIN")}
+                    on:click={() => signIn(email, password)}
                     background={colors["--color-theme-2"]}>Sign In</Button
                 >
             </div>
@@ -125,9 +58,9 @@
                 <button on:click={() => handleOAuthLogin("google")}>Google</button>
             </div> -->
         </Card.Foot>
-        {#if !!helperText.text}
+        {#if !!$helperText.text}
             <div class="helper-text">
-                {helperText.text}
+                {$helperText.text}
             </div>
         {/if}
     </Card>

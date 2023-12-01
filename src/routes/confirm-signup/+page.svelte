@@ -1,18 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { supabase } from "$lib/supabase";
-    import { goto } from "$app/navigation";
-    import { userUser, userSession } from "$lib/stores/userStore";
+    import { authenticationConfirmationService } from "$lib/services/authentication-confirmation-service";
+    import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
 
     import { Card, Button } from "mysvelte-ui";
     import { colors } from "$lib/palette";
 
-    interface HelperText {
-        error: boolean;
-        text: string | null;
-    }
-
-    let helperText: HelperText = { error: false, text: null };
+    const { confirmSignUp } = authenticationConfirmationService;
 
     let email: string;
     let token: string | null = null;
@@ -22,41 +16,6 @@
         email = urlParams.get("email") ?? "";
         token = urlParams.get("token");
     });
-
-    const confirmSignUp = async () => {
-        if (token) {
-            try {
-                if (!token) {
-                    throw new Error("No access token provided.");
-                }
-
-                const { data, error: authError } =
-                    await supabase.auth.verifyOtp({
-                        token_hash: token,
-                        type: "email",
-                    });
-
-                if (authError) {
-                    throw authError;
-                }
-
-                if (!data) {
-                    throw new Error("No data returned from Supabase.");
-                } else if (!data.user) {
-                    throw new Error("No user returned from Supabase.");
-                } else {
-                    userUser.set(data.user);
-                    userSession.set(data.session);
-
-                    goto("/profile");
-                }
-            } catch (err) {
-                helperText = { error: true, text: (err as Error).message };
-            }
-        } else {
-            helperText = { error: true, text: "No token provided." };
-        }
-    };
 </script>
 
 <div class="container">
@@ -72,15 +31,15 @@
             </Card.Content>
             <Card.Foot>
                 <Button
-                    on:click={confirmSignUp}
+                    on:click={() => confirmSignUp(token ?? "")}
                     background={colors["--color-theme-2"]}
                 >
                     Confirm Signup
                 </Button>
             </Card.Foot>
-            {#if !!helperText.text}
+            {#if !!$helperText.text}
                 <div class="helper-text">
-                    {helperText.text}
+                    {$helperText.text}
                 </div>
             {/if}
         </Card>

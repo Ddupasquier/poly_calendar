@@ -7,11 +7,9 @@
         faPowerOff,
     } from "@fortawesome/free-solid-svg-icons";
 
-    import { userUser } from "$lib/stores/userStore";
-    import { shortDate } from "$lib/utils";
+    import { authUser } from "$lib/stores/userStore";
+    import { shortDate } from "$lib/utils/utils";
     import { colors } from "$lib/palette";
-
-    $: console.log($userUser);
 </script>
 
 <div class="profile-container">
@@ -24,9 +22,9 @@
                 style={`color: ${colors["--color-theme-2-D1"]}`}
             />
             <strong>Email:</strong>
-            {$userUser?.email}
+            {$authUser?.email}
             <span>
-                {$userUser?.email_confirmed_at
+                {$authUser?.email_confirmed_at
                     ? " (Confirmed)"
                     : " (Unconfirmed)"}
             </span>
@@ -41,7 +39,7 @@
                 style={`color: ${colors["--color-theme-2-D1"]}`}
             />
             <strong>Member Since:</strong>
-            {shortDate($userUser?.created_at)}
+            {shortDate($authUser?.created_at)}
         </div>
         <div class="profile-info">
             <FontAwesomeIcon
@@ -49,7 +47,7 @@
                 style={`color: ${colors["--color-theme-2-D1"]}`}
             />
             <strong>Last Login:</strong>
-            {shortDate($userUser?.last_sign_in_at)}
+            {shortDate($authUser?.last_sign_in_at)}
         </div>
     </div>
 
@@ -61,7 +59,7 @@
                 style={`color: ${colors["--color-theme-2-D1"]}`}
             />
             <strong>Account Status:</strong>
-            {$userUser?.confirmed_at ? "Secure" : "Action Required"}
+            {$authUser?.confirmed_at ? "Secure" : "Action Required"}
         </div>
     </div>
 </div>

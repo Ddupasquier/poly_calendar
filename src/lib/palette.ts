@@ -1,4 +1,4 @@
-import { darken, lighten } from './utils';
+import { darken, lighten } from './utils/utils';
 
 const terracotta = "hsl(13, 69%, 63%)";
 const jadeGreen = "hsl(168, 76%, 36%)";
