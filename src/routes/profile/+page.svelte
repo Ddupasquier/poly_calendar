@@ -5,7 +5,7 @@
 
     import { authUser, authSession } from "$lib/stores/userStore";
 
-    import Auth from "$lib/components/auth/Auth.svelte";
+    import Auth from "$lib/components/auth/AuthLoginSignup.svelte";
     import { Button } from "mysvelte-ui";
     import { colors } from "$lib/palette";
     import { navigationButtons } from "./constants";
