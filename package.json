@@ -29,6 +29,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^6.5.0",
+		"@fortawesome/free-solid-svg-icons": "^6.5.0",
+		"@fortawesome/svelte-fontawesome": "^0.2.0",
 		"@supabase/auth-helpers-sveltekit": "^0.10.7",
 		"@supabase/supabase-js": "^2.39.0",
 		"mysvelte-ui": "^0.0.32"

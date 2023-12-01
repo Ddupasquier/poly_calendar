@@ -15,8 +15,9 @@ const colors = {
     "--color-theme-2": jadeGreen,
     "--color-theme-2-D1": darken(jadeGreen, 10),
     "--color-theme-2-L1": lighten(jadeGreen, 10),
-    "--color-text": "hsl(0, 0%, 8%)",
+    "--color-text-dark": "hsl(0, 0%, 8%)",
     "--color-text-light": "hsl(240, 1%, 31%)",
+    "--color-text-white": "hsl(0, 0%, 100%)",
 };
 
 export { colors };

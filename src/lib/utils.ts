@@ -1,3 +1,11 @@
+const shortDate = (date: string | undefined) => {
+    if (!date) return "";
+
+    const d = new Date(date);
+
+    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+};
+
 type HSL = {
     h: number;
     s: number;
@@ -40,4 +48,4 @@ const darken = (hslString: string, factor: number): string => {
 };
 //#endregion
 
-export { lighten, darken };
+export { lighten, darken, shortDate };

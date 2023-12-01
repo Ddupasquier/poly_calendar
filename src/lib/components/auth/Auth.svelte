@@ -1,11 +1,7 @@
 <script lang="ts">
-    // import type { Provider } from "@supabase/supabase-js";
     import { supabase } from "$lib/supabase";
-
     import { userUser, userSession } from "$lib/stores/userStore";
-
     import { Button, Card } from "mysvelte-ui";
-    import Input from "../inputs/EmailInput.svelte";
     import { colors } from "$lib/palette";
     import EmailInput from "../inputs/EmailInput.svelte";
     import PasswordInput from "../inputs/PasswordInput.svelte";
@@ -18,6 +14,8 @@
     let email: string = "";
     let password: string = "";
     let helperText: HelperText = { error: false, text: null };
+    let countdown: string | number | NodeJS.Timeout | null | undefined;
+    let remainingSeconds = 0;
 
     const handleLogin = async (type: string) => {
         let result;
@@ -28,15 +26,26 @@
             });
         } else {
             result = await supabase.auth.signUp({ email, password });
+
+            // TODO: creater sweet alert component to use for alerts
+            if (result.data) {
+                alert("Please check your email for a confirmation link.");
+            }
+
+            return;
         }
 
         const { data, error } = result;
 
         if (error) {
             console.error("Error:", error);
-            helperText = { error: true, text: error.message };
+            const rateLimitMatch = error.message.match(/after (\d+) seconds/);
+            if (rateLimitMatch) {
+                startCountdown(parseInt(rateLimitMatch[1], 10));
+            } else {
+                helperText = { error: true, text: error.message };
+            }
         } else if (data && !data.user) {
-            console.log("Success: Verification email sent");
             helperText = {
                 error: false,
                 text: "An email has been sent to you for verification!",
@@ -48,6 +57,27 @@
         }
     };
 
+    function startCountdown(seconds: number) {
+        remainingSeconds = seconds;
+        countdown = setInterval(() => {
+            if (remainingSeconds > 0) {
+                helperText = {
+                    error: true,
+                    text: `Please wait for ${remainingSeconds} seconds.`,
+                };
+                remainingSeconds--;
+            } else {
+                stopCountdown();
+            }
+        }, 1000);
+    }
+
+    function stopCountdown() {
+        clearInterval(countdown as NodeJS.Timeout);
+        countdown = null;
+        helperText = { error: false, text: null };
+    }
+
     // const handleOAuthLogin = async (provider: Provider) => {
     //     // You need to enable the third party auth you want in Authentication > Settings
     //     // Read more on: https://supabase.com/docs/guides/auth#third-party-logins
@@ -56,49 +86,52 @@
     // };
 </script>
 
-<Card background={colors["--color-bg-2"]}>
-    <Card.Head style="text-align: center">Lets get you logged in!</Card.Head>
-    <Card.Content>
-        <div class="form-group">
-            <EmailInput
-                bind:value={email}
-                color={colors["--color-theme-2"]}
-                background="transparent"
-                placeholder="Email"
-            />
-            <PasswordInput
-                bind:value={password}
-                color={colors["--color-theme-2"]}
-                background="transparent"
-                placeholder="Password"
-            />
-        </div>
-    </Card.Content>
-    <Card.Foot>
-        <div class="button-group">
-            <Button
-                background={colors["--color-theme-2"]}
-                on:click={() => handleLogin("REGISTER")}>Sign Up</Button
-            >
-            <Button
-                on:click={() => handleLogin("LOGIN")}
-                background={colors["--color-theme-2"]}>Sign In</Button
-            >
-        </div>
-        <!-- <div class="divider">
-            <span>Or continue with</span>
-        </div> -->
-        <!-- <div class="oauth-buttons">
-            <button on:click={() => handleOAuthLogin("github")}>GitHub</button>
-            <button on:click={() => handleOAuthLogin("google")}>Google</button>
-        </div> -->
-    </Card.Foot>
-    {#if !!helperText.text}
-        <div class="helper-text">
-            {helperText.text}
-        </div>
-    {/if}
-</Card>
+<div class="container">
+    <Card background={colors["--color-bg-2"]}>
+        <Card.Head style="text-align: center">Lets get you logged in!</Card.Head
+        >
+        <Card.Content>
+            <div class="form-group">
+                <EmailInput
+                    bind:value={email}
+                    color={colors["--color-theme-2"]}
+                    background="transparent"
+                    placeholder="Email"
+                />
+                <PasswordInput
+                    bind:value={password}
+                    color={colors["--color-theme-2"]}
+                    background="transparent"
+                    placeholder="Password"
+                />
+            </div>
+        </Card.Content>
+        <Card.Foot>
+            <div class="button-group">
+                <Button
+                    background={colors["--color-theme-2"]}
+                    on:click={() => handleLogin("REGISTER")}>Sign Up</Button
+                >
+                <Button
+                    on:click={() => handleLogin("LOGIN")}
+                    background={colors["--color-theme-2"]}>Sign In</Button
+                >
+            </div>
+            <!-- <div class="divider">
+                <span>Or continue with</span>
+            </div> -->
+            <!-- <div class="oauth-buttons">
+                <button on:click={() => handleOAuthLogin("github")}>GitHub</button>
+                <button on:click={() => handleOAuthLogin("google")}>Google</button>
+            </div> -->
+        </Card.Foot>
+        {#if !!helperText.text}
+            <div class="helper-text">
+                {helperText.text}
+            </div>
+        {/if}
+    </Card>
+</div>
 
 <style lang="scss">
     .button-group {
@@ -111,17 +144,6 @@
         flex-direction: column;
         gap: 1rem;
         width: 100%;
-    }
-
-    .helper-text {
-        padding: 0.5rem;
-        text-align: center;
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-        background-color: var(--color-theme-1);
-        border: 1px solid var(--color-theme-1-D1);
-        border-top: 0;
-        border-radius: 0 0 0.5rem 0.5rem;
     }
 
     // .oauth-buttons {
