@@ -1,7 +1,7 @@
-import { supabase } from "../supabase";
+import { supabase } from "$lib/supabase";
 import { saveAuthUserAndSession } from "$lib/stores/userStore";
 import { setHelperText } from "$lib/stores/reactiveTextStore";
-import { userProfileManagementService } from "./user-profile-management-service";
+import { userProfileManagementService } from "$lib/services/profile/user-profile-management-service";
 
 const { upsertUserProfile } = userProfileManagementService;
 

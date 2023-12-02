@@ -13,24 +13,28 @@
     import { Button, Loader } from "mysvelte-ui";
 
     // Services: Business logic, API calls, and other service-related interactions.
-    import { authenticationService } from "$lib/services/authentication-service";
+    import { authenticationService } from "$lib/services/auth/authentication-service";
 
     // Models: Type definitions and interfaces for structured data representation.
     import type { ProfileUser } from "$lib/models/profile/profile-user";
+    import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
     import { colors } from "$lib/palette";
     import { navigationButtons } from "./constants";
+    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+    import {
+        faCheckCircle,
+        faCheckDouble,
+        faHeartCircleCheck,
+        faUserCheck,
+    } from "@fortawesome/free-solid-svg-icons";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
-
-    type ComponentProps = {
-        profileData?: ProfileUser;
-    };
 
     let isLoading: boolean = true;
     let authUserPresent: boolean;
@@ -41,6 +45,7 @@
     const { logout } = authenticationService;
 
     let selectedOption = "login";
+
     const buttonStyles = `
     background: ${colors["--color-theme-1"]};
     color: ${colors["--color-text-white"]};
@@ -128,6 +133,13 @@
                 {/each}
             </div>
         </div>
+        <div class="verified">
+            <FontAwesomeIcon
+                icon={faHeartCircleCheck}
+                style="color: var(--color-theme-1-D1);"
+                title="Verified"
+            />
+        </div>
     </div>
 {/if}
 
@@ -143,6 +155,17 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+    }
+
+    .verified {
+        position: absolute;
+        top: 30px;
+        right: 22px;
+        font-size: 2rem;
+        background: var(--color-bg-2);
+        border: 3px solid var(--color-theme-1);
+        border-radius: 50rem;
+        padding: 8px;
     }
 
     @media (max-width: 768px) {

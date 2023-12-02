@@ -1,4 +1,4 @@
-import { supabase } from "../supabase";
+import { supabase } from "$lib/supabase";
 import { clearAuthUserAndSession, saveAuthUserAndSession } from "$lib/stores/userStore";
 import { setHelperText } from "$lib/stores/reactiveTextStore";
 import { startCountdownWithMessage } from "$lib/utils/utils";

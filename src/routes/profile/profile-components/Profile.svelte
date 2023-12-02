@@ -2,10 +2,10 @@
     import type { ProfileUser } from "$lib/models/profile/profile-user";
 
     import { authUser } from "$lib/stores/userStore";
-    import { shortDate } from "$lib/utils/utils";
+    import { dateTimeUtils } from "$lib/utils/date-time-utils";
+    const { formatDate } = dateTimeUtils;
     import { colors } from "$lib/palette";
     import ProfileSection from "./profile-tab-components/ProfileSection.svelte";
-    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import {
         faCalendar,
         faLock,
@@ -26,58 +26,86 @@
     <ProfileSection header="Account Information">
         <ProfileInfoItem
             label="Username"
+            column="username"
             value={profileData?.username}
             icon={faUser}
             color={colors["--color-theme-2-D1"]}
+            type="text"
+        />
+        <ProfileInfoItem
+            label="First"
+            column="first_name"
+            value={profileData?.first_name}
+            icon={faUser}
+            color={colors["--color-theme-2-D1"]}
+            type="text"
+        />
+        <ProfileInfoItem
+            label="Last"
+            column="last_name"
+            value={profileData?.last_name}
+            icon={faUser}
+            color={colors["--color-theme-2-D1"]}
+            type="text"
         />
         <ProfileInfoItem
             label="Email"
-            value={$authUser?.email}
+            column="email"
+            value={profileData?.email}
             additional={$authUser?.email_confirmed_at
                 ? " (Confirmed)"
                 : " (Unconfirmed)"}
             icon={faMailBulk}
             color={colors["--color-theme-2-D1"]}
+            type="text"
         />
         <ProfileInfoItem
             label="Phone"
+            column="phone"
             value={profileData?.phone}
             icon={faPhone}
             color={colors["--color-theme-2-D1"]}
+            type="tel"
         />
     </ProfileSection>
 
     <ProfileSection header="Personal Details">
         <ProfileInfoItem
             label="Language"
+            column="language"
             value={profileData?.language}
             icon={faGlobe}
             color={colors["--color-theme-2-D1"]}
+            type="text"
         />
         <ProfileInfoItem
             label="Birthday"
-            value={shortDate(profileData?.birthday)}
+            column="birthday"
+            value={formatDate(profileData?.birthday)}
             icon={faBirthdayCake}
             color={colors["--color-theme-2-D1"]}
+            type="date"
         />
         <ProfileInfoItem
             label="About"
+            column="about"
             value={profileData?.about}
             icon={faInfo}
             color={colors["--color-theme-2-D1"]}
+            type="text"
         />
     </ProfileSection>
 
     <ProfileSection header="Membership Details">
         <ProfileInfoItem
             label="Member Since"
-            value={shortDate($authUser?.created_at)}
+            value={formatDate($authUser?.created_at)}
             icon={faCalendar}
             color={colors["--color-theme-2-D1"]}
         />
         <ProfileInfoItem
             label="Last Login"
-            value={shortDate($authUser?.last_sign_in_at)}
+            value={formatDate($authUser?.last_sign_in_at)}
             icon={faPowerOff}
             color={colors["--color-theme-2-D1"]}
         />
@@ -112,36 +140,9 @@
         background: linear-gradient(
             to bottom,
             var(--color-theme-1),
-            rgba(0, 123, 255, 0)
+            rgba(0, 0, 0, 0)
         );
         border-radius: inherit;
         pointer-events: none;
-    }
-
-    .profile-section {
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-
-        &:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-    }
-
-    .profile-header {
-        font-size: 24px;
-        color: var(--color-text-dark);
-        margin-bottom: 10px;
-    }
-
-    .profile-info {
-        font-size: 16px;
-        color: var(--color-text-light);
-        line-height: 1.5;
-    }
-
-    .profile-info strong {
-        color: var(--color-text-light);
     }
 </style>

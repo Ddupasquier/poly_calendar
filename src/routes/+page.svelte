@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { siteName } from "$lib/constants";
-
 	// Svelte-specific imports: Framework imports for lifecycle and reactivity.
-
+	
 	// Supabase imports: Authentication and database connections for user management and data retrieval.
-
+	
 	// UI components: Custom Svelte components and UI elements from design system libraries.
-
+	
 	// Services: Business logic, API calls, and other service-related interactions.
-
+	
 	// Models: Type definitions and interfaces for structured data representation.
-
+	
 	// Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
+	import { siteName } from "$lib/constants";
 
 	// Store: Svelte stores and reactive variables for state management (placeholder for future additions).
 

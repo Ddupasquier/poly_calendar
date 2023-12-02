@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
-import { authenticationConfirmationService } from "$lib/services/authentication-confirmation-service";
+import { authenticationConfirmationService } from "$lib/services/auth/authentication-confirmation-service";
 import { setHelperText } from '$lib/stores/reactiveTextStore';
 import { startCountdownWithMessage } from '$lib/utils/utils';
 

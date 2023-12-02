@@ -1,13 +1,5 @@
 import { setHelperText } from "$lib/stores/reactiveTextStore";
 
-const shortDate = (date: string | Date | undefined) => {
-    if (!date) return "";
-
-    const d = new Date(date);
-
-    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
-};
-
 type HSL = {
     h: number;
     s: number;
@@ -69,4 +61,4 @@ const stopCountdown = (countdown: string | number | NodeJS.Timeout | null | unde
     setHelperText(false, "")
 };
 
-export { lighten, darken, shortDate, startCountdownWithMessage };
+export { lighten, darken, startCountdownWithMessage };

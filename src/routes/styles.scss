@@ -188,6 +188,7 @@ button:focus:not(:focus-visible) {
 
 .container {
 	display: flex;
+	position: relative;
 	justify-content: center;
 	align-items: center;
 	height: fit-content;

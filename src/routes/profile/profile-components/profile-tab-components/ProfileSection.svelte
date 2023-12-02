@@ -9,6 +9,9 @@
 
 <style>
     .profile-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         margin-bottom: 20px;
         padding-bottom: 10px;
         border-bottom: 1px solid #eee;

@@ -8,7 +8,7 @@ export interface ProfileUser {
     image_url?: string; // TEXT NULL
     time_zone?: string; // VARCHAR(50) NULL
     language?: string; // VARCHAR(50) DEFAULT 'en' NULL
-    birthday?: string | Date; // DATE NULL
+    birthday?: string | Date; // ISO 8601 date string or Date object
     about?: string; // TEXT NULL
     calendar_privacy_setting?: string; // VARCHAR(20) DEFAULT 'public' NULL
     album_privacy_setting?: string; // VARCHAR(20) DEFAULT 'public' NULL

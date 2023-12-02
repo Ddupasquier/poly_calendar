@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { authenticationService } from "$lib/services/authentication-service";
+    import { authenticationService } from "$lib/services/auth/authentication-service";
     import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
     import { Button, Card } from "mysvelte-ui";
     import { colors } from "$lib/palette";
