@@ -1,5 +1,10 @@
 <script lang="ts">
     import type { ProfileUser } from "$lib/models/profile/profile-user";
+
+    import { authUser } from "$lib/stores/userStore";
+    import { shortDate } from "$lib/utils/utils";
+    import { colors } from "$lib/palette";
+    import ProfileSection from "./profile-tab-components/ProfileSection.svelte";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import {
         faCalendar,
@@ -8,118 +13,84 @@
         faPowerOff,
         faPhone,
         faUser,
-        faImage,
         faGlobe,
         faBirthdayCake,
         faInfo,
-        faBell,
-        faMusic,
     } from "@fortawesome/free-solid-svg-icons";
-
-    import { authUser } from "$lib/stores/userStore";
-    import { shortDate } from "$lib/utils/utils";
-    import { colors } from "$lib/palette";
+    import ProfileInfoItem from "./profile-tab-components/ProfileInfoItem.svelte";
 
     export let profileData: ProfileUser | undefined = undefined;
 </script>
 
 <div class="profile-container">
-    <div class="profile-section">
-        <div class="profile-header">Account Information</div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faUser}
-                class="icon"
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Username:</strong>
-            {profileData?.username || "N/A"}
-        </div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faMailBulk}
-                class="icon"
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Email:</strong>
-            {$authUser?.email}
-            <span>
-                {$authUser?.email_confirmed_at
-                    ? " (Confirmed)"
-                    : " (Unconfirmed)"}
-            </span>
-        </div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faPhone}
-                class="icon"
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Phone:</strong>
-            {profileData?.phone || "N/A"}
-        </div>
-    </div>
+    <ProfileSection header="Account Information">
+        <ProfileInfoItem
+            label="Username"
+            value={profileData?.username}
+            icon={faUser}
+            color={colors["--color-theme-2-D1"]}
+        />
+        <ProfileInfoItem
+            label="Email"
+            value={$authUser?.email}
+            additional={$authUser?.email_confirmed_at
+                ? " (Confirmed)"
+                : " (Unconfirmed)"}
+            icon={faMailBulk}
+            color={colors["--color-theme-2-D1"]}
+        />
+        <ProfileInfoItem
+            label="Phone"
+            value={profileData?.phone}
+            icon={faPhone}
+            color={colors["--color-theme-2-D1"]}
+        />
+    </ProfileSection>
 
-    <!-- Personal Details Section -->
-    <div class="profile-section">
-        <div class="profile-header">Personal Details</div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faGlobe}
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Language:</strong>
-            {profileData?.language || "N/A"}
-        </div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faBirthdayCake}
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Birthday:</strong>
-            {shortDate(profileData?.birthday)}
-        </div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faInfo}
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>About:</strong>
-            {profileData?.about || "N/A"}
-        </div>
-    </div>
+    <ProfileSection header="Personal Details">
+        <ProfileInfoItem
+            label="Language"
+            value={profileData?.language}
+            icon={faGlobe}
+            color={colors["--color-theme-2-D1"]}
+        />
+        <ProfileInfoItem
+            label="Birthday"
+            value={shortDate(profileData?.birthday)}
+            icon={faBirthdayCake}
+            color={colors["--color-theme-2-D1"]}
+        />
+        <ProfileInfoItem
+            label="About"
+            value={profileData?.about}
+            icon={faInfo}
+            color={colors["--color-theme-2-D1"]}
+        />
+    </ProfileSection>
 
-    <div class="profile-section">
-        <div class="profile-header">Membership Details</div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faCalendar}
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Member Since:</strong>
-            {shortDate($authUser?.created_at)}
-        </div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faPowerOff}
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Last Login:</strong>
-            {shortDate($authUser?.last_sign_in_at)}
-        </div>
-    </div>
+    <ProfileSection header="Membership Details">
+        <ProfileInfoItem
+            label="Member Since"
+            value={shortDate($authUser?.created_at)}
+            icon={faCalendar}
+            color={colors["--color-theme-2-D1"]}
+        />
+        <ProfileInfoItem
+            label="Last Login"
+            value={shortDate($authUser?.last_sign_in_at)}
+            icon={faPowerOff}
+            color={colors["--color-theme-2-D1"]}
+        />
+    </ProfileSection>
 
-    <div class="profile-section">
-        <div class="profile-header">Security</div>
-        <div class="profile-info">
-            <FontAwesomeIcon
-                icon={faLock}
-                style={`color: ${colors["--color-theme-2-D1"]}`}
-            />
-            <strong>Account Status:</strong>
-            {$authUser?.confirmed_at ? "Secure" : "Action Required"}
-        </div>
-    </div>
+    <ProfileSection header="Security">
+        <ProfileInfoItem
+            label="Account Status"
+            value={$authUser?.confirmed_at ? "Secure" : "Action Required"}
+            icon={faLock}
+            color={colors["--color-theme-2-D1"]}
+        />
+    </ProfileSection>
 </div>
 
 <style lang="scss">
