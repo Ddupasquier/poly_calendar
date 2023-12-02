@@ -16,12 +16,12 @@
     } from "@fortawesome/free-solid-svg-icons";
 
     // Services: Business logic, API calls, and other service-related interactions.
-    import { userProfileManagementService } from "$lib/services/profile/user-profile-management-service";
+    import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
 
     // Models: Type definitions and interfaces for structured data representation.
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { editableFields } from "./editable-profile-fields";
+    import { editableProfileFields } from "./editable-profile-fields";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import { authUser } from "$lib/stores/userStore";
@@ -46,7 +46,7 @@
 
     $: if (
         column !== null &&
-        editableFields.find((field) => field === column?.toLowerCase())
+        editableProfileFields.find((field) => field === column?.toLowerCase())
     ) {
         editable = true;
     }

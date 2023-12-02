@@ -1,4 +1,4 @@
-export const editableFields = [
+export const editableProfileFields = [
     "username",
     "email",
     "phone",

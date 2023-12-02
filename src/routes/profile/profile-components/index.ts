@@ -1,3 +1,3 @@
-export { default as Profile } from './Profile.svelte';
-export { default as Settings } from './Settings.svelte';
+export { default as Profile } from './profile-tab-components/Profile.svelte';
+export { default as Settings } from './settings-tab-components/Settings.svelte';
 

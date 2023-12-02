@@ -11,24 +11,29 @@
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import AuthLoginSignup from "$lib/components/auth/AuthLoginSignup.svelte";
     import { Button, Loader } from "mysvelte-ui";
+    import Profile from "./profile-components/profile-tab-components/Profile.svelte";
+    import Settings from "./profile-components/settings-tab-components/Settings.svelte";
 
     // Services: Business logic, API calls, and other service-related interactions.
     import { authenticationService } from "$lib/services/auth/authentication-service";
+    const { logout } = authenticationService;
+
+    import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
+    const { getUserProfile } = userProfileManagementService;
+
+    import { userSettingsManagementService } from "$lib/services/profile/settings-services/user-settings-management-service";
+    const { getUserSettings } = userSettingsManagementService;
 
     // Models: Type definitions and interfaces for structured data representation.
-    import type { ProfileUser } from "$lib/models/profile/profile-user";
+    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
     import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
     import { colors } from "$lib/palette";
     import { navigationButtons } from "./constants";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import {
-        faCheckCircle,
-        faCheckDouble,
-        faHeartCircleCheck,
-        faUserCheck,
-    } from "@fortawesome/free-solid-svg-icons";
+    import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
+    import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
 
@@ -39,10 +44,9 @@
     let isLoading: boolean = true;
     let authUserPresent: boolean;
     let authUser: AuthUser | null;
-    let profileData: ProfileUser | null;
+    let profileData: UserProfileModel | null;
+    let settingsData: UserSettingsModel | null;
     let componentProps: ComponentProps = {};
-
-    const { logout } = authenticationService;
 
     let selectedOption = "login";
 
@@ -60,33 +64,19 @@
         if (authUser) {
             selectedOption = "profile";
             profileData = await getUserProfile(authUser);
+            settingsData = await getUserSettings(authUser);
         }
 
         if (profileData) {
             componentProps.profileData = profileData;
         }
 
-        isLoading = false;
-    });
-
-    const getUserProfile = async (
-        authUserData: AuthUser,
-    ): Promise<ProfileUser | null> => {
-        if (!authUserData) return null;
-
-        const { data, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("user_uuid", authUserData.id)
-            .single();
-
-        if (error) {
-            console.error("Supabase error:", error);
-            return null;
+        if (settingsData) {
+            componentProps.settingsData = settingsData;
         }
 
-        return data;
-    };
+        isLoading = false;
+    });
 </script>
 
 {#if !authUserPresent}
@@ -123,21 +113,21 @@
             <div class="content">
                 {#each navigationButtons as button}
                     {#if selectedOption === button.label.toLowerCase()}
-                        <svelte:component
-                            this={button.component}
-                            {...button.requiresProfileData
-                                ? componentProps
-                                : {}}
-                        />
+                        {#if button.label.toLowerCase() === "profile"}
+                            <Profile profileData={componentProps.profileData} />
+                        {:else if button.label.toLowerCase() === "settings"}
+                            <Settings
+                                settingsData={componentProps.settingsData}
+                            />
+                        {/if}
                     {/if}
                 {/each}
             </div>
         </div>
-        <div class="verified">
+        <div class="verified" title="Verified">
             <FontAwesomeIcon
                 icon={faHeartCircleCheck}
                 style="color: var(--color-theme-1-D1);"
-                title="Verified"
             />
         </div>
     </div>
@@ -166,6 +156,11 @@
         border: 3px solid var(--color-theme-1);
         border-radius: 50rem;
         padding: 8px;
+        transition: transform 0.2s ease-in-out;
+
+        &:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
     }
 
     @media (max-width: 768px) {

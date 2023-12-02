@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { ProfileUser } from "$lib/models/profile/profile-user";
+    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
 
     import { authUser } from "$lib/stores/userStore";
     import { dateTimeUtils } from "$lib/utils/date-time-utils";
     const { formatDate } = dateTimeUtils;
     import { colors } from "$lib/palette";
-    import ProfileSection from "./profile-tab-components/ProfileSection.svelte";
+    import ProfileSection from "./ProfileSection.svelte";
     import {
         faCalendar,
         faLock,
@@ -17,9 +17,9 @@
         faBirthdayCake,
         faInfo,
     } from "@fortawesome/free-solid-svg-icons";
-    import ProfileInfoItem from "./profile-tab-components/ProfileInfoItem.svelte";
+    import ProfileInfoItem from "./ProfileInfoItem.svelte";
 
-    export let profileData: ProfileUser | undefined = undefined;
+    export let profileData: UserProfileModel | undefined = undefined;
 </script>
 
 <div class="profile-container">

@@ -1,5 +1,9 @@
-import type { ProfileUser } from '$lib/models/profile/profile-user';
+import type { UserProfileModel } from '$lib/models/profile/user-profile-model';
+import type { UserSettingsModel } from '$lib/models/profile/user-settings-model';
 
-export interface ComponentProps {
-    profileData?: ProfileUser;
+interface ComponentProps {
+    profileData?: UserProfileModel;
+    settingsData?: UserSettingsModel;
 };
+
+export type { ComponentProps };
