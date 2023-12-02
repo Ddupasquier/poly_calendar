@@ -1,13 +1,10 @@
 <script lang="ts">
     export let token: string | null = null;
-    
-    import { authenticationConfirmationService } from "$lib/services/authentication-confirmation-service";
+
     import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
 
-    import { Card, Button } from "mysvelte-ui";
+    import { Card } from "mysvelte-ui";
     import { colors } from "$lib/palette";
-
-    const { confirmSignUp } = authenticationConfirmationService;
 </script>
 
 <div class="container">
@@ -15,20 +12,11 @@
         <Card background={colors["--color-bg-2"]}>
             <Card.Head style="text-align: center">Confirm Your Signup</Card.Head
             >
-            <Card.Content>
+            <Card.Content style="margin-bottom: 1rem">
                 <div class="confirmation-instructions">
-                    Please click the button below to confirm your email and
-                    complete your signup process.
+                    Your signup has been confirmed. You can now login!
                 </div>
             </Card.Content>
-            <Card.Foot>
-                <Button
-                    on:click={() => confirmSignUp(token ?? "")}
-                    background={colors["--color-theme-2"]}
-                >
-                    Confirm Signup
-                </Button>
-            </Card.Foot>
             {#if !!$helperText.text}
                 <div class="helper-text">
                     {$helperText.text}

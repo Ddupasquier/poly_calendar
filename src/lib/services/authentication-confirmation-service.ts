@@ -1,7 +1,9 @@
 import { supabase } from "../supabase";
 import { saveAuthUserAndSession } from "$lib/stores/userStore";
-import { goto } from "$app/navigation";
-import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
+import { setHelperText } from "$lib/stores/reactiveTextStore";
+import { userProfileManagementService } from "./user-profile-management-service";
+
+const { upsertUserProfile } = userProfileManagementService;
 
 const verifySignUpToken = async (token: string) => {
     if (!token) {
@@ -26,26 +28,22 @@ const processSignUpConfirmation = (data: any) => {
         if (data.user && data.session) {
             saveAuthUserAndSession(data.user, data.session);
         }
-
-        goto("/profile");
     }
 };
 
-const handleSignUpError = (error: Error) => {
-    helperText.set({ error: true, text: error.message });
-};
-
-const confirmSignUp = async (token: string | undefined) => {
+const confirmSignUp = async (token: string) => {
     if (!token) {
-        handleSignUpError(new Error("No token provided."));
-        return;
+        setHelperText(true, "No token provided for confirmation.");
     }
 
     try {
         const data = await verifySignUpToken(token);
         processSignUpConfirmation(data);
+        upsertUserProfile(data.user)
+
     } catch (err) {
-        handleSignUpError(err as Error);
+        setHelperText(true, "Error confirming sign up. Please try again.");
+        console.error("Error confirming sign up:", err);
     }
 };
 

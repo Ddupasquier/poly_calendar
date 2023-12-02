@@ -1,3 +1,5 @@
+import { setHelperText } from "$lib/stores/reactiveTextStore";
+
 const shortDate = (date: string | undefined) => {
     if (!date) return "";
 
@@ -34,7 +36,6 @@ const adjustLightness = (hsl: HSL, factor: number): HSL => {
     };
 };
 
-//#region conversions
 const lighten = (hslString: string, factor: number): string => {
     const hsl = parseHSL(hslString);
     const adjusted = adjustLightness(hsl, factor);
@@ -46,6 +47,26 @@ const darken = (hslString: string, factor: number): string => {
     const adjusted = adjustLightness(hsl, -factor);
     return `hsl(${adjusted.h}, ${adjusted.s}%, ${adjusted.l}%)`;
 };
-//#endregion
 
-export { lighten, darken, shortDate };
+const startCountdownWithMessage = (seconds: number, messageTemplate: string): void => {
+    let countdown: NodeJS.Timeout | null = null;
+    let remainingSeconds = seconds;
+
+    countdown = setInterval(() => {
+        if (remainingSeconds > 0) {
+            const message = messageTemplate.replace('{timer}', remainingSeconds.toString());
+            setHelperText(false, message);
+            remainingSeconds--;
+        } else {
+            stopCountdown(countdown);
+        }
+    }, 1000);
+};
+
+const stopCountdown = (countdown: string | number | NodeJS.Timeout | null | undefined): void => {
+    clearInterval(countdown as NodeJS.Timeout);
+    countdown = null;
+    setHelperText(false, "")
+};
+
+export { lighten, darken, shortDate, startCountdownWithMessage };

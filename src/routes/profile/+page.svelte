@@ -1,47 +1,63 @@
 <script lang="ts">
-    import { supabase } from "$lib/supabase";
-
     import { onMount } from "svelte";
-
-    import { authUser, authSession } from "$lib/stores/userStore";
-
-    import Auth from "$lib/components/auth/AuthLoginSignup.svelte";
+    import { supabase } from "$lib/supabase"; // Ensure you have the Supabase client imported
+    import AuthLoginSignup from "$lib/components/auth/AuthLoginSignup.svelte";
     import { Button } from "mysvelte-ui";
     import { colors } from "$lib/palette";
     import { navigationButtons } from "./constants";
+    import type { ProfileUser } from "$lib/models/profile/profile-user";
+    import { authUser as storedAuthUser } from "$lib/stores/userStore";
+    import { authenticationService } from "$lib/services/authentication-service";
+    import type { AuthUser } from "@supabase/supabase-js";
+    import { get } from "svelte/store";
 
-    onMount(() => {
-        if (!authUser) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const login = urlParams.get("login");
+    let authUserPresent: boolean;
+    let authUser: AuthUser | null;
+    let profileData: ProfileUser | null;
 
-            if (login) {
-                selectedOption = "login";
-            }
-        }
-    });
+    const { logout } = authenticationService;
 
-    let selectedOption = "profile";
-
-    const logout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.error("Error logging out:", error);
-        } else {
-            authUser.set(null);
-            authSession.set(null);
-        }
-    };
-
+    let selectedOption = "login";
     const buttonStyles = `
         background: ${colors["--color-theme-1"]};
         color: ${colors["--color-text-white"]};
         width: 100%;
     `;
+
+    onMount(async () => {
+        const $authUser = get(storedAuthUser);
+        authUser = $authUser;
+        authUserPresent = !!$authUser;
+
+        if (authUser) {
+            selectedOption = "profile";
+            profileData = await getUserProfile(authUser);
+            console.log(profileData);
+        }
+    });
+
+    const getUserProfile = async (
+        authUserData: AuthUser,
+    ): Promise<ProfileUser | null> => {
+        if (!authUserData) return null;
+
+        const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .eq("user_uuid", authUserData.id)
+            .single();
+
+        if (error) {
+            console.error("Supabase error:", error);
+            return null;
+        }
+
+        return data;
+    };
 </script>
 
-{#if !$authUser}
-    <Auth />
+{#if !authUserPresent}
+    <AuthLoginSignup />
 {:else}
     <div class="container">
         <div class="profile-table">

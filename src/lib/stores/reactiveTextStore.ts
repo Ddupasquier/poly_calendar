@@ -12,3 +12,11 @@ let helperText: HelperText = {
 };
 
 export const helperTextStore: Writable<HelperText> = writable(helperText);
+
+export const setHelperText = (error: boolean, text: string | null): void => {
+    helperTextStore.set({ error, text });
+
+    setTimeout(() => {
+        helperTextStore.set({ error: false, text: '' });
+    }, 5000);
+};
