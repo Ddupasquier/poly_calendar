@@ -1,20 +1,40 @@
-<script>
+<script lang="ts">
+    import type { ProfileUser } from "$lib/models/profile/profile-user";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import {
         faCalendar,
         faLock,
         faMailBulk,
         faPowerOff,
+        faPhone,
+        faUser,
+        faImage,
+        faGlobe,
+        faBirthdayCake,
+        faInfo,
+        faBell,
+        faMusic,
     } from "@fortawesome/free-solid-svg-icons";
 
     import { authUser } from "$lib/stores/userStore";
     import { shortDate } from "$lib/utils/utils";
     import { colors } from "$lib/palette";
+
+    export let profileData: ProfileUser | undefined = undefined;
 </script>
 
 <div class="profile-container">
     <div class="profile-section">
         <div class="profile-header">Account Information</div>
+        <div class="profile-info">
+            <FontAwesomeIcon
+                icon={faUser}
+                class="icon"
+                style={`color: ${colors["--color-theme-2-D1"]}`}
+            />
+            <strong>Username:</strong>
+            {profileData?.username || "N/A"}
+        </div>
         <div class="profile-info">
             <FontAwesomeIcon
                 icon={faMailBulk}
@@ -28,6 +48,44 @@
                     ? " (Confirmed)"
                     : " (Unconfirmed)"}
             </span>
+        </div>
+        <div class="profile-info">
+            <FontAwesomeIcon
+                icon={faPhone}
+                class="icon"
+                style={`color: ${colors["--color-theme-2-D1"]}`}
+            />
+            <strong>Phone:</strong>
+            {profileData?.phone || "N/A"}
+        </div>
+    </div>
+
+    <!-- Personal Details Section -->
+    <div class="profile-section">
+        <div class="profile-header">Personal Details</div>
+        <div class="profile-info">
+            <FontAwesomeIcon
+                icon={faGlobe}
+                style={`color: ${colors["--color-theme-2-D1"]}`}
+            />
+            <strong>Language:</strong>
+            {profileData?.language || "N/A"}
+        </div>
+        <div class="profile-info">
+            <FontAwesomeIcon
+                icon={faBirthdayCake}
+                style={`color: ${colors["--color-theme-2-D1"]}`}
+            />
+            <strong>Birthday:</strong>
+            {shortDate(profileData?.birthday)}
+        </div>
+        <div class="profile-info">
+            <FontAwesomeIcon
+                icon={faInfo}
+                style={`color: ${colors["--color-theme-2-D1"]}`}
+            />
+            <strong>About:</strong>
+            {profileData?.about || "N/A"}
         </div>
     </div>
 

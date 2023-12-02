@@ -1,6 +1,6 @@
 import { setHelperText } from "$lib/stores/reactiveTextStore";
 
-const shortDate = (date: string | undefined) => {
+const shortDate = (date: string | Date | undefined) => {
     if (!date) return "";
 
     const d = new Date(date);
