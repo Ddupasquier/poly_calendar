@@ -13,30 +13,50 @@
     $: console.log("profileData", profileData);
     $: console.log("authUser", $authUser);
 
-    const getProfileModelValue = (item: {
-        column: keyof UserProfileModel;
-    }): string | number | boolean | undefined => {
-        if (!profileData) return false;
-        return profileData[item.column];
-    };
-
-    const getAuthUserValue = (item: {
-        column: keyof AuthUser;
-    }): string | number | boolean | undefined => {
-        if (!$authUser) return false;
-        return $authUser[item.column];
-    };
-
     const getValue = (item: {
         column: keyof UserProfileModel | keyof AuthUser;
+        type?: string;
     }): string | number | boolean | undefined => {
-        if (profileData) {
-            return getProfileModelValue(item);
-        } else if ($authUser) {
-            return getAuthUserValue(item);
-        } else {
-            return undefined;
+        // Check if the property is part of UserProfileModel and profileData is available
+        if (
+            profileData &&
+            item.column in profileData &&
+            typeof item.column === "string"
+        ) {
+            const profileValue =
+                profileData[item.column as keyof UserProfileModel];
+            if (
+                typeof profileValue === "string" ||
+                typeof profileValue === "number" ||
+                typeof profileValue === "boolean"
+            ) {
+                return profileValue;
+            }
+            if (profileValue instanceof Date) {
+                return formatDate(profileValue);
+            }
         }
+
+        // Check if the property is part of AuthUser and $authUser is available
+        if (
+            $authUser &&
+            item.column in $authUser &&
+            typeof item.column === "string"
+        ) {
+            const authUserValue = $authUser[item.column as keyof AuthUser];
+            if (
+                typeof authUserValue === "string" ||
+                typeof authUserValue === "number" ||
+                typeof authUserValue === "boolean"
+            ) {
+                return authUserValue;
+            }
+            if (authUserValue instanceof Date) {
+                return formatDate(authUserValue);
+            }
+        }
+
+        return undefined;
     };
 
     const getAdditional = (item: {
@@ -56,8 +76,6 @@
     };
 </script>
 
-
-
 <div class="profile-container">
     {#if profileData}
         {#each profileStructure as section}
@@ -66,7 +84,7 @@
                     <ProfileInfoItem
                         label={item.label}
                         column={item.column}
-                        value={getValue(item)}
+                        value={getValue({ ...item, type: item.type })}
                         additional={getAdditional(item)}
                         icon={item.icon}
                         color={item.color}

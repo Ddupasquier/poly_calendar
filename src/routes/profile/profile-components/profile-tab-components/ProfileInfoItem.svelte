@@ -1,4 +1,4 @@
-<!-- <script lang="ts">
+<script lang="ts">
     // Svelte-specific imports: Framework imports for lifecycle and reactivity.
 
     // Supabase imports: Authentication and database connections for user management and data retrieval.
@@ -32,18 +32,13 @@
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
-    import type { InfoSection } from "./profile-sections-and-info";
-    import { getConfirmedStatus } from "$lib/utils/utils";
-
     export let icon: IconDefinition | undefined;
     export let label: string;
     export let column: string | null = null;
-    export let value: string | Date | undefined;
+    export let value: string | number | boolean | undefined;
     export let additional: string | undefined = "";
     export let color: string;
-    export let type: "text" | "date" | "tel" = "text";
-    export let info: InfoSection;
-    export let userData: UserOrAuthUser;
+    export let type: "text" | "date" | "tel" | undefined = "text";
 
     const { updateSingleUserProfileField } = userProfileManagementService;
 
@@ -94,18 +89,13 @@
             submitEdit();
         }
     };
-
-    $: additionalText =
-        info.column === "email" && "email_confirmed_at" in userData
-            ? getConfirmedStatus(userData as AuthUser)
-            : info.additional ?? "";
 </script>
 
 <div class="profile-info">
-    {#if info.icon}
-        <FontAwesomeIcon icon={info.icon} style={`color: ${info.color}`} />
-    {/if}
-    <span>{info.label}{additionalText}</span>
+    <div class="icon-container">
+        <FontAwesomeIcon {icon} style={`color: ${color}`} />
+    </div>
+    <strong>{label}:</strong>
 
     <form on:submit={submitEdit}>
         {#if type === "text"}
@@ -236,4 +226,4 @@
             color: var(--color-theme-2);
         }
     }
-</style> -->
+</style>

@@ -18,7 +18,7 @@ interface ProfileInfoItem {
     value?: string;
     icon: IconDefinition;
     color: string;
-    type?: string;
+    type?: "text" | "tel" | "date";
     additional?: string;
 }
 
