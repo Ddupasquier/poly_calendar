@@ -5,163 +5,73 @@
     const { formatDate } = dateTimeUtils;
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
+    import type { AuthUser } from "@supabase/supabase-js";
+    import { authUser } from "$lib/stores/userStore";
 
     export let profileData: UserProfileModel | undefined = undefined;
+
+    $: console.log("profileData", profileData);
+    $: console.log("authUser", $authUser);
+
+    const getProfileModelValue = (item: {
+        column: keyof UserProfileModel;
+    }): string | number | boolean | undefined => {
+        if (!profileData) return false;
+        return profileData[item.column];
+    };
+
+    const getAuthUserValue = (item: {
+        column: keyof AuthUser;
+    }): string | number | boolean | undefined => {
+        if (!$authUser) return false;
+        return $authUser[item.column];
+    };
+
+    const getValue = (item: {
+        column: keyof UserProfileModel | keyof AuthUser;
+    }): string | number | boolean | undefined => {
+        if (profileData) {
+            return getProfileModelValue(item);
+        } else if ($authUser) {
+            return getAuthUserValue(item);
+        } else {
+            return undefined;
+        }
+    };
+
+    const getAdditional = (item: {
+        column: keyof UserProfileModel | keyof AuthUser;
+    }): string | undefined => {
+        if (item.column === "confirmed_at") {
+            return getConfirmedStatus(getValue(item) as boolean);
+        } else if (item.column === "created_at") {
+            return formatDate(getValue(item) as string);
+        } else {
+            return undefined;
+        }
+    };
+
+    const getConfirmedStatus = (confirmed: boolean): string => {
+        return confirmed ? "Confirmed" : "Unconfirmed";
+    };
 </script>
 
+
+
 <div class="profile-container">
-    <!-- <ProfileSection header="Account Information">
-        <ProfileInfoItem
-            label="Username"
-            column="username"
-            value={profileData?.username}
-            icon={faUser}
-            color={colors["--color-theme-2-D1"]}
-            type="text"
-        />
-        <ProfileInfoItem
-            label="First"
-            column="first_name"
-            value={profileData?.first_name}
-            icon={faUser}
-            color={colors["--color-theme-2-D1"]}
-            type="text"
-        />
-        <ProfileInfoItem
-            label="Last"
-            column="last_name"
-            value={profileData?.last_name}
-            icon={faUser}
-            color={colors["--color-theme-2-D1"]}
-            type="text"
-        />
-        <ProfileInfoItem
-            label="Email"
-            column="email"
-            value={profileData?.email}
-            additional={$authUser?.email_confirmed_at
-                ? " (Confirmed)"
-                : " (Unconfirmed)"}
-            icon={faMailBulk}
-            color={colors["--color-theme-2-D1"]}
-            type="text"
-        />
-        <ProfileInfoItem
-            label="Phone"
-            column="phone"
-            value={profileData?.phone}
-            icon={faPhone}
-            color={colors["--color-theme-2-D1"]}
-            type="tel"
-        />
-    </ProfileSection>
-
-    <ProfileSection header="Personal Details">
-        <ProfileInfoItem
-            label="Language"
-            column="language"
-            value={profileData?.language}
-            icon={faGlobe}
-            color={colors["--color-theme-2-D1"]}
-            type="text"
-        />
-        <ProfileInfoItem
-            label="Birthday"
-            column="birthday"
-            value={formatDate(profileData?.birthday)}
-            icon={faBirthdayCake}
-            color={colors["--color-theme-2-D1"]}
-            type="date"
-        />
-        <ProfileInfoItem
-            label="About"
-            column="about"
-            value={profileData?.about}
-            icon={faInfo}
-            color={colors["--color-theme-2-D1"]}
-            type="text"
-        />
-    </ProfileSection>
-
-    <ProfileSection header="Membership Details">
-        <ProfileInfoItem
-            label="Member Since"
-            value={formatDate($authUser?.created_at)}
-            icon={faCalendar}
-            color={colors["--color-theme-2-D1"]}
-        />
-        <ProfileInfoItem
-            label="Last Login"
-            value={formatDate($authUser?.last_sign_in_at)}
-            icon={faPowerOff}
-            color={colors["--color-theme-2-D1"]}
-        />
-    </ProfileSection>
-
-    <ProfileSection header="Security">
-        <ProfileInfoItem
-            label="Account Status"
-            value={$authUser?.confirmed_at ? "Secure" : "Action Required"}
-            icon={faLock}
-            color={colors["--color-theme-2-D1"]}
-        />
-    </ProfileSection> -->
-
     {#if profileData}
         {#each profileStructure as section}
             <ProfileSection header={section.sectionTitle}>
                 {#each section.infoSections as item}
-                    {#if item.type === "date"}
-                        <ProfileInfoItem
-                            label={item.label}
-                            column={item.column}
-                            value={formatDate(profileData[item.column])}
-                            additional={item?.additional}
-                            icon={item.icon}
-                            color={item.color}
-                            type={item.type}
-                        />
-                    {:else if item.type === "tel"}
-                        <ProfileInfoItem
-                            label={item.label}
-                            column={item.column}
-                            value={profileData[item.column]}
-                            additional={item?.additional}
-                            icon={item.icon}
-                            color={item.color}
-                            type={item.type}
-                        />
-                    {:else if item.type === "text"}
-                        <ProfileInfoItem
-                            label={item.label}
-                            column={item.column}
-                            value={profileData[item.column]}
-                            additional={item?.additional}
-                            icon={item.icon}
-                            color={item.color}
-                            type={item.type}
-                        />
-                    {:else if item.type === "email"}
-                        <ProfileInfoItem
-                            label={item.label}
-                            column={item.column}
-                            value={profileData[item.column]}
-                            additional={item?.additional}
-                            icon={item.icon}
-                            color={item.color}
-                            type={item.type}
-                        />
-                    {:else}
-                        <ProfileInfoItem
-                            label={item.label}
-                            column={item.column}
-                            value={profileData[item.column]}
-                            additional={item?.additional}
-                            icon={item.icon}
-                            color={item.color}
-                            type={item.type}
-                        />
-                    {/if}
+                    <ProfileInfoItem
+                        label={item.label}
+                        column={item.column}
+                        value={getValue(item)}
+                        additional={getAdditional(item)}
+                        icon={item.icon}
+                        color={item.color}
+                        type={item.type}
+                    />
                 {/each}
             </ProfileSection>
         {/each}

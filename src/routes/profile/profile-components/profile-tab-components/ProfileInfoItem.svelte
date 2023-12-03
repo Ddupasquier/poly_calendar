@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     // Svelte-specific imports: Framework imports for lifecycle and reactivity.
 
     // Supabase imports: Authentication and database connections for user management and data retrieval.
@@ -236,4 +236,4 @@
             color: var(--color-theme-2);
         }
     }
-</style>
+</style> -->
