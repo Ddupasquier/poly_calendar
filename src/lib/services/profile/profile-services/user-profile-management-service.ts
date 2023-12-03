@@ -29,9 +29,7 @@ const upsertUserProfile = async (authUserData: AuthUser | null) => {
     }
 }
 
-const getUserProfile = async (
-    authUserData: AuthUser,
-): Promise<UserProfileModel | null> => {
+const getUserProfile = async (authUserData: AuthUser) => {
     if (!authUserData) return null;
 
     const { data, error } = await supabase
@@ -43,6 +41,10 @@ const getUserProfile = async (
     if (error) {
         console.error("Supabase error:", error);
         return null;
+    }
+
+    if (data && data.created_at) {
+        data.created_at = checkDate(data.created_at as string) as string;
     }
 
     return data;

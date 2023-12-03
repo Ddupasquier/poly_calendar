@@ -2,7 +2,7 @@
     import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
     import { profileStructure } from "./profile-sections-and-info";
     import { dateTimeUtils } from "$lib/utils/date-time-utils";
-    const { formatDate } = dateTimeUtils;
+    const { formatDate, checkDate } = dateTimeUtils;
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
     import type { AuthUser } from "@supabase/supabase-js";
@@ -17,42 +17,34 @@
         column: keyof UserProfileModel | keyof AuthUser;
         type?: string;
     }): string | number | boolean | undefined => {
-        // Check if the property is part of UserProfileModel and profileData is available
-        if (
-            profileData &&
-            item.column in profileData &&
-            typeof item.column === "string"
-        ) {
+        if (profileData && item.column in profileData) {
             const profileValue =
                 profileData[item.column as keyof UserProfileModel];
-            if (
+            if (item.type === "date") {
+                const dateString = profileValue as string;
+                return checkDate(dateString) ? formatDate(dateString) : "";
+            } else if (
                 typeof profileValue === "string" ||
                 typeof profileValue === "number" ||
                 typeof profileValue === "boolean"
             ) {
                 return profileValue;
             }
-            if (profileValue instanceof Date) {
-                return formatDate(profileValue);
-            }
         }
 
-        // Check if the property is part of AuthUser and $authUser is available
-        if (
-            $authUser &&
-            item.column in $authUser &&
-            typeof item.column === "string"
-        ) {
+        if ($authUser && item.column in $authUser) {
             const authUserValue = $authUser[item.column as keyof AuthUser];
-            if (
+            if (item.type === "date") {
+                // Use checkDate to validate and return the original or formatted date.
+                const dateString = authUserValue as string;
+                console.log(item.column, "dateString", dateString);
+                return checkDate(dateString) ? formatDate(dateString) : "";
+            } else if (
                 typeof authUserValue === "string" ||
                 typeof authUserValue === "number" ||
                 typeof authUserValue === "boolean"
             ) {
                 return authUserValue;
-            }
-            if (authUserValue instanceof Date) {
-                return formatDate(authUserValue);
             }
         }
 
@@ -64,15 +56,13 @@
     }): string | undefined => {
         if (item.column === "confirmed_at") {
             return getConfirmedStatus(getValue(item) as boolean);
-        } else if (item.column === "created_at") {
-            return formatDate(getValue(item) as string);
         } else {
             return undefined;
         }
     };
 
     const getConfirmedStatus = (confirmed: boolean): string => {
-        return confirmed ? "Confirmed" : "Unconfirmed";
+        return confirmed ? "(Confirmed)" : "(Unconfirmed)";
     };
 </script>
 
@@ -84,7 +74,7 @@
                     <ProfileInfoItem
                         label={item.label}
                         column={item.column}
-                        value={getValue({ ...item, type: item.type })}
+                        value={getValue(item)}
                         additional={getAdditional(item)}
                         icon={item.icon}
                         color={item.color}
