@@ -1,15 +1,32 @@
 <script lang="ts">
-    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
-    import { profileStructure } from "./profile-sections-and-info";
-    import { dateTimeUtils } from "$lib/utils/date-time-utils";
-    const { formatDate, checkDate } = dateTimeUtils;
+    // Svelte-specific imports: Framework imports for lifecycle and reactivity.
+
+    // Supabase imports: Authentication and database connections for user management and data retrieval.
+    import type { AuthUser } from "@supabase/supabase-js";
+
+    // UI components: Custom Svelte components and UI elements from design system libraries.
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
-    import type { AuthUser } from "@supabase/supabase-js";
+
+    // Services: Business logic, API calls, and other service-related interactions.
+
+    // Models: Type definitions and interfaces for structured data representation.
+    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
+    import { profileStructure } from "./profile-sections-and-info";
+
+    // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
+
+    // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import {
         authUser,
         checkLocalStorageForVerificationStatus,
     } from "$lib/stores/userStore";
+
+    // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
+    import { dateTimeUtils } from "$lib/utils/date-time-utils";
+    const { formatDate, checkDate } = dateTimeUtils;
+
+    // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
     export let profileData: UserProfileModel | undefined = undefined;
 
@@ -34,7 +51,6 @@
         }
 
         if ($authUser && item.column in $authUser) {
-
             const authUserValue = $authUser[item.column as keyof AuthUser];
 
             if (item.type === "date") {
@@ -44,7 +60,7 @@
                 return `${
                     checkLocalStorageForVerificationStatus()
                         ? "Secure"
-                        : "Not Yet Secure"
+                        : "Not Secure"
                 }`;
             } else if (
                 typeof authUserValue === "string" ||
