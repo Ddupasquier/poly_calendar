@@ -58,7 +58,6 @@ const updateSingleUserSettingsField = async (authUserData: AuthUser | null, form
         return null;
     }
 
-    console.log("data", data)
     return data;
 };
 

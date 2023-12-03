@@ -6,16 +6,17 @@
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
     import type { AuthUser } from "@supabase/supabase-js";
-    import { authUser } from "$lib/stores/userStore";
+    import {
+        authUser,
+        checkLocalStorageForVerificationStatus,
+    } from "$lib/stores/userStore";
 
     export let profileData: UserProfileModel | undefined = undefined;
-
-    $: console.log("profileData", profileData);
-    $: console.log("authUser", $authUser);
 
     const getValue = (item: {
         column: keyof UserProfileModel | keyof AuthUser;
         type?: string;
+        label?: string;
     }): string | number | boolean | undefined => {
         if (profileData && item.column in profileData) {
             const profileValue =
@@ -34,15 +35,17 @@
 
         if ($authUser && item.column in $authUser) {
 
-            console.log("item.column", item.column, typeof $authUser[item.column as keyof AuthUser])
-            
             const authUserValue = $authUser[item.column as keyof AuthUser];
 
             if (item.type === "date") {
-                // Use checkDate to validate and return the original or formatted date.
                 const dateString = authUserValue as string;
-                console.log(item.column, "dateString", dateString);
                 return checkDate(dateString) ? formatDate(dateString) : "";
+            } else if (item.label === "Account Status") {
+                return `${
+                    checkLocalStorageForVerificationStatus()
+                        ? "Secure"
+                        : "Not Yet Secure"
+                }`;
             } else if (
                 typeof authUserValue === "string" ||
                 typeof authUserValue === "number" ||
@@ -58,15 +61,15 @@
     const getAdditional = (item: {
         column: keyof UserProfileModel | keyof AuthUser;
     }): string | undefined => {
-        if (item.column === "confirmed_at") {
-            return getConfirmedStatus(getValue(item) as boolean);
+        if (item.column === "email") {
+            return `${
+                checkLocalStorageForVerificationStatus()
+                    ? "(Verified)"
+                    : "(Unverified)"
+            }`;
         } else {
             return undefined;
         }
-    };
-
-    const getConfirmedStatus = (confirmed: boolean): string => {
-        return confirmed ? "(Confirmed)" : "(Unconfirmed)";
     };
 </script>
 

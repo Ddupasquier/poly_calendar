@@ -63,3 +63,17 @@ authSession.subscribe(value => {
         console.log("authSession store changed:", value);
     }
 });
+
+export const checkLocalStorageForVerificationStatus = () => {
+    if (isBrowser) {
+        const storedUser = localStorage.getItem('authUser');
+        if (storedUser) {
+            const user = JSON.parse(storedUser);
+            if (user.email_confirmed_at) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+};

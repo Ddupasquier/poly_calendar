@@ -16,6 +16,7 @@
 
     // Services: Business logic, API calls, and other service-related interactions.
     import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
+    const { updateSingleUserProfileField } = userProfileManagementService;
 
     // Models: Type definitions and interfaces for structured data representation.
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -23,7 +24,6 @@
     import type { AuthUser } from "@supabase/supabase-js";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { editableProfileFields } from "./editable-profile-fields";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import { authUser } from "$lib/stores/userStore";
@@ -40,18 +40,9 @@
     export let color: string;
     export let type: "text" | "date" | "tel" | undefined = "text";
 
-    const { updateSingleUserProfileField } = userProfileManagementService;
-
     let editable: boolean = false;
     let isEditing = false;
     let editedValue: string | Date | undefined = value;
-
-    $: if (
-        column !== null &&
-        editableProfileFields.find((field) => field === column?.toLowerCase())
-    ) {
-        editable = true;
-    }
 
     $: {
         if (value) {

@@ -5,11 +5,13 @@
 
     // Supabase imports: Authentication and database connections for user management and data retrieval.
     import type { AuthUser } from "@supabase/supabase-js";
-    import { authUser as storedAuthUser } from "$lib/stores/userStore";
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
-    import AuthLoginSignup from "$lib/components/auth/AuthLoginSignup.svelte";
+    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+    import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button, Loader } from "mysvelte-ui";
+
+    import AuthLoginSignup from "$lib/components/auth/AuthLoginSignup.svelte";
     import Profile from "./profile-components/profile-tab-components/Profile.svelte";
     import Settings from "./profile-components/settings-tab-components/Settings.svelte";
 
@@ -25,30 +27,32 @@
 
     // Models: Type definitions and interfaces for structured data representation.
     import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
+    import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
     import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
     import { colors } from "$lib/palette";
     import { navigationButtons } from "./constants";
-    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
-    import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
+    import {
+        checkLocalStorageForVerificationStatus,
+        authUser as storedAuthUser,
+    } from "$lib/stores/userStore";
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
+    import { inRotateScale } from "$lib/transitions/in-rotate-scale";
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
     let isLoading: boolean = true;
-    let authUser: AuthUser | null;
     let profileData: UserProfileModel | null;
     let settingsData: UserSettingsModel | null;
     let componentProps: ComponentProps = {};
 
     let selectedOption = "login";
 
-    const buttonStyles = `
+    const buttonStyles: string = `
     background: ${colors["--color-theme-1"]};
     color: ${colors["--color-text-white"]};
     width: 100%;
@@ -57,14 +61,10 @@
     $: authUserPresent = !!$storedAuthUser;
 
     onMount(async () => {
-        const $authUser = get(storedAuthUser);
-        authUser = $authUser;
-        authUserPresent = !!$authUser;
-
-        if (authUser) {
+        if ($storedAuthUser) {
             selectedOption = "profile";
-            profileData = await getUserProfile(authUser);
-            settingsData = await getUserSettings(authUser);
+            profileData = await getUserProfile($storedAuthUser);
+            settingsData = await getUserSettings($storedAuthUser);
         }
 
         if (profileData) {
@@ -124,12 +124,18 @@
                 {/each}
             </div>
         </div>
-        <div class="verified" title="Verified">
-            <FontAwesomeIcon
-                icon={faHeartCircleCheck}
-                style="color: var(--color-theme-1-D1);"
-            />
-        </div>
+        {#if checkLocalStorageForVerificationStatus() && isLoading === false}
+            <div
+                class="verified"
+                title="Verified"
+                in:inRotateScale={{ duration: 500 }}
+            >
+                <FontAwesomeIcon
+                    icon={faHeartCircleCheck}
+                    style="color: var(--color-theme-1-D1);"
+                />
+            </div>
+        {/if}
     </div>
 {/if}
 
@@ -156,11 +162,11 @@
         border: 3px solid var(--color-theme-1);
         border-radius: 50rem;
         padding: 8px;
-        transition: transform 0.2s ease-in-out;
+        // transition: transform 0.2s ease-in-out;
 
-        &:hover {
-            transform: scale(1.05) rotate(5deg);
-        }
+        // &:hover {
+        //     transform: scale(1.05) rotate(5deg);
+        // }
     }
 
     @media (max-width: 768px) {

@@ -56,7 +56,6 @@ const updateSingleUserProfileField = async (authUserData: AuthUser | null, formO
     }
 
     if (formObject.field === "birthday") {
-        console.log("formObject.value:", formObject.value);
         formObject.value = checkDate(formObject.value as string) as string;
     }
 
