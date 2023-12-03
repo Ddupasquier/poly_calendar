@@ -20,6 +20,7 @@ interface ProfileInfoItem {
     color: string;
     type?: "text" | "tel" | "date";
     additional?: string;
+    editable?: boolean;
 }
 
 interface ProfileSection {
@@ -38,35 +39,40 @@ const profileStructure: ProfileStructure = [
                 column: "username",
                 icon: faUser,
                 color: colors["--color-theme-2-D1"],
-                type: "text"
+                type: "text",
+                editable: true
             },
             {
                 label: "First",
                 column: "first_name",
                 icon: faUser,
                 color: colors["--color-theme-2-D1"],
-                type: "text"
+                type: "text",
+                editable: true
             },
             {
                 label: "Last",
                 column: "last_name",
                 icon: faUser,
                 color: colors["--color-theme-2-D1"],
-                type: "text"
+                type: "text",
+                editable: true
             },
             {
                 label: "Email",
                 column: "email",
                 icon: faMailBulk,
                 color: colors["--color-theme-2-D1"],
-                type: "text"
+                type: "text",
+                editable: true
             },
             {
                 label: "Phone",
                 column: "phone",
                 icon: faPhone,
                 color: colors["--color-theme-2-D1"],
-                type: "tel"
+                type: "tel",
+                editable: true
             }
         ]
     },
@@ -78,21 +84,24 @@ const profileStructure: ProfileStructure = [
                 column: "language",
                 icon: faGlobe,
                 color: colors["--color-theme-2-D1"],
-                type: "text"
+                type: "text",
+                editable: true
             },
             {
                 label: "Birthday",
                 column: "birthday",
                 icon: faBirthdayCake,
                 color: colors["--color-theme-2-D1"],
-                type: "date"
+                type: "date",
+                editable: true
             },
             {
                 label: "About",
                 column: "about",
                 icon: faInfo,
                 color: colors["--color-theme-2-D1"],
-                type: "text"
+                type: "text",
+                editable: true
             }
         ]
     },

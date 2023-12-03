@@ -102,6 +102,7 @@
                         icon={item.icon}
                         color={item.color}
                         type={item.type}
+                        editable={item.editable}
                     />
                 {/each}
             </ProfileSection>

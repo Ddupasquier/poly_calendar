@@ -32,17 +32,17 @@
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
-    export let icon: IconDefinition | undefined;
+    export let icon: IconDefinition;
     export let label: string;
     export let column: string | null = null;
     export let value: string | number | boolean | undefined;
     export let additional: string | undefined = "";
     export let color: string;
     export let type: "text" | "date" | "tel" | undefined = "text";
+    export let editable: boolean = false;
 
-    let editable: boolean = false;
     let isEditing = false;
-    let editedValue: string | Date | undefined = value;
+    let editedValue: string | number | boolean | undefined = value;
 
     $: {
         if (value) {
@@ -101,13 +101,15 @@
                     </button>
                 </div>
             {:else}
-                {value || "N/A"}
-                {additional}
-                {#if editable}
-                    <button on:click={startEditing} class="edit">
-                        <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                {/if}
+                <div class="data-wrap">
+                    {value || "N/A"}
+                    {additional}
+                    {#if editable}
+                        <button on:click={startEditing} class="edit">
+                            <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                    {/if}
+                </div>
             {/if}
         {:else if type === "date"}
             {#if isEditing}
@@ -121,13 +123,15 @@
                     </button>
                 </div>
             {:else}
-                {value || "N/A"}
-                {additional}
-                {#if editable}
-                    <button on:click={startEditing} class="edit">
-                        <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                {/if}
+                <div class="data-wrap">
+                    {value || "N/A"}
+                    {additional}
+                    {#if editable}
+                        <button on:click={startEditing} class="edit">
+                            <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                    {/if}
+                </div>
             {/if}
         {:else if type === "tel"}
             {#if isEditing}
@@ -141,13 +145,15 @@
                     </button>
                 </div>
             {:else}
-                {value || "N/A"}
-                {additional}
-                {#if editable}
-                    <button on:click={startEditing} class="edit">
-                        <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                {/if}
+                <div class="data-wrap">
+                    {value || "N/A"}
+                    {additional}
+                    {#if editable}
+                        <button on:click={startEditing} class="edit">
+                            <FontAwesomeIcon icon={faEdit} />
+                        </button>
+                    {/if}
+                </div>
             {/if}
         {/if}
     </form>
@@ -184,11 +190,14 @@
         margin-right: 8px;
     }
 
-    button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--color-theme-2-D1);
+    .data-wrap {
+        display: flex;
+        align-items: center;
+        margin-right: 8px;
+
+        &:hover .edit {
+            color: var(--color-theme-2-L1);
+        }
     }
 
     .edit {
@@ -216,5 +225,12 @@
         &:hover {
             color: var(--color-theme-2);
         }
+    }
+
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--color-theme-2-D1);
     }
 </style>

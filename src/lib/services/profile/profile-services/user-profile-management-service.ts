@@ -50,7 +50,7 @@ const getUserProfile = async (authUserData: AuthUser) => {
     return data;
 };
 
-const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string; value: string | boolean | Date }) => {
+const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
