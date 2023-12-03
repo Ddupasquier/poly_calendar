@@ -33,7 +33,11 @@
         }
 
         if ($authUser && item.column in $authUser) {
+
+            console.log("item.column", item.column, typeof $authUser[item.column as keyof AuthUser])
+            
             const authUserValue = $authUser[item.column as keyof AuthUser];
+
             if (item.type === "date") {
                 // Use checkDate to validate and return the original or formatted date.
                 const dateString = authUserValue as string;

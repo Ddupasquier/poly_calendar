@@ -42,7 +42,6 @@
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
     let isLoading: boolean = true;
-    let authUserPresent: boolean;
     let authUser: AuthUser | null;
     let profileData: UserProfileModel | null;
     let settingsData: UserSettingsModel | null;
@@ -55,6 +54,8 @@
     color: ${colors["--color-text-white"]};
     width: 100%;
     `;
+
+    $: authUserPresent = !!authUser;
 
     onMount(async () => {
         const $authUser = get(storedAuthUser);

@@ -1,6 +1,8 @@
 import moment from 'moment';
 
-const checkDate = (dateToCheck: string): string | null => {
+const checkDate = (dateToCheck: string): string => {
+    if (!dateToCheck) return "";
+
     if (moment(dateToCheck, 'YYYY-MM-DD', true).isValid()) {
         return dateToCheck;
     } else {
@@ -8,7 +10,7 @@ const checkDate = (dateToCheck: string): string | null => {
     }
 }
 
-const formatDate = (date: string | Date | undefined) => {
+const formatDate = (date: string | Date): string => {
     if (!date) return "";
 
     const d = new Date(date);
