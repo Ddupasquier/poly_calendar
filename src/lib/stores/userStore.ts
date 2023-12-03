@@ -24,7 +24,7 @@ if (isBrowser) {
     }
 }
 
-export const saveAuthUserAndSession = (user: AuthUser) => {
+export const saveAuthUserAndSession = (user: AuthUser, session: Session) => {
     let formattedUser = { ...user };
 
     if (formattedUser.confirmed_at) {
@@ -36,9 +36,11 @@ export const saveAuthUserAndSession = (user: AuthUser) => {
 
     if (isBrowser) {
         localStorage.setItem('authUser', JSON.stringify(formattedUser));
+        localStorage.setItem('authSession', JSON.stringify(session));
     }
 
     authUser.set(formattedUser);
+    authSession.set(session);
 };
 
 export const clearAuthUserAndSession = () => {

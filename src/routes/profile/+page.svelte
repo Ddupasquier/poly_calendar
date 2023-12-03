@@ -5,7 +5,6 @@
 
     // Supabase imports: Authentication and database connections for user management and data retrieval.
     import type { AuthUser } from "@supabase/supabase-js";
-    import { supabase } from "$lib/supabase";
     import { authUser as storedAuthUser } from "$lib/stores/userStore";
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
@@ -55,7 +54,7 @@
     width: 100%;
     `;
 
-    $: authUserPresent = !!authUser;
+    $: authUserPresent = !!$storedAuthUser;
 
     onMount(async () => {
         const $authUser = get(storedAuthUser);
