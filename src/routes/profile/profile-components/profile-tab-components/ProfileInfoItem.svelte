@@ -5,7 +5,6 @@
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
     import DateInput from "$lib/components/inputs/DateInput.svelte";
     import TeleInput from "$lib/components/inputs/TeleInput.svelte";
     import TextInput from "$lib/components/inputs/TextInput.svelte";
@@ -19,6 +18,9 @@
     import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
 
     // Models: Type definitions and interfaces for structured data representation.
+    import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
+    import type { AuthUser } from "@supabase/supabase-js";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
     import { editableProfileFields } from "./editable-profile-fields";
@@ -30,19 +32,24 @@
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
-    export let icon: IconDefinition;
+    import type { InfoSection } from "./profile-sections-and-info";
+    import { getConfirmedStatus } from "$lib/utils/utils";
+
+    export let icon: IconDefinition | undefined;
     export let label: string;
     export let column: string | null = null;
-    export let value: string | undefined;
+    export let value: string | Date | undefined;
     export let additional: string | undefined = "";
     export let color: string;
     export let type: "text" | "date" | "tel" = "text";
+    export let info: InfoSection;
+    export let userData: UserOrAuthUser;
 
     const { updateSingleUserProfileField } = userProfileManagementService;
 
     let editable: boolean = false;
     let isEditing = false;
-    let editedValue: string | undefined = value;
+    let editedValue: string | Date | undefined = value;
 
     $: if (
         column !== null &&
@@ -87,13 +94,18 @@
             submitEdit();
         }
     };
+
+    $: additionalText =
+        info.column === "email" && "email_confirmed_at" in userData
+            ? getConfirmedStatus(userData as AuthUser)
+            : info.additional ?? "";
 </script>
 
 <div class="profile-info">
-    <div class="icon-container">
-        <FontAwesomeIcon {icon} style={`color: ${color}`} />
-    </div>
-    <strong>{label}:</strong>
+    {#if info.icon}
+        <FontAwesomeIcon icon={info.icon} style={`color: ${info.color}`} />
+    {/if}
+    <span>{info.label}{additionalText}</span>
 
     <form on:submit={submitEdit}>
         {#if type === "text"}

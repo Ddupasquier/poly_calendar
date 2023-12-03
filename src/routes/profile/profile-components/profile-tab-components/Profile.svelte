@@ -1,29 +1,16 @@
 <script lang="ts">
     import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
-
-    import { authUser } from "$lib/stores/userStore";
+    import { profileStructure } from "./profile-sections-and-info";
     import { dateTimeUtils } from "$lib/utils/date-time-utils";
     const { formatDate } = dateTimeUtils;
-    import { colors } from "$lib/palette";
     import ProfileSection from "./ProfileSection.svelte";
-    import {
-        faCalendar,
-        faLock,
-        faMailBulk,
-        faPowerOff,
-        faPhone,
-        faUser,
-        faGlobe,
-        faBirthdayCake,
-        faInfo,
-    } from "@fortawesome/free-solid-svg-icons";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
 
     export let profileData: UserProfileModel | undefined = undefined;
 </script>
 
 <div class="profile-container">
-    <ProfileSection header="Account Information">
+    <!-- <ProfileSection header="Account Information">
         <ProfileInfoItem
             label="Username"
             column="username"
@@ -118,7 +105,69 @@
             icon={faLock}
             color={colors["--color-theme-2-D1"]}
         />
-    </ProfileSection>
+    </ProfileSection> -->
+
+    {#if profileData}
+        {#each profileStructure as section}
+            <ProfileSection header={section.sectionTitle}>
+                {#each section.infoSections as item}
+                    {#if item.type === "date"}
+                        <ProfileInfoItem
+                            label={item.label}
+                            column={item.column}
+                            value={formatDate(profileData[item.column])}
+                            additional={item?.additional}
+                            icon={item.icon}
+                            color={item.color}
+                            type={item.type}
+                        />
+                    {:else if item.type === "tel"}
+                        <ProfileInfoItem
+                            label={item.label}
+                            column={item.column}
+                            value={profileData[item.column]}
+                            additional={item?.additional}
+                            icon={item.icon}
+                            color={item.color}
+                            type={item.type}
+                        />
+                    {:else if item.type === "text"}
+                        <ProfileInfoItem
+                            label={item.label}
+                            column={item.column}
+                            value={profileData[item.column]}
+                            additional={item?.additional}
+                            icon={item.icon}
+                            color={item.color}
+                            type={item.type}
+                        />
+                    {:else if item.type === "email"}
+                        <ProfileInfoItem
+                            label={item.label}
+                            column={item.column}
+                            value={profileData[item.column]}
+                            additional={item?.additional}
+                            icon={item.icon}
+                            color={item.color}
+                            type={item.type}
+                        />
+                    {:else}
+                        <ProfileInfoItem
+                            label={item.label}
+                            column={item.column}
+                            value={profileData[item.column]}
+                            additional={item?.additional}
+                            icon={item.icon}
+                            color={item.color}
+                            type={item.type}
+                        />
+                    {/if}
+                {/each}
+            </ProfileSection>
+        {/each}
+    {:else}
+        <div>Loading profile...</div>
+    {/if}
 </div>
 
 <style lang="scss">

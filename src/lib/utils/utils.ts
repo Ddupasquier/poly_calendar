@@ -1,4 +1,5 @@
 import { setHelperText } from "$lib/stores/reactiveTextStore";
+import type { AuthUser } from "@supabase/supabase-js";
 
 type HSL = {
     h: number;
@@ -61,4 +62,8 @@ const stopCountdown = (countdown: string | number | NodeJS.Timeout | null | unde
     setHelperText(false, "")
 };
 
-export { lighten, darken, startCountdownWithMessage };
+const getConfirmedStatus = (user: AuthUser): string => {
+    return user.email_confirmed_at ? ' (Confirmed)' : ' (Unconfirmed)';
+};
+
+export { lighten, darken, startCountdownWithMessage, stopCountdown, getConfirmedStatus };

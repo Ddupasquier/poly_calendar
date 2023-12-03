@@ -1,6 +1,5 @@
 <script lang="ts">
     import { settingsStructure } from "./settings-sections-and-info";
-    import type { SettingsStructure } from "./settings-sections-and-info";
 
     import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
     import SettingsSection from "./SettingsSection.svelte";

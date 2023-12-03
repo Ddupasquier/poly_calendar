@@ -12,7 +12,7 @@ import type {
 } from "@fortawesome/fontawesome-svg-core";
 import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
 
-export interface InfoSection {
+interface InfoSection {
     label: string;
     column: keyof UserSettingsModel;
     icon: IconDefinition;
