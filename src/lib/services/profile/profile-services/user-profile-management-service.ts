@@ -1,6 +1,5 @@
 import { supabase } from "$lib/supabase";
 import type { AuthUser } from "@supabase/supabase-js";
-import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
 
 import { dateTimeUtils } from "$lib/utils/date-time-utils";
 const { checkDate } = dateTimeUtils;

@@ -1,14 +1,16 @@
 import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
-import type { Session, AuthUser } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js"; // Ensure you have the correct type for User
 import { dateTimeUtils } from '$lib/utils/date-time-utils';
+
 const { checkDate } = dateTimeUtils;
 
 // Function to check if we're in the browser environment
 const isBrowser = typeof window !== 'undefined';
 
-export const authUser: Writable<AuthUser | null> = writable(null);
-export const authSession: Writable<Session | null> = writable(null);
+// Assuming AuthUser is a subset of User, you might need to adjust depending on your actual types
+export const authUser: Writable<User> = writable({} as User);
+export const authSession: Writable<Session> = writable({} as Session);
 
 if (isBrowser) {
     // Rehydrate only if in the browser
@@ -16,15 +18,23 @@ if (isBrowser) {
     const storedSession = localStorage.getItem('authSession');
 
     if (storedUser) {
-        authUser.set(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && typeof parsedUser === 'object') { // Check if the parsed object is valid
+            authUser.set(parsedUser);
+        }
     }
 
     if (storedSession) {
-        authSession.set(JSON.parse(storedSession));
+        const parsedSession = JSON.parse(storedSession);
+        if (parsedSession && typeof parsedSession === 'object') { // Check if the parsed object is valid
+            authSession.set(parsedSession);
+        }
     }
 }
 
-export const saveAuthUserAndSession = (user: AuthUser, session: Session) => {
+export const saveAuthUserAndSession = (user: User, session: Session) => {
+    if (!user || !session) throw new Error("User and session must be provided.");
+
     let formattedUser = { ...user };
 
     if (formattedUser.confirmed_at) {
@@ -48,32 +58,32 @@ export const clearAuthUserAndSession = () => {
         localStorage.removeItem('authUser');
         localStorage.removeItem('authSession');
     }
-    authUser.set(null);
-    authSession.set(null);
+    authUser.set({} as User); // Default empty user object instead of null
+    authSession.set({} as Session); // Default empty session object instead of null
 };
 
 authUser.subscribe(value => {
-    if (isBrowser) {
+    if (isBrowser && value) { // Check if value exists
         console.log("authUser store changed:", value);
     }
 });
 
 authSession.subscribe(value => {
-    if (isBrowser) {
+    if (isBrowser && value) { // Check if value exists
         console.log("authSession store changed:", value);
     }
 });
 
-export const checkLocalStorageForVerificationStatus = () => {
+export const checkLocalStorageForVerificationStatus = (): boolean => {
     if (isBrowser) {
         const storedUser = localStorage.getItem('authUser');
         if (storedUser) {
             const user = JSON.parse(storedUser);
-            if (user.email_confirmed_at) {
+            if (user && user.email_confirmed_at) { // Check if user exists and email confirmed at is set
                 return true;
             }
         }
     }
-    
+
     return false;
 };

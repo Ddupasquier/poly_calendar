@@ -1,10 +1,8 @@
 <script lang="ts">
     // Svelte-specific imports: Framework imports for lifecycle and reactivity.
     import { onMount } from "svelte";
-    import { get } from "svelte/store";
 
     // Supabase imports: Authentication and database connections for user management and data retrieval.
-    import type { AuthUser } from "@supabase/supabase-js";
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
@@ -58,7 +56,7 @@
     width: 100%;
     `;
 
-    $: authUserPresent = !!$storedAuthUser;
+    $: authUserPresent = $storedAuthUser && !isObjectEmpty($storedAuthUser);
 
     onMount(async () => {
         if ($storedAuthUser) {
@@ -77,6 +75,10 @@
 
         isLoading = false;
     });
+
+    const isObjectEmpty = (obj: object): boolean => {
+        return Object.keys(obj).length === 0;
+    };
 </script>
 
 {#if !authUserPresent}

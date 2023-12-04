@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
 import { authenticationConfirmationService } from "$lib/services/auth/authentication-confirmation-service";
 import { setHelperText } from '$lib/stores/reactiveTextStore';
-import { startCountdownWithMessage } from '$lib/utils/utils';
 
 const { confirmSignUp } = authenticationConfirmationService;
 
@@ -15,14 +14,6 @@ export const load: PageLoad = async ({ url }) => {
 
     try {
         const confirmationResult = await confirmSignUp(token);
-
-        if (confirmationResult !== undefined) {
-            setHelperText(false, `${startCountdownWithMessage(5, "Sign up confirmed successfully. You will be redirected in {timer} seconds...")}`);
-            
-            setTimeout(() => {
-                window.location.href = "/profile?tab=profile";
-            }, 5000);
-        }
 
         return {
             token,

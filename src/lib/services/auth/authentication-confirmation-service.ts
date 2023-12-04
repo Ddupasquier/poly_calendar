@@ -10,15 +10,24 @@ const verifySignUpToken = async (token: string) => {
         throw new Error("No access token provided.");
     }
 
-    const { data, error } = await supabase.auth.verifyOtp({
-        token_hash: token,
-        type: "email",
-    });
+    try {
+        const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: "email",
+        });
 
-    if (error) throw error;
-    if (!data) throw new Error("No data returned from Supabase.");
+        if (error) {
+            throw error;
+        }
 
-    return data;
+        if (!data) {
+            throw new Error("No data returned from Supabase.");
+        }
+
+        return data;
+    } catch (err) {
+        throw err;
+    }
 };
 
 const processSignUpConfirmation = (data: any) => {
@@ -34,16 +43,18 @@ const processSignUpConfirmation = (data: any) => {
 const confirmSignUp = async (token: string) => {
     if (!token) {
         setHelperText(true, "No token provided for confirmation.");
+        return { success: false, message: "No token provided for confirmation." };
     }
 
     try {
         const data = await verifySignUpToken(token);
         processSignUpConfirmation(data);
-        upsertUserProfile(data.user)
 
+        await upsertUserProfile(data.user);
+        return { success: true, message: "Sign up confirmed." };
     } catch (err) {
         setHelperText(true, "Error confirming sign up. Please try again.");
-        console.error("Error confirming sign up:", err);
+        return { success: false, message: "Error confirming sign up. Please try again." };
     }
 };
 
