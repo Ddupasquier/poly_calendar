@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import NavTab from "$lib/components/layout/navigation/Nav-Tab.svelte";
+	import { Layout } from "$lib/components";
 
 	$: currentTab = $page.url.pathname;
 
@@ -27,7 +27,7 @@
 <header>
 	<nav>
 		{#each tabs as tab}
-			<NavTab tabName={tab.name} tabPath={tab.path} {currentTab} />
+			<Layout.NavTab tabName={tab.name} tabPath={tab.path} {currentTab} />
 		{/each}
 	</nav>
 	<div class="bars">

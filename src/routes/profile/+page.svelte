@@ -8,11 +8,10 @@
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button } from "mysvelte-ui";
-    import Loader from "$lib/components/common/loaders/Loader.svelte";
-
-    import AuthLoginSignup from "$lib/components/auth/AuthLoginSignup.svelte";
     import Profile from "./profile-components/profile-tab-components/Profile.svelte";
     import Settings from "./profile-components/settings-tab-components/Settings.svelte";
+
+    import { Common, Auth } from "$lib/components";
 
     // Services: Business logic, API calls, and other service-related interactions.
     import { logout, getUserProfile, getUserSettings } from "$lib/services";
@@ -77,11 +76,11 @@
 {#if !authUserPresent}
     {#if isLoading}
         <div class="loader-container">
-            <Loader />
+            <Common.Loader />
         </div>
     {:else}
         <div class="container">
-            <AuthLoginSignup />
+            <Auth.AuthLoginSignup />
         </div>
     {/if}
 {:else}

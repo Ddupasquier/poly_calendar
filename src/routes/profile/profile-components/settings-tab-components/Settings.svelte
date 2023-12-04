@@ -4,7 +4,7 @@
     import type { UserSettingsModel } from "$lib/models";
     import SettingsSection from "./SettingsSection.svelte";
     import SettingsInfoItem from "./SettingsInfoItem.svelte";
-    import Loader from "$lib/components/common/loaders/Loader.svelte";
+    import { Common } from "$lib/components";
     import { colors } from "$lib/constants/palette";
 
     export let settingsData: UserSettingsModel | undefined;
@@ -34,7 +34,7 @@
             </SettingsSection>
         {/each}
     {:else}
-        <Loader size={"small"} color={colors["--color-theme-2-D1"]} />
+        <Common.Loader size={"small"} color={colors["--color-theme-2-D1"]} />
     {/if}
 </div>
 

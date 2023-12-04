@@ -1,6 +1,5 @@
 <script lang="ts">
-	import Logo from "$lib/components/layout/navigation/logo/Logo.svelte";
-	import Nav from "$lib/components/layout/navigation/Nav.svelte";
+	import { Layout } from "$lib/components";
 	import { siteName } from "$lib/constants/site-labels";
 	import "./styles.scss";
 </script>
@@ -21,8 +20,8 @@
 </svelte:head>
 
 <div class="app">
-	<Logo />
-	<Nav />
+	<Layout.Logo />
+	<Layout.Nav />
 
 	<main>
 		<slot />

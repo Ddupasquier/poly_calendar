@@ -5,9 +5,9 @@
     import type { AuthUser } from "@supabase/supabase-js";
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
+    import { Common } from "$lib/components";
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
-    import Loader from "$lib/components/common/loaders/Loader.svelte";
 
     // Services: Business logic, API calls, and other service-related interactions.
 
@@ -110,7 +110,7 @@
             </ProfileSection>
         {/each}
     {:else}
-        <Loader size={"small"} color={colors["--color-theme-2-D1"]} />
+        <Common.Loader size={"small"} color={colors["--color-theme-2-D1"]} />
     {/if}
 </div>
 

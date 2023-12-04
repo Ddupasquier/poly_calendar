@@ -2,8 +2,7 @@
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
     import { setHelperText } from "$lib/stores/reactiveTextStore";
-    import AuthEmailConfirmation from "$lib/components/auth/AuthEmailConfirmation.svelte";
-    import { saveAuthUserAndSession } from "$lib/stores/userStore";
+    import { Auth } from "$lib/components";
     import { startCountdownWithMessage } from "$lib/utils/utils";
 
     export let data: any;
@@ -28,6 +27,6 @@
 
 <div class="container">
     {#if token}
-        <AuthEmailConfirmation {token} />
+        <Auth.AuthEmailConfirmation {token} />
     {/if}
 </div>

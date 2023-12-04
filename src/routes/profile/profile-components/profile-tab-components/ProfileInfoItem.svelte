@@ -5,9 +5,7 @@
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import DateInput from "$lib/components/common/inputs/DateInput.svelte";
-    import TeleInput from "$lib/components/common/inputs/TeleInput.svelte";
-    import TextInput from "$lib/components/common/inputs/TextInput.svelte";
+    import { Common } from "$lib/components";
     import {
         faCheck,
         faEdit,
@@ -89,7 +87,7 @@
         {#if type === "text"}
             {#if isEditing}
                 <div class="input-wrapper">
-                    <TextInput bind:value={editedValue} />
+                    <Common.TextInput bind:value={editedValue} />
                     <button on:click={stopEditing} class="cancel">
                         <FontAwesomeIcon icon={faTimes} />
                     </button>
@@ -111,7 +109,7 @@
         {:else if type === "date"}
             {#if isEditing}
                 <div class="input-wrapper">
-                    <DateInput bind:value={editedValue} />
+                    <Common.DateInput bind:value={editedValue} />
                     <button on:click={stopEditing} class="cancel">
                         <FontAwesomeIcon icon={faTimes} />
                     </button>
@@ -133,7 +131,7 @@
         {:else if type === "tel"}
             {#if isEditing}
                 <div class="input-wrapper">
-                    <TeleInput bind:value={editedValue} />
+                    <Common.TeleInput bind:value={editedValue} />
                     <button on:click={stopEditing} class="cancel">
                         <FontAwesomeIcon icon={faTimes} />
                     </button>
