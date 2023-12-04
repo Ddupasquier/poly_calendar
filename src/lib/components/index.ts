@@ -5,6 +5,7 @@ import EmailInput from "./common/inputs/EmailInput.svelte";
 import TeleInput from "./common/inputs/TeleInput.svelte";
 import PasswordInput from "./common/inputs/PasswordInput.svelte";
 import Loader from "./common/loaders/Loader.svelte";
+import Toast from "./common/toast-alerts/ToastContainer.svelte";
 
 export const Common = {
     DateInput,
@@ -12,7 +13,8 @@ export const Common = {
     EmailInput,
     TeleInput,
     PasswordInput,
-    Loader
+    Loader,
+    Toast
 }
 
 /*===== LAYOUT COMPONENTS =====*/
