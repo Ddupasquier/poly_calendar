@@ -17,7 +17,8 @@
 
     // Store: Svelte stores and reactive variables for state management.
     import { authUser } from "$lib/stores/userStore";
-    import { colors } from "$lib/constants/palette";
+    import { constants } from "$lib/constants";
+    const { colors } = constants;
 
     export let icon: IconDefinition;
     export let label: string;

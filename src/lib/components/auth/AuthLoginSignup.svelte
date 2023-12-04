@@ -2,7 +2,8 @@
     import { signUp, signIn } from "$lib/services";
     import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
     import { Button, Card } from "mysvelte-ui";
-    import { colors } from "$lib/constants/palette";
+    import { constants } from "$lib/constants";
+    const { colors } = constants;
     import EmailInput from "../common/inputs/EmailInput.svelte";
     import PasswordInput from "../common/inputs/PasswordInput.svelte";
 
@@ -17,7 +18,7 @@
     // };
 </script>
 
-<Card background={colors["--color-bg-2"]}>
+<Card background={constants.colors["--color-bg-2"]}>
     <Card.Head style="text-align: center">Lets get you logged in!</Card.Head>
     <Card.Content>
         <div class="form-group">

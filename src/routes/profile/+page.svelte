@@ -21,7 +21,8 @@
     import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { colors } from "$lib/constants/palette";
+    import { constants } from "$lib/constants";
+    const { colors } = constants;
     import { navigationButtons } from "./constants/navigation-buttons";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).

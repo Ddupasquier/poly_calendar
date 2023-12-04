@@ -16,6 +16,8 @@
     import { profileStructure } from "./profile-sections-and-info";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
+    import { constants } from "$lib/constants";
+    const { colors } = constants;
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import {
@@ -25,7 +27,6 @@
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
     import { dateTimeUtils } from "$lib/utils";
-    import { colors } from "$lib/constants/palette";
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 

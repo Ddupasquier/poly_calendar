@@ -5,7 +5,8 @@
     import SettingsSection from "./SettingsSection.svelte";
     import SettingsInfoItem from "./SettingsInfoItem.svelte";
     import { Common } from "$lib/components";
-    import { colors } from "$lib/constants/palette";
+    import { constants } from "$lib/constants";
+    const { colors } = constants;
 
     export let settingsData: UserSettingsModel | undefined;
 
