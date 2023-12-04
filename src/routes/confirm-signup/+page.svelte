@@ -3,7 +3,7 @@
     import { goto } from "$app/navigation";
     import { setHelperText } from "$lib/stores/reactiveTextStore";
     import { Auth } from "$lib/components";
-    import { startCountdownWithMessage } from "$lib/utils/utils";
+    import { commonUtils } from "$lib/utils";
 
     export let data: any;
     const { token, confirmationResult } = data;
@@ -13,7 +13,7 @@
             console.log("confirmationResult", confirmationResult);
             setHelperText(
                 false,
-                `${startCountdownWithMessage(
+                `${commonUtils.startCountdownWithMessage(
                     5,
                     "Sign up confirmed successfully. You will be redirected in {timer} seconds...",
                 )}`,

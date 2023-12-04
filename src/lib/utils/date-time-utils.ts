@@ -18,7 +18,7 @@ const formatDate = (date: string | Date): string => {
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` as string;
 };
 
-export const dateTimeUtils = {
+export {
     checkDate,
     formatDate,
 };

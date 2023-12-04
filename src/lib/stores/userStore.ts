@@ -1,9 +1,7 @@
 import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 import type { Session, User } from "@supabase/supabase-js"; // Ensure you have the correct type for User
-import { dateTimeUtils } from '$lib/utils/date-time-utils';
-
-const { checkDate } = dateTimeUtils;
+import { dateTimeUtils } from '$lib/utils';
 
 // Function to check if we're in the browser environment
 const isBrowser = typeof window !== 'undefined';
@@ -38,10 +36,10 @@ export const saveAuthUserAndSession = (user: User, session: Session) => {
     let formattedUser = { ...user };
 
     if (formattedUser.confirmed_at) {
-        formattedUser.confirmed_at = checkDate(formattedUser.confirmed_at);
+        formattedUser.confirmed_at = dateTimeUtils.checkDate(formattedUser.confirmed_at);
     }
     if (formattedUser.last_sign_in_at) {
-        formattedUser.last_sign_in_at = checkDate(formattedUser.last_sign_in_at);
+        formattedUser.last_sign_in_at = dateTimeUtils.checkDate(formattedUser.last_sign_in_at);
     }
 
     if (isBrowser) {

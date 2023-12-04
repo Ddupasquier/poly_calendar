@@ -1,7 +1,7 @@
 import { supabase } from "$lib/supabase";
 import { clearAuthUserAndSession, saveAuthUserAndSession } from "$lib/stores/userStore";
 import { setHelperText } from "$lib/stores/reactiveTextStore";
-import { startCountdownWithMessage } from "$lib/utils/utils";
+import { commonUtils } from "$lib/utils";
 
 export const signIn = async (email: string, password: string): Promise<void> => {
     try {
@@ -57,7 +57,7 @@ const handleError = (error: any): void => {
     console.error("Error:", error);
     const rateLimitMatch = error.message.match(/after (\d+) seconds/);
     if (rateLimitMatch) {
-        startCountdownWithMessage(parseInt(rateLimitMatch[1], 10), "Please try again in {timer} seconds.");
+        commonUtils.startCountdownWithMessage(parseInt(rateLimitMatch[1], 10), "Please try again in {timer} seconds.");
     } else {
         setHelperText(true, error.message);
     }
