@@ -32,7 +32,6 @@
     .tab {
         position: relative;
         padding: 0.7rem 2rem 0.2rem 0.6rem;
-        height: 100%;
         width: 5rem;
     }
 

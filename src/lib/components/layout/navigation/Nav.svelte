@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { Layout } from "$lib/components";
+	import { authUser } from "$lib/stores";
+	import { isObjectEmpty } from "$lib/utils/common-utils";
 
 	$: currentTab = $page.url.pathname;
+	$: authUserPresent = $authUser && !isObjectEmpty($authUser);
 
 	const tabs = [
 		{
@@ -26,9 +29,15 @@
 
 <header>
 	<nav>
-		{#each tabs as tab}
-			<Layout.NavTab tabName={tab.name} tabPath={tab.path} {currentTab} />
-		{/each}
+		{#if authUserPresent}
+			{#each tabs as tab}
+				<Layout.NavTab
+					tabName={tab.name}
+					tabPath={tab.path}
+					{currentTab}
+				/>
+			{/each}
+		{/if}
 	</nav>
 	<div class="bars">
 		<div class="bar1" />
@@ -38,13 +47,19 @@
 </header>
 
 <style lang="scss">
+	header {
+		height: 3rem;
+	}
+
 	nav {
 		display: flex;
 		justify-content: flex-end;
+		box-sizing: border-box;
 		align-items: center;
-		height: 100%;
-		width: 95%;
+		width: 100%;
+		height: 3rem;
 		padding-top: 1rem;
+		padding-right: 4rem;
 	}
 
 	nav :global(.tab) {

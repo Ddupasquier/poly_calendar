@@ -66,4 +66,8 @@ const getConfirmedStatus = (user: AuthUser): string => {
     return user.email_confirmed_at ? ' (Confirmed)' : ' (Unconfirmed)';
 };
 
-export { lighten, darken, startCountdownWithMessage, stopCountdown, getConfirmedStatus };
+const isObjectEmpty = (obj: object): boolean => {
+    return Object.keys(obj).length === 0;
+};
+
+export { lighten, darken, startCountdownWithMessage, stopCountdown, getConfirmedStatus, isObjectEmpty };

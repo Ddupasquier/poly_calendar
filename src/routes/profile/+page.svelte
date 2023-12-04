@@ -32,6 +32,7 @@
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";
+    import { isObjectEmpty } from "$lib/utils/common-utils";
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
@@ -70,10 +71,6 @@
 
         isLoading = false;
     });
-
-    const isObjectEmpty = (obj: object): boolean => {
-        return Object.keys(obj).length === 0;
-    };
 </script>
 
 {#if !authUserPresent}
