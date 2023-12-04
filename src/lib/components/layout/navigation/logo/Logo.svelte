@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { siteName } from "$lib/constants";
+    import { siteName } from "$lib/constants/site-labels";
 </script>
 
 <h1>

@@ -9,7 +9,7 @@ import {
     faPowerOff,
     faLock,
 } from "@fortawesome/free-solid-svg-icons";
-import { colors } from "$lib/palette";
+import { colors } from "$lib/constants/palette";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface ProfileInfoItem {

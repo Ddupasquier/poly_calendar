@@ -11,7 +11,7 @@
     // Services: Business logic, API calls, and other service-related interactions.
 
     // Models: Type definitions and interfaces for structured data representation.
-    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
+    import type { UserProfileModel } from "$lib/models";
     import { profileStructure } from "./profile-sections-and-info";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { settingsStructure } from "./settings-sections-and-info";
 
-    import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
+    import type { UserSettingsModel } from "$lib/models";
     import SettingsSection from "./SettingsSection.svelte";
     import SettingsInfoItem from "./SettingsInfoItem.svelte";
 

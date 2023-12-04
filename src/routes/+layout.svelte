@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Logo from "$lib/components/logo/Logo.svelte";
-	import Nav from "$lib/components/navigation/Nav.svelte";
-	import { siteName } from "$lib/constants";
+	import Logo from "$lib/components/layout/navigation/logo/Logo.svelte";
+	import Nav from "$lib/components/layout/navigation/Nav.svelte";
+	import { siteName } from "$lib/constants/site-labels";
 	import "./styles.scss";
 </script>
 

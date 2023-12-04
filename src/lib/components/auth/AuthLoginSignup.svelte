@@ -2,9 +2,9 @@
     import { authenticationService } from "$lib/services/auth/authentication-service";
     import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
     import { Button, Card } from "mysvelte-ui";
-    import { colors } from "$lib/palette";
-    import EmailInput from "../inputs/EmailInput.svelte";
-    import PasswordInput from "../inputs/PasswordInput.svelte";
+    import { colors } from "$lib/constants/palette";
+    import EmailInput from "../common/inputs/EmailInput.svelte";
+    import PasswordInput from "../common/inputs/PasswordInput.svelte";
 
     const { signUp, signIn } = authenticationService;
 

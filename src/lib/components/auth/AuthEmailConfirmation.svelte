@@ -4,7 +4,7 @@
     import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
 
     import { Card } from "mysvelte-ui";
-    import { colors } from "$lib/palette";
+    import { colors } from "$lib/constants/palette";
 </script>
 
 <div class="container">

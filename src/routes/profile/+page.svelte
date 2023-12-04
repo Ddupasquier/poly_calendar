@@ -24,12 +24,11 @@
     const { getUserSettings } = userSettingsManagementService;
 
     // Models: Type definitions and interfaces for structured data representation.
-    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
-    import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
+    import type { UserProfileModel, UserSettingsModel } from "$lib/models";
     import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { colors } from "$lib/palette";
+    import { colors } from "$lib/constants/palette";
     import { navigationButtons } from "./constants";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).

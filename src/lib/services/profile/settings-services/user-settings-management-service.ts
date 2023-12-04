@@ -1,6 +1,6 @@
 import { supabase } from "$lib/supabase";
 import type { AuthUser } from "@supabase/supabase-js";
-import type { UserSettingsModel } from "$lib/models/profile/user-settings-model";
+import type { UserSettingsModel } from "$lib/models";
 
 const upsertUserSettings = async (authUserData: AuthUser | null) => {
     if (!authUserData) {

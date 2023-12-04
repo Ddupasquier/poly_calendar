@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import NavTab from "$lib/components/navigation/Nav-Tab.svelte";
+	import NavTab from "$lib/components/layout/navigation/Nav-Tab.svelte";
 
 	$: currentTab = $page.url.pathname;
 

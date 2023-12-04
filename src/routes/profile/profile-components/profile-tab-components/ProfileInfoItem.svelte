@@ -5,9 +5,9 @@
 
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import DateInput from "$lib/components/inputs/DateInput.svelte";
-    import TeleInput from "$lib/components/inputs/TeleInput.svelte";
-    import TextInput from "$lib/components/inputs/TextInput.svelte";
+    import DateInput from "$lib/components/common/inputs/DateInput.svelte";
+    import TeleInput from "$lib/components/common/inputs/TeleInput.svelte";
+    import TextInput from "$lib/components/common/inputs/TextInput.svelte";
     import {
         faCheck,
         faEdit,
@@ -20,7 +20,7 @@
 
     // Models: Type definitions and interfaces for structured data representation.
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-    import type { UserProfileModel } from "$lib/models/profile/user-profile-model";
+    import type { UserProfileModel } from "$lib/models";
     import type { AuthUser } from "@supabase/supabase-js";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.

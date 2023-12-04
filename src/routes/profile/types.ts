@@ -1,5 +1,5 @@
-import type { UserProfileModel } from '$lib/models/profile/user-profile-model';
-import type { UserSettingsModel } from '$lib/models/profile/user-settings-model';
+import type { UserProfileModel } from '$lib/models';
+import type { UserSettingsModel } from '$lib/models';
 
 interface ComponentProps {
     profileData?: UserProfileModel;
