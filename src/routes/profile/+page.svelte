@@ -21,15 +21,14 @@
     import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { constants } from "$lib/constants";
-    const { colors } = constants;
+    import { colors } from "$lib/constants";
     import { navigationButtons } from "./constants/navigation-buttons";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import {
         checkLocalStorageForVerificationStatus,
         authUser as storedAuthUser,
-    } from "$lib/stores/userStore";
+    } from "$lib/stores";
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";

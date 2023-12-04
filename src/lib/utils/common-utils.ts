@@ -1,4 +1,4 @@
-import { setHelperText } from "$lib/stores/reactiveTextStore";
+import { setHelperText } from "$lib/stores";
 import type { AuthUser } from "@supabase/supabase-js";
 
 type HSL = {

@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { constants } from "$lib/constants";
-    const { colors } = constants;
+    import { colors } from "$lib/constants";
     import { Loader } from "mysvelte-ui";
 
     export let color: string = colors["--color-theme-1-D1"];

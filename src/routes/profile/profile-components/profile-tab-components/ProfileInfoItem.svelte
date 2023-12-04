@@ -21,7 +21,7 @@
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
-    import { authUser } from "$lib/stores/userStore";
+    import { authUser } from "$lib/stores";
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
 

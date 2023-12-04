@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { constants } from "$lib/constants";
-    const { siteName } = constants;
+    import { siteName } from "$lib/constants";
 </script>
 
 <h1>

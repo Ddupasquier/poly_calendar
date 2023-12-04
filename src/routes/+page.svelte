@@ -10,8 +10,7 @@
 	// Models: Type definitions and interfaces for structured data representation.
 	
 	// Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-	import { constants } from "../lib/constants";
-	const { siteName } = constants;
+	import { siteName } from "../lib/constants";
 
 	// Store: Svelte stores and reactive variables for state management (placeholder for future additions).
 

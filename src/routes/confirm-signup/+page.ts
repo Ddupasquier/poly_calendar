@@ -1,8 +1,6 @@
 import type { PageLoad } from './$types';
-import { authenticationConfirmationService } from "$lib/services/auth/authentication-confirmation-service";
-import { setHelperText } from '$lib/stores/reactiveTextStore';
-
-const { confirmSignUp } = authenticationConfirmationService;
+import { confirmSignUp } from "$lib/services";
+import { setHelperText } from '$lib/stores';
 
 export const load: PageLoad = async ({ url }) => {
     const token = url.searchParams.get('token');

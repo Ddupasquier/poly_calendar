@@ -1,11 +1,9 @@
 <script lang="ts">
-    import { signUp, signIn } from "$lib/services";
-    import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
     import { Button, Card } from "mysvelte-ui";
-    import { constants } from "$lib/constants";
-    const { colors } = constants;
-    import EmailInput from "../common/inputs/EmailInput.svelte";
-    import PasswordInput from "../common/inputs/PasswordInput.svelte";
+    import { signUp, signIn } from "$lib/services";
+    import { helperTextStore as helperText } from "$lib/stores";
+    import { colors } from "$lib/constants";
+    import { Common } from "$lib/components";
 
     let email: string = "";
     let password: string = "";
@@ -18,17 +16,17 @@
     // };
 </script>
 
-<Card background={constants.colors["--color-bg-2"]}>
+<Card background={colors["--color-bg-2"]}>
     <Card.Head style="text-align: center">Lets get you logged in!</Card.Head>
     <Card.Content>
         <div class="form-group">
-            <EmailInput
+            <Common.EmailInput
                 bind:value={email}
                 color={colors["--color-theme-2"]}
                 background="transparent"
                 placeholder="Email"
             />
-            <PasswordInput
+            <Common.PasswordInput
                 bind:value={password}
                 color={colors["--color-theme-2"]}
                 background="transparent"

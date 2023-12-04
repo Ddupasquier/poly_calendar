@@ -6,8 +6,7 @@ import {
     faPersonThroughWindow,
     faPaintBrush,
 } from "@fortawesome/free-solid-svg-icons";
-import { constants } from "$lib/constants";
-const { colors } = constants;
+import { colors } from "$lib/constants";
 import type {
     IconDefinition
 } from "@fortawesome/fontawesome-svg-core";

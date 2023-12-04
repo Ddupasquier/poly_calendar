@@ -1,6 +1,5 @@
 import { supabase } from "$lib/supabase";
-import { saveAuthUserAndSession } from "$lib/stores/userStore";
-import { setHelperText } from "$lib/stores/reactiveTextStore";
+import { saveAuthUserAndSession, setHelperText } from "$lib/stores";
 import { upsertUserProfile } from "$lib/services";
 
 const verifySignUpToken = async (token: string) => {

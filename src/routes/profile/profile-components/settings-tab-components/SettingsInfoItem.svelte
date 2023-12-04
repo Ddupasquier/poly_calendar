@@ -16,9 +16,8 @@
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
 
     // Store: Svelte stores and reactive variables for state management.
-    import { authUser } from "$lib/stores/userStore";
-    import { constants } from "$lib/constants";
-    const { colors } = constants;
+    import { authUser } from "$lib/stores";
+    import { colors } from "$lib/constants";
 
     export let icon: IconDefinition;
     export let label: string;

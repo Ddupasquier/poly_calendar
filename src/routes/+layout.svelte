@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Layout } from "$lib/components";
-	import { constants } from "../lib/constants";
-    const { siteName } = constants;
+	import { siteName } from "../lib/constants";
 	import "./styles.scss";
 </script>
 

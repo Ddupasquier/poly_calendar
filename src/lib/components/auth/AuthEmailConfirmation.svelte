@@ -1,11 +1,9 @@
 <script lang="ts">
-    export let token: string | null = null;
-
-    import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
-
     import { Card } from "mysvelte-ui";
-    import { constants } from "$lib/constants";
-    const { colors } = constants;
+    import { helperTextStore as helperText } from "$lib/stores";
+    import { colors } from "$lib/constants";
+
+    export let token: string | null = null;
 </script>
 
 <div class="container">

@@ -77,7 +77,7 @@ export const checkLocalStorageForVerificationStatus = (): boolean => {
         const storedUser = localStorage.getItem('authUser');
         if (storedUser) {
             const user = JSON.parse(storedUser);
-            if (user && user.email_confirmed_at) { // Check if user exists and email confirmed at is set
+            if (user && user.email_confirmed_at) {
                 return true;
             }
         }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { authUser } from "$lib/stores/userStore";
+    import { authUser } from "$lib/stores";
 
     export let tabName: string;
     export let tabPath: string;

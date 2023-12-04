@@ -1,6 +1,5 @@
 import { supabase } from "$lib/supabase";
-import { clearAuthUserAndSession, saveAuthUserAndSession } from "$lib/stores/userStore";
-import { setHelperText } from "$lib/stores/reactiveTextStore";
+import { clearAuthUserAndSession, saveAuthUserAndSession, setHelperText } from "$lib/stores";
 import { commonUtils } from "$lib/utils";
 
 export const signIn = async (email: string, password: string): Promise<void> => {

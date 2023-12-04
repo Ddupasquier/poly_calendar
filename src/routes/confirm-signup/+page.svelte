@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
-    import { setHelperText } from "$lib/stores/reactiveTextStore";
+    import { setHelperText } from "$lib/stores";
     import { Auth } from "$lib/components";
     import { commonUtils } from "$lib/utils";
 
