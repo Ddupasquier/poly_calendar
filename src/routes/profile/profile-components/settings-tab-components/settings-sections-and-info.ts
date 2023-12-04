@@ -32,35 +32,35 @@ const settingsStructure: SettingsStructure = [
         sectionTitle: "Privacy Settings",
         infoSections: [
             {
-                label: "Album Privacy",
+                label: "Photos ##PUBLIC##",
                 column: "album_privacy_enabled",
                 icon: faPhotoFilm,
                 color: colors["--color-theme-2-D1"],
                 editable: true
             },
             {
-                label: "Profile Visibility",
+                label: "Profile ##PUBLIC##",
                 column: "profile_visibility_public",
                 icon: faUser,
                 color: colors["--color-theme-2-D1"],
                 editable: true
             },
             {
-                label: "Calendar Privacy",
+                label: "Calendar ##PUBLIC##",
                 column: "calendar_privacy_enabled",
                 icon: faCalendar,
                 color: colors["--color-theme-2-D1"],
                 editable: true
             },
             {
-                label: "Email Notifications",
+                label: "Email Notifications ##NOTIFICATION##",
                 column: "email_notifications_enabled",
                 icon: faMailBulk,
                 color: colors["--color-theme-2-D1"],
                 editable: true
             },
             {
-                label: "Push Notifications",
+                label: "Push Notifications ##NOTIFICATION##",
                 column: "push_notifications_enabled",
                 icon: faPersonThroughWindow,
                 color: colors["--color-theme-2-D1"],
@@ -72,7 +72,7 @@ const settingsStructure: SettingsStructure = [
         sectionTitle: "Customization Settings",
         infoSections: [
             {
-                label: "Theme",
+                label: "Theme ##THEME##",
                 column: "theme_dark_mode_enabled",
                 icon: faPaintBrush,
                 color: colors["--color-theme-2-D1"],

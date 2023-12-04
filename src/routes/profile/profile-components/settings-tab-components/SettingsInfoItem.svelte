@@ -18,6 +18,7 @@
 
     // Store: Svelte stores and reactive variables for state management.
     import { authUser } from "$lib/stores/userStore";
+    import { colors } from "$lib/palette";
 
     export let icon: IconDefinition;
     export let label: string;
@@ -54,6 +55,22 @@
             );
         }
     };
+
+    const replacePlaceholderWithValue = (
+        input: string,
+        placeholders: string[],
+        valueIfTrue: string[],
+        valueIfFalse: string[],
+        condition: boolean,
+    ): string => {
+        return placeholders.reduce((text, placeholder, index) => {
+            const replacementValue = condition
+                ? valueIfTrue[index]
+                : valueIfFalse[index];
+            const regex = new RegExp(placeholder, "g");
+            return text.replace(regex, replacementValue);
+        }, input);
+    };
 </script>
 
 <div class="settings-info">
@@ -61,8 +78,22 @@
         <FontAwesomeIcon {icon} style={`color: ${color}`} />
     </div>
     {#if typeof value === "boolean"}
-        <Toggle id={label} bind:isChecked={value} disable={!editable} />
-        <strong> :{label}</strong>
+        <Toggle
+            id={label}
+            bind:isChecked={value}
+            disable={!editable}
+            color={colors["--color-theme-1"]}
+        />
+        <strong>
+            :
+            {replacePlaceholderWithValue(
+                label,
+                ["##PUBLIC##", "##NOTIFICATION##", "##THEME##"],
+                ["Public", "Enabled", "Dark"],
+                ["Private", "Disabled", "Light"],
+                value,
+            )}
+        </strong>
     {/if}
 </div>
 
@@ -89,21 +120,21 @@
         background: transparent;
     }
 
-    .cancel {
-        color: var(--color-theme-2-L1);
-        transition: all 0.1s ease-in-out;
+    // .cancel {
+    //     color: var(--color-theme-2-L1);
+    //     transition: all 0.1s ease-in-out;
 
-        &:hover {
-            color: var(--color-theme-2);
-        }
-    }
+    //     &:hover {
+    //         color: var(--color-theme-2);
+    //     }
+    // }
 
-    .confirm {
-        color: var(--color-theme-2-L1);
-        transition: all 0.1s ease-in-out;
+    // .confirm {
+    //     color: var(--color-theme-2-L1);
+    //     transition: all 0.1s ease-in-out;
 
-        &:hover {
-            color: var(--color-theme-2);
-        }
-    }
+    //     &:hover {
+    //         color: var(--color-theme-2);
+    //     }
+    // }
 </style>
