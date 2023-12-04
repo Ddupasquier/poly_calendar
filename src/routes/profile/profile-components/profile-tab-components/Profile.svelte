@@ -7,6 +7,7 @@
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
+    import Loader from "$lib/components/common/loaders/Loader.svelte";
 
     // Services: Business logic, API calls, and other service-related interactions.
 
@@ -24,6 +25,7 @@
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
     import { dateTimeUtils } from "$lib/utils/date-time-utils";
+    import { colors } from "$lib/constants/palette";
     const { formatDate, checkDate } = dateTimeUtils;
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
@@ -108,7 +110,7 @@
             </ProfileSection>
         {/each}
     {:else}
-        <div>Loading profile...</div>
+        <Loader size={"small"} color={colors["--color-theme-2-D1"]} />
     {/if}
 </div>
 

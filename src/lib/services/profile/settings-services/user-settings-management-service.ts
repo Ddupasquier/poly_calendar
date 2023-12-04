@@ -2,7 +2,7 @@ import { supabase } from "$lib/supabase";
 import type { AuthUser } from "@supabase/supabase-js";
 import type { UserSettingsModel } from "$lib/models";
 
-const upsertUserSettings = async (authUserData: AuthUser | null) => {
+export const upsertUserSettings = async (authUserData: AuthUser | null) => {
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
@@ -24,7 +24,7 @@ const upsertUserSettings = async (authUserData: AuthUser | null) => {
     }
 };
 
-const getUserSettings = async (authUserData: AuthUser | null): Promise<UserSettingsModel | null> => {
+export const getUserSettings = async (authUserData: AuthUser | null): Promise<UserSettingsModel | null> => {
     if (!authUserData) return null;
 
     const { data, error } = await supabase
@@ -41,7 +41,7 @@ const getUserSettings = async (authUserData: AuthUser | null): Promise<UserSetti
     return data;
 };
 
-const updateSingleUserSettingsField = async (authUserData: AuthUser | null, formObject: { field: string; value: boolean | undefined }) => {
+export const updateSingleUserSettingsField = async (authUserData: AuthUser | null, formObject: { field: string; value: boolean | undefined }) => {
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
@@ -59,10 +59,4 @@ const updateSingleUserSettingsField = async (authUserData: AuthUser | null, form
     }
 
     return data;
-};
-
-export const userSettingsManagementService = {
-    upsertUserSettings,
-    getUserSettings,
-    updateSingleUserSettingsField,
 };

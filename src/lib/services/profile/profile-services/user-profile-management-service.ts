@@ -4,7 +4,7 @@ import type { AuthUser } from "@supabase/supabase-js";
 import { dateTimeUtils } from "$lib/utils/date-time-utils";
 const { checkDate } = dateTimeUtils;
 
-const upsertUserProfile = async (authUserData: AuthUser | null) => {
+export const upsertUserProfile = async (authUserData: AuthUser | null) => {
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
@@ -28,7 +28,7 @@ const upsertUserProfile = async (authUserData: AuthUser | null) => {
     }
 }
 
-const getUserProfile = async (authUserData: AuthUser) => {
+export const getUserProfile = async (authUserData: AuthUser) => {
     if (!authUserData) return null;
 
     const { data, error } = await supabase
@@ -49,7 +49,7 @@ const getUserProfile = async (authUserData: AuthUser) => {
     return data;
 };
 
-const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
+export const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
@@ -72,10 +72,4 @@ const updateSingleUserProfileField = async (authUserData: AuthUser | null, formO
     }
 
     return data;
-};
-
-export const userProfileManagementService = {
-    upsertUserProfile,
-    getUserProfile,
-    updateSingleUserProfileField,
 };

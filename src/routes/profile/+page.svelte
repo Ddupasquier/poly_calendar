@@ -7,21 +7,15 @@
     // UI components: Custom Svelte components and UI elements from design system libraries.
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
-    import { Button, Loader } from "mysvelte-ui";
+    import { Button } from "mysvelte-ui";
+    import Loader from "$lib/components/common/loaders/Loader.svelte";
 
     import AuthLoginSignup from "$lib/components/auth/AuthLoginSignup.svelte";
     import Profile from "./profile-components/profile-tab-components/Profile.svelte";
     import Settings from "./profile-components/settings-tab-components/Settings.svelte";
 
     // Services: Business logic, API calls, and other service-related interactions.
-    import { authenticationService } from "$lib/services/auth/authentication-service";
-    const { logout } = authenticationService;
-
-    import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
-    const { getUserProfile } = userProfileManagementService;
-
-    import { userSettingsManagementService } from "$lib/services/profile/settings-services/user-settings-management-service";
-    const { getUserSettings } = userSettingsManagementService;
+    import { logout, getUserProfile, getUserSettings } from "$lib/services";
 
     // Models: Type definitions and interfaces for structured data representation.
     import type { UserProfileModel, UserSettingsModel } from "$lib/models";
@@ -29,7 +23,7 @@
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
     import { colors } from "$lib/constants/palette";
-    import { navigationButtons } from "./constants";
+    import { navigationButtons } from "./constants/navigation-buttons";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import {
@@ -82,11 +76,13 @@
 
 {#if !authUserPresent}
     {#if isLoading}
-        <div class="loader">
-            <Loader.Elips color={colors["--color-theme-2-D1"]} speed={"fast"} />
+        <div class="loader-container">
+            <Loader />
         </div>
     {:else}
-        <AuthLoginSignup />
+        <div class="container">
+            <AuthLoginSignup />
+        </div>
     {/if}
 {:else}
     <div class="container">
@@ -163,11 +159,14 @@
         border: 3px solid var(--color-theme-1);
         border-radius: 50rem;
         padding: 8px;
-        // transition: transform 0.2s ease-in-out;
+    }
 
-        // &:hover {
-        //     transform: scale(1.05) rotate(5deg);
-        // }
+    .loader-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
     }
 
     @media (max-width: 768px) {

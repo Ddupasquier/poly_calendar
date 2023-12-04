@@ -1,9 +1,7 @@
 import { supabase } from "$lib/supabase";
 import { saveAuthUserAndSession } from "$lib/stores/userStore";
 import { setHelperText } from "$lib/stores/reactiveTextStore";
-import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
-
-const { upsertUserProfile } = userProfileManagementService;
+import { upsertUserProfile } from "$lib/services";
 
 const verifySignUpToken = async (token: string) => {
     if (!token) {
@@ -40,7 +38,7 @@ const processSignUpConfirmation = (data: any) => {
     }
 };
 
-const confirmSignUp = async (token: string) => {
+export const confirmSignUp = async (token: string) => {
     if (!token) {
         setHelperText(true, "No token provided for confirmation.");
         return { success: false, message: "No token provided for confirmation." };
@@ -56,8 +54,4 @@ const confirmSignUp = async (token: string) => {
         setHelperText(true, "Error confirming sign up. Please try again.");
         return { success: false, message: "Error confirming sign up. Please try again." };
     }
-};
-
-export const authenticationConfirmationService = {
-    confirmSignUp,
 };

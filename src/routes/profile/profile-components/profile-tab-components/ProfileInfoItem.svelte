@@ -15,13 +15,10 @@
     } from "@fortawesome/free-solid-svg-icons";
 
     // Services: Business logic, API calls, and other service-related interactions.
-    import { userProfileManagementService } from "$lib/services/profile/profile-services/user-profile-management-service";
-    const { updateSingleUserProfileField } = userProfileManagementService;
+    import { updateSingleUserProfileField } from "$lib/services";
 
     // Models: Type definitions and interfaces for structured data representation.
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-    import type { UserProfileModel } from "$lib/models";
-    import type { AuthUser } from "@supabase/supabase-js";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
 

@@ -9,8 +9,7 @@
     import { Toggle } from "mysvelte-ui";
 
     // Services: Business logic, API calls, and other service-related interactions.
-    import { userSettingsManagementService } from "$lib/services/profile/settings-services/user-settings-management-service";
-    const { updateSingleUserSettingsField } = userSettingsManagementService;
+    import { updateSingleUserSettingsField } from "$lib/services";
 
     // Models: Type definitions and interfaces for structured data representation.
 
@@ -37,14 +36,12 @@
     const submitEdit = async () => {
         if (typeof value === "boolean" || value === undefined) {
             try {
-                await userSettingsManagementService
-                    .updateSingleUserSettingsField($authUser, {
-                        field: column ?? "",
-                        value,
-                    })
-                    .catch((error) => {
-                        console.error("Error updating user settings:", error);
-                    });
+                await updateSingleUserSettingsField($authUser, {
+                    field: column ?? "",
+                    value,
+                }).catch((error) => {
+                    console.error("Error updating user settings:", error);
+                });
             } catch (error) {
                 console.error("Error updating user settings:", error);
             }

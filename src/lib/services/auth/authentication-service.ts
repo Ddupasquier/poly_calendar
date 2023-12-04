@@ -3,7 +3,7 @@ import { clearAuthUserAndSession, saveAuthUserAndSession } from "$lib/stores/use
 import { setHelperText } from "$lib/stores/reactiveTextStore";
 import { startCountdownWithMessage } from "$lib/utils/utils";
 
-const signIn = async (email: string, password: string): Promise<void> => {
+export const signIn = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signInWithPassword({
             email,
@@ -15,7 +15,7 @@ const signIn = async (email: string, password: string): Promise<void> => {
     }
 };
 
-const signUp = async (email: string, password: string): Promise<void> => {
+export const signUp = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signUp({ email, password });
         handleSignUpResult(result);
@@ -24,7 +24,7 @@ const signUp = async (email: string, password: string): Promise<void> => {
     }
 };
 
-const logout = async () => {
+export const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
         console.error("Error logging out:", error);
@@ -61,10 +61,4 @@ const handleError = (error: any): void => {
     } else {
         setHelperText(true, error.message);
     }
-};
-
-export const authenticationService = {
-    signIn,
-    signUp,
-    logout,
 };

@@ -62,17 +62,17 @@ export const clearAuthUserAndSession = () => {
     authSession.set({} as Session); // Default empty session object instead of null
 };
 
-authUser.subscribe(value => {
-    if (isBrowser && value) { // Check if value exists
-        console.log("authUser store changed:", value);
-    }
-});
+// authUser.subscribe(value => {
+//     if (isBrowser && value) { // Check if value exists
+//         console.log("authUser store changed:", value);
+//     }
+// });
 
-authSession.subscribe(value => {
-    if (isBrowser && value) { // Check if value exists
-        console.log("authSession store changed:", value);
-    }
-});
+// authSession.subscribe(value => {
+//     if (isBrowser && value) { // Check if value exists
+//         console.log("authSession store changed:", value);
+//     }
+// });
 
 export const checkLocalStorageForVerificationStatus = (): boolean => {
     if (isBrowser) {

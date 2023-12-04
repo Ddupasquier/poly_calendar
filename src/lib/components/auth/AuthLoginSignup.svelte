@@ -1,12 +1,10 @@
 <script lang="ts">
-    import { authenticationService } from "$lib/services/auth/authentication-service";
+    import { signUp, signIn } from "$lib/services";
     import { helperTextStore as helperText } from "$lib/stores/reactiveTextStore";
     import { Button, Card } from "mysvelte-ui";
     import { colors } from "$lib/constants/palette";
     import EmailInput from "../common/inputs/EmailInput.svelte";
     import PasswordInput from "../common/inputs/PasswordInput.svelte";
-
-    const { signUp, signIn } = authenticationService;
 
     let email: string = "";
     let password: string = "";
@@ -19,52 +17,49 @@
     // };
 </script>
 
-<div class="container">
-    <Card background={colors["--color-bg-2"]}>
-        <Card.Head style="text-align: center">Lets get you logged in!</Card.Head
-        >
-        <Card.Content>
-            <div class="form-group">
-                <EmailInput
-                    bind:value={email}
-                    color={colors["--color-theme-2"]}
-                    background="transparent"
-                    placeholder="Email"
-                />
-                <PasswordInput
-                    bind:value={password}
-                    color={colors["--color-theme-2"]}
-                    background="transparent"
-                    placeholder="Password"
-                />
-            </div>
-        </Card.Content>
-        <Card.Foot>
-            <div class="button-group">
-                <Button
-                    background={colors["--color-theme-2"]}
-                    on:click={() => signUp(email, password)}>Sign Up</Button
-                >
-                <Button
-                    on:click={() => signIn(email, password)}
-                    background={colors["--color-theme-2"]}>Sign In</Button
-                >
-            </div>
-            <!-- <div class="divider">
+<Card background={colors["--color-bg-2"]}>
+    <Card.Head style="text-align: center">Lets get you logged in!</Card.Head>
+    <Card.Content>
+        <div class="form-group">
+            <EmailInput
+                bind:value={email}
+                color={colors["--color-theme-2"]}
+                background="transparent"
+                placeholder="Email"
+            />
+            <PasswordInput
+                bind:value={password}
+                color={colors["--color-theme-2"]}
+                background="transparent"
+                placeholder="Password"
+            />
+        </div>
+    </Card.Content>
+    <Card.Foot>
+        <div class="button-group">
+            <Button
+                background={colors["--color-theme-2"]}
+                on:click={() => signUp(email, password)}>Sign Up</Button
+            >
+            <Button
+                on:click={() => signIn(email, password)}
+                background={colors["--color-theme-2"]}>Sign In</Button
+            >
+        </div>
+        <!-- <div class="divider">
                 <span>Or continue with</span>
             </div> -->
-            <!-- <div class="oauth-buttons">
+        <!-- <div class="oauth-buttons">
                 <button on:click={() => handleOAuthLogin("github")}>GitHub</button>
                 <button on:click={() => handleOAuthLogin("google")}>Google</button>
             </div> -->
-        </Card.Foot>
-        {#if !!$helperText.text}
-            <div class="helper-text">
-                {$helperText.text}
-            </div>
-        {/if}
-    </Card>
-</div>
+    </Card.Foot>
+    {#if !!$helperText.text}
+        <div class="helper-text">
+            {$helperText.text}
+        </div>
+    {/if}
+</Card>
 
 <style lang="scss">
     .button-group {
