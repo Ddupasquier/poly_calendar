@@ -5,6 +5,7 @@ import { dateTimeUtils } from "$lib/utils";
 
 export const upsertUserProfile = async (authUserData: AuthUser | null) => {
     if (!authUserData) {
+        console.error("No user data provided for upsert.");
         throw new Error("No user data provided.");
     }
 
@@ -19,16 +20,17 @@ export const upsertUserProfile = async (authUserData: AuthUser | null) => {
     ]);
 
     if (error) {
+        console.error("Error upserting user profile:", error);
         throw error;
     }
 
-    if (data) {
-        return data;
-    }
+    return data;
 }
 
 export const getUserProfile = async (authUserData: AuthUser) => {
-    if (!authUserData) return null;
+    if (!authUserData) {
+        return null;
+    }
 
     const { data, error } = await supabase
         .from("users")
@@ -37,7 +39,7 @@ export const getUserProfile = async (authUserData: AuthUser) => {
         .single();
 
     if (error) {
-        console.error("Supabase error:", error);
+        console.error("Supabase error while fetching user profile:", error);
         return null;
     }
 

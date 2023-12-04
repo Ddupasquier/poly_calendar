@@ -1,12 +1,10 @@
 import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
-import type { Session, User } from "@supabase/supabase-js"; // Ensure you have the correct type for User
+import type { Session, User } from "@supabase/supabase-js";
 import { dateTimeUtils } from '$lib/utils';
 
-// Function to check if we're in the browser environment
 const isBrowser = typeof window !== 'undefined';
 
-// Assuming AuthUser is a subset of User, you might need to adjust depending on your actual types
 export const authUser: Writable<User> = writable({} as User);
 export const authSession: Writable<Session> = writable({} as Session);
 
@@ -17,14 +15,14 @@ if (isBrowser) {
 
     if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        if (parsedUser && typeof parsedUser === 'object') { // Check if the parsed object is valid
+        if (parsedUser && typeof parsedUser === 'object') {
             authUser.set(parsedUser);
         }
     }
 
     if (storedSession) {
         const parsedSession = JSON.parse(storedSession);
-        if (parsedSession && typeof parsedSession === 'object') { // Check if the parsed object is valid
+        if (parsedSession && typeof parsedSession === 'object') {
             authSession.set(parsedSession);
         }
     }
@@ -56,8 +54,8 @@ export const clearAuthUserAndSession = () => {
         localStorage.removeItem('authUser');
         localStorage.removeItem('authSession');
     }
-    authUser.set({} as User); // Default empty user object instead of null
-    authSession.set({} as Session); // Default empty session object instead of null
+    authUser.set({} as User);
+    authSession.set({} as Session);
 };
 
 // authUser.subscribe(value => {

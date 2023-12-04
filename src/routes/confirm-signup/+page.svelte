@@ -10,7 +10,6 @@
 
     onMount(() => {
         if (confirmationResult !== undefined) {
-            console.log("confirmationResult", confirmationResult);
             setHelperText(
                 false,
                 `${commonUtils.startCountdownWithMessage(

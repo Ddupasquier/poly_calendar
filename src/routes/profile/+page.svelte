@@ -53,8 +53,11 @@
     onMount(async () => {
         if ($storedAuthUser) {
             selectedOption = "profile";
-            profileData = await getUserProfile($storedAuthUser);
-            settingsData = await getUserSettings($storedAuthUser);
+
+            if (authUserPresent) {
+                profileData = await getUserProfile($storedAuthUser);
+                settingsData = await getUserSettings($storedAuthUser);
+            }
         }
 
         if (profileData) {

@@ -1,6 +1,8 @@
 import { supabase } from "$lib/supabase";
 import { clearAuthUserAndSession, saveAuthUserAndSession, setHelperText } from "$lib/stores";
 import { commonUtils } from "$lib/utils";
+import { upsertUserProfile } from "$lib/services";
+import type { Provider } from "@supabase/supabase-js";
 
 export const signIn = async (email: string, password: string): Promise<void> => {
     try {
@@ -9,6 +11,23 @@ export const signIn = async (email: string, password: string): Promise<void> => 
             password,
         });
         handleAuthResult(result);
+    } catch (error) {
+        handleError(error);
+    }
+};
+
+export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
+    if (!provider) {
+        return;
+    }
+    try {
+        const result = await supabase.auth.signInWithOAuth({ provider });
+
+        if (result.error) {
+            handleError(result.error);
+        } else {
+            handleAuthResult(result);
+        }
     } catch (error) {
         handleError(error);
     }
@@ -23,7 +42,7 @@ export const signUp = async (email: string, password: string): Promise<void> => 
     }
 };
 
-export const logout = async () => {
+export const logout = async (): Promise<void> => {
     const { error } = await supabase.auth.signOut();
     if (error) {
         console.error("Error logging out:", error);
@@ -32,32 +51,45 @@ export const logout = async () => {
     }
 };
 
-const handleAuthResult = (result: any): void => {
-    const { data, error } = result;
+export const initializeAuthListener = (): void => {
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN") {
+            if (!session?.user) return;
+            saveAuthUserAndSession(session.user, session);
+            upsertUserProfile(session.user).catch(console.error);
+        } else if (event === "SIGNED_OUT") {
+            clearAuthUserAndSession();
+        }
+    });
+};
+
+const handleAuthResult = async (result: any): Promise<void> => {
+    const { user, session, error } = result;
 
     if (error) {
-        handleError(error);
-    } else if (data && !data.user) {
+        setHelperText(true, error.message);
+        return;
+    } else if (user) {
+        saveAuthUserAndSession(user, session); // Optionally handle the user profile here as well for non-OAuth
+    } else {
         setHelperText(false, "An email has been sent to you for verification!");
-    } else if (data && data.user) {
-        saveAuthUserAndSession(data.user, data.session);
     }
 };
+
+const handleError = (error: any): void => {
+    const rateLimitMatch = error.message.match(/after (\d+) seconds/);
+    if (rateLimitMatch) {
+        commonUtils.startCountdownWithMessage(parseInt(rateLimitMatch[1], 10), "Please try again in {timer} seconds.");
+    } else {
+        setHelperText(true, error.message);
+    }
+};
+
 
 const handleSignUpResult = (result: any): void => {
     if (result.data.user) {
         alert("Please check your email for a confirmation link.");
     } else {
         alert("Something went wrong. Please try again.");
-    }
-};
-
-const handleError = (error: any): void => {
-    console.error("Error:", error);
-    const rateLimitMatch = error.message.match(/after (\d+) seconds/);
-    if (rateLimitMatch) {
-        commonUtils.startCountdownWithMessage(parseInt(rateLimitMatch[1], 10), "Please try again in {timer} seconds.");
-    } else {
-        setHelperText(true, error.message);
     }
 };

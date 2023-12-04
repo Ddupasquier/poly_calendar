@@ -1,7 +1,13 @@
 <script lang="ts">
-	import { Layout } from "$lib/components";
-	import { siteName } from "../lib/constants";
 	import "./styles.scss";
+	import { Layout } from "$lib/components";
+	import { onMount } from "svelte";
+	import { siteName } from "../lib/constants";
+    import { initializeAuthListener } from "$lib/services";
+
+	onMount(() => {
+		initializeAuthListener()
+	});
 </script>
 
 <svelte:head>

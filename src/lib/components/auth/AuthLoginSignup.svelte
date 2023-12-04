@@ -1,19 +1,12 @@
 <script lang="ts">
     import { Button, Card } from "mysvelte-ui";
-    import { signUp, signIn } from "$lib/services";
+    import { signUp, signIn, handleOAuthLogin } from "$lib/services";
     import { helperTextStore as helperText } from "$lib/stores";
     import { colors } from "$lib/constants";
     import { Common } from "$lib/components";
 
     let email: string = "";
     let password: string = "";
-
-    // const handleOAuthLogin = async (provider: Provider) => {
-    //     // You need to enable the third party auth you want in Authentication > Settings
-    //     // Read more on: https://supabase.com/docs/guides/auth#third-party-logins
-    //     let { error } = await supabase.auth.signInWithOAuth({ provider });
-    //     if (error) console.log("Error: ", error.message);
-    // };
 </script>
 
 <Card background={colors["--color-bg-2"]}>
@@ -45,13 +38,13 @@
                 background={colors["--color-theme-2"]}>Sign In</Button
             >
         </div>
-        <!-- <div class="divider">
-                <span>Or continue with</span>
-            </div> -->
-        <!-- <div class="oauth-buttons">
-                <button on:click={() => handleOAuthLogin("github")}>GitHub</button>
-                <button on:click={() => handleOAuthLogin("google")}>Google</button>
-            </div> -->
+        <div class="divider">
+            <span>Or continue with</span>
+        </div>
+        <div class="oauth-buttons">
+            <!-- <button on:click={() => handleOAuthLogin("github")}>GitHub</button> -->
+            <button on:click={() => handleOAuthLogin("google")}>Google</button>
+        </div>
     </Card.Foot>
     {#if !!$helperText.text}
         <div class="helper-text">
@@ -73,18 +66,18 @@
         width: 100%;
     }
 
-    // .oauth-buttons {
-    //     button {
-    //         width: 70%;
-    //         margin: 0.75rem auto;
-    //         display: block;
-    //         padding: 0.5rem 1rem;
-    //         background-color: #007bff;
-    //         color: #fff;
-    //         border: none;
-    //         &:hover {
-    //             background-color: #0056b3;
-    //         }
-    //     }
-    // }
+    .oauth-buttons {
+        button {
+            width: 70%;
+            margin: 0.75rem auto;
+            display: block;
+            padding: 0.5rem 1rem;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            &:hover {
+                background-color: #0056b3;
+            }
+        }
+    }
 </style>
