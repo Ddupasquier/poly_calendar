@@ -8,8 +8,8 @@
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button } from "mysvelte-ui";
-    import Profile from "./profile-components/profile-tab-components/Profile.svelte";
-    import Settings from "./profile-components/settings-tab-components/Settings.svelte";
+    import Profile from "./components/profile-tab-components/Profile.svelte";
+    import Settings from "./components/settings-tab-components/Settings.svelte";
 
     import { Common, Auth } from "$lib/components";
 
