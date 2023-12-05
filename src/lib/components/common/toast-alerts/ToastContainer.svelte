@@ -2,9 +2,8 @@
     import { toastMessages, removeToast } from "$lib/stores";
     import ToastAlertDefault from "./ToastAlertDefault.svelte";
 
-    const handleToastClose = (event: { detail: { id: any } }) => {
-        const { id } = event.detail;
-        removeToast(id);
+    const handleRemove = (event: CustomEvent) => {
+        removeToast(event.detail.id);
     };
 </script>
 
@@ -14,7 +13,7 @@
             id={toast.id}
             message={toast.message}
             options={toast.options}
-            on:close={handleToastClose}
+            on:remove={handleRemove}
         />
     {/each}
 </div>

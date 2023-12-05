@@ -4,48 +4,48 @@
     import { fly } from "svelte/transition";
 
     export let id: number;
-    console.log(`ToastAlertDefault created: ${id}`);
     export let message: string;
     export let options: ToastAlertOptions;
-    let { duration, closable, style, openTilClosed } = options;
+    let { closable, style, openTilClosed } = options;
+    let isOpen = true;
+    let localMessage = message;
 
     const dispatcher = createEventDispatcher();
 
     const close = () => {
-        isOpen = false;
-        dispatcher("close", { id });
+        if (isOpen) {
+            isOpen = false;
+        }
     };
 
     const handleOutroEnd = () => {
-        console.log(`Transition ended for toast: ${id}`);
         dispatcher("remove", { id });
+        localMessage = "";
     };
 
-    let isOpen = true;
+    onDestroy(() => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+    });
+
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     $: {
-        ({ duration, closable, style, openTilClosed } = options);
-
         if (timeoutId !== undefined) {
             clearTimeout(timeoutId);
             timeoutId = undefined;
         }
 
-        if (!openTilClosed) {
-            timeoutId = setTimeout(() => {
-                isOpen = false;
-                dispatcher("close", { id });
-            }, duration);
+        if (!openTilClosed && isOpen) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(close, options.duration ?? 3000);
+        }
+
+        if (message !== localMessage && message !== undefined) {
+            localMessage = message;
         }
     }
-
-    onDestroy(() => {
-        console.log(`Destroying toast: ${id}`);
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-    });
 </script>
 
 {#if isOpen}
@@ -56,7 +56,7 @@
         out:fly={{ y: -300, duration: transitionDuration }}
         on:outroend={handleOutroEnd}
     >
-        {message}
+        {localMessage}
         {#if closable}
             <button on:click={close}>Close</button>
         {/if}

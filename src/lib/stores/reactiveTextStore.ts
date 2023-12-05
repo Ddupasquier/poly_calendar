@@ -20,21 +20,14 @@ export const toastMessages = writable<ToastAlert[]>([]);
 
 export const transitionDuration = 500;
 
-export const addToast = (message: string, options: Omit<ToastAlertOptions, 'id'>) => {
+export const addToast = (message: string, options: ToastAlertOptions) => {
     const id = Math.floor(Math.random() * 10000);
     toastMessages.update(toasts => [
         ...toasts,
         { id, message, options }
     ]);
-
-    if (!options.openTilClosed) {
-        const duration = options.duration || 3000;
-        setTimeout(() => {
-            removeToast(id);
-        }, duration + transitionDuration);
-    }
 }
 
 export const removeToast = (id: number) => {
     toastMessages.update(toasts => toasts.filter(toast => toast.id !== id));
-}
+};
