@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { transitionDuration } from "$lib/stores";
     import { createEventDispatcher, onDestroy } from "svelte";
     import { fly } from "svelte/transition";
 
@@ -15,6 +16,11 @@
         dispatcher("close", { id });
     };
 
+    const handleOutroEnd = () => {
+        console.log(`Transition ended for toast: ${id}`);
+        dispatcher("remove", { id });
+    };
+
     let isOpen = true;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -29,7 +35,7 @@
         if (!openTilClosed) {
             timeoutId = setTimeout(() => {
                 isOpen = false;
-                dispatcher('close', { id });
+                dispatcher("close", { id });
             }, duration);
         }
     }
@@ -46,12 +52,9 @@
     <div
         class="toast"
         {style}
-        in:fly={{ x: 300, duration: 500 }}
-        out:fly={{ y: -300, duration: 500 }}
-        on:outroend={() => {
-            console.log(`Transition ended for toast: ${id}`);
-            close();
-        }}
+        in:fly={{ x: 300, duration: transitionDuration }}
+        out:fly={{ y: -300, duration: transitionDuration }}
+        on:outroend={handleOutroEnd}
     >
         {message}
         {#if closable}

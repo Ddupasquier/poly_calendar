@@ -38,7 +38,7 @@
 	<button
 		on:click={() =>
 			addToast("New message 2", {
-				duration: 5000,
+				duration: 1000,
 				closable: true,
 			})}
 	>

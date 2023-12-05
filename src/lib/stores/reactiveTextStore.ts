@@ -18,6 +18,8 @@ export const setHelperText = (error: boolean, text: string | null): void => {
 
 export const toastMessages = writable<ToastAlert[]>([]);
 
+export const transitionDuration = 500;
+
 export const addToast = (message: string, options: Omit<ToastAlertOptions, 'id'>) => {
     const id = Math.floor(Math.random() * 10000);
     toastMessages.update(toasts => [
@@ -27,7 +29,6 @@ export const addToast = (message: string, options: Omit<ToastAlertOptions, 'id'>
 
     if (!options.openTilClosed) {
         const duration = options.duration || 3000;
-        const transitionDuration = 500;
         setTimeout(() => {
             removeToast(id);
         }, duration + transitionDuration);
