@@ -6,45 +6,27 @@
     export let id: number;
     export let message: string;
     export let options: ToastAlertOptions;
-    let { closable, style, openTilClosed } = options;
+    let { closable, style, openTilClosed, duration } = options;
     let isOpen = true;
-    let localMessage = message;
 
     const dispatcher = createEventDispatcher();
 
     const close = () => {
-        if (isOpen) {
-            isOpen = false;
-        }
+        isOpen = false;
     };
 
     const handleOutroEnd = () => {
         dispatcher("remove", { id });
-        localMessage = "";
     };
 
-    onDestroy(() => {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-    });
+    if (!openTilClosed) {
+        const autoCloseTimeout = setTimeout(() => {
+            isOpen = false;
+        }, duration || 3000);
 
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    $: {
-        if (timeoutId !== undefined) {
-            clearTimeout(timeoutId);
-            timeoutId = undefined;
-        }
-
-        if (!openTilClosed && isOpen) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(close, options.duration ?? 3000);
-        }
-
-        if (message !== localMessage && message !== undefined) {
-            localMessage = message;
-        }
+        onDestroy(() => {
+            clearTimeout(autoCloseTimeout);
+        });
     }
 </script>
 
@@ -56,7 +38,7 @@
         out:fly={{ y: -300, duration: transitionDuration }}
         on:outroend={handleOutroEnd}
     >
-        {localMessage}
+        {message}
         {#if closable}
             <button on:click={close}>Close</button>
         {/if}
