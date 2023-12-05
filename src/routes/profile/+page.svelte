@@ -8,8 +8,7 @@
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button } from "mysvelte-ui";
-    import Profile from "./components/profile-tab-components/Profile.svelte";
-    import Settings from "./components/settings-tab-components/Settings.svelte";
+    import { Profile, Settings } from "./components";
 
     import { Common, Auth } from "$lib/components";
 
@@ -21,8 +20,7 @@
     import type { ComponentProps } from "./types";
 
     // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { colors } from "$lib/constants";
-    import { navigationButtons } from "./constants/navigation-buttons";
+    import { navigationButtons, colors } from "$lib/constants";
 
     // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import {
@@ -32,7 +30,7 @@
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";
-    import { isObjectEmpty } from "$lib/utils/common-utils";
+    import { isObjectEmpty } from "$lib/utils";
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 

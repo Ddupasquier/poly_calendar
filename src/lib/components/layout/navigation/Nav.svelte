@@ -2,7 +2,7 @@
 	import { page } from "$app/stores";
 	import { Layout } from "$lib/components";
 	import { authUser } from "$lib/stores";
-	import { isObjectEmpty } from "$lib/utils/common-utils";
+	import { isObjectEmpty } from "$lib/utils";
 
 	$: currentTab = $page.url.pathname;
 	$: authUserPresent = $authUser && !isObjectEmpty($authUser);

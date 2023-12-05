@@ -1,0 +1,1 @@
+export type EventTypesModel = "all" | "meeting" | "appointment" | "birthday";

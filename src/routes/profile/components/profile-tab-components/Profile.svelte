@@ -25,7 +25,7 @@
     } from "$lib/stores";
 
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
-    import { dateTimeUtils } from "$lib/utils";
+    import { checkDate, formatDate } from "$lib/utils";
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
@@ -41,8 +41,8 @@
                 profileData[item.column as keyof UserProfileModel];
             if (item.type === "date") {
                 const dateString = profileValue as string;
-                return dateTimeUtils.checkDate(dateString)
-                    ? dateTimeUtils.formatDate(dateString)
+                return checkDate(dateString)
+                    ? formatDate(dateString)
                     : "";
             } else if (
                 typeof profileValue === "string" ||
@@ -58,8 +58,8 @@
 
             if (item.type === "date") {
                 const dateString = authUserValue as string;
-                return dateTimeUtils.checkDate(dateString)
-                    ? dateTimeUtils.formatDate(dateString)
+                return checkDate(dateString)
+                    ? formatDate(dateString)
                     : "";
             } else if (item.label === "Account Status") {
                 return `${

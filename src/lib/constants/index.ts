@@ -1,4 +1,5 @@
-export {colors} from './palette';
+export { colors } from './common/palette';
+
 export {
     siteName,
     siteUrl,
@@ -16,4 +17,6 @@ export {
     githubUrl,
     linkedinUsername,
     linkedinUrl
-} from './site-labels';
+} from './common/site-labels';
+
+export { navigationButtons } from './profile/navigation-buttons'; 

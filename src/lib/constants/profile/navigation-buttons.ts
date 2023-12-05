@@ -1,4 +1,4 @@
-import { Profile, Settings } from '../components';
+import { Profile, Settings } from '../../../routes/profile/components';
 
 const navigationButtons = [
     {

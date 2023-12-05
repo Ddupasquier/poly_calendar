@@ -1,7 +1,7 @@
 import { supabase } from "$lib/supabase";
 import type { AuthUser } from "@supabase/supabase-js";
 
-import { dateTimeUtils } from "$lib/utils";
+import { checkDate } from "$lib/utils";
 
 export const upsertUserProfile = async (authUserData: AuthUser | null) => {
     if (!authUserData) {
@@ -44,7 +44,7 @@ export const getUserProfile = async (authUserData: AuthUser) => {
     }
 
     if (data && data.created_at) {
-        data.created_at = dateTimeUtils.checkDate(data.created_at as string) as string;
+        data.created_at = checkDate(data.created_at as string) as string;
     }
 
     return data;
@@ -56,7 +56,7 @@ export const updateSingleUserProfileField = async (authUserData: AuthUser | null
     }
 
     if (formObject.field === "birthday") {
-        formObject.value = dateTimeUtils.checkDate(formObject.value as string) as string;
+        formObject.value = checkDate(formObject.value as string) as string;
     }
 
     const { data, error } = await supabase

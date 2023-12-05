@@ -1,23 +1,5 @@
-/*===== COMMON UTILS =====*/
-import { lighten, darken, getConfirmedStatus, startCountdownWithMessage, stopCountdown } from "./common-utils";
+export {lighten, darken, getConfirmedStatus, startCountdownWithMessage, stopCountdown, isObjectEmpty} from "./common/common-utils";
 
-export const commonUtils = {
-    lighten,
-    darken,
-    getConfirmedStatus,
-    startCountdownWithMessage,
-    stopCountdown
-}
+export {checkDate, formatDate} from "./common/date-time-utils";
 
-/*===== DATE/TIME UTILS =====*/
-import { checkDate, formatDate } from "./date-time-utils";
-
-export const dateTimeUtils = {
-    checkDate,
-    formatDate
-}
-
-/*===== FORM UTILS =====*/
-import { } from "./form-utils";
-
-export const formUtils = {}
+export {} from "./common/form-utils";
