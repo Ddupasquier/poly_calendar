@@ -17,7 +17,7 @@ const processAuthResult = async (result: any): Promise<void> => {
     }
 };
 
-// Unified user session handling
+// Common function to handle user session
 const handleUserSession = async (user: User, session: Session): Promise<void> => {
     saveAuthUserAndSession(user, session);
 
@@ -25,16 +25,21 @@ const handleUserSession = async (user: User, session: Session): Promise<void> =>
         handleError(error);
     });
 
-    if (user.app_metadata?.confirmation_sent_at) {
-        setHelperText(false, "A confirmation email has been sent. Please check your inbox.");
+    welcomeMessage(user);
+};
+
+// Welcome message function
+const welcomeMessage = (user: User): void => {
+    const provider = user.app_metadata?.provider;
+    const username = user.user_metadata?.full_name || user.user_metadata?.username;
+    const isNewUser = user.created_at === user.last_sign_in_at;
+
+    if (isNewUser && provider === 'google') {
+        const welcomeMessage = `First time ${provider} sign in as ${username || user.email}`;
+        addToast(welcomeMessage, { duration: 5000, closable: true });
     } else {
-        // Determine the provider used for logging in
-        const provider = user.app_metadata?.provider;
-        if (provider) {
-            addToast(`Logged in successfully with ${provider}`, { duration: 5000, closable: true });
-        } else {
-            addToast("Logged in successfully", { duration: 5000, closable: true });
-        }
+        const welcomeBackMessage = `Welcome back, ${username || user.email}!`;
+        addToast(welcomeBackMessage, { duration: 5000, closable: true });
     }
 };
 
@@ -71,7 +76,14 @@ export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
 export const signUp = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signUp({ email, password });
-        await processAuthResult(result);
+        const { error, data } = result;
+        // After signing up, inform the user to check their email.
+        if (data.user && !error) {
+            setHelperText(false, "A confirmation email has been sent. Please check your inbox.");
+        } else {
+            // Handle any errors that may occur during sign up
+            handleError(error);
+        }
     } catch (error) {
         handleError(error);
     }
