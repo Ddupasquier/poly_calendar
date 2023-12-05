@@ -31,10 +31,12 @@ export const Layout = {
 /*===== AUTH COMPONENTS =====*/
 import AuthEmailConfirmation from "./auth/AuthEmailConfirmation.svelte";
 import AuthLoginSignup from "./auth/AuthLoginSignup.svelte";
+import LoginDivider from "./auth/LoginDivider.svelte";
 
 export const Auth = {
     AuthEmailConfirmation,
-    AuthLoginSignup
+    AuthLoginSignup,
+    LoginDivider
 }
 
 /*===== IMAGES =====*/

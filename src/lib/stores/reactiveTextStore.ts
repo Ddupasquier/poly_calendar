@@ -22,24 +22,18 @@ export const addToast = (message: string, options: Omit<ToastAlertOptions, 'id'>
     const id = Math.floor(Math.random() * 10000);
     toastMessages.update(toasts => [
         ...toasts,
-        {
-            id,
-            message,
-            options: {
-                duration: options.duration || 3000,
-                closable: options.closable || true,
-                openTilClosed: options.openTilClosed || false,
-                style: options.style || 'success',
-            }
-        }
+        { id, message, options }
     ]);
 
-    const duration = options.duration || 3000;
-    setTimeout(() => {
-        removeToast(id);
-    }, duration);
+    if (!options.openTilClosed) {
+        const duration = options.duration || 3000;
+        const transitionDuration = 500;
+        setTimeout(() => {
+            removeToast(id);
+        }, duration + transitionDuration);
+    }
 }
 
-const removeToast = (id: number) => {
+export const removeToast = (id: number) => {
     toastMessages.update(toasts => toasts.filter(toast => toast.id !== id));
 }

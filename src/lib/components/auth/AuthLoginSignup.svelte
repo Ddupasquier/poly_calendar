@@ -4,6 +4,7 @@
     import { helperTextStore as helperText } from "$lib/stores";
     import { colors } from "$lib/constants";
     import { Common } from "$lib/components";
+    import LoginDivider from "./LoginDivider.svelte";
 
     let email: string = "";
     let password: string = "";
@@ -38,12 +39,14 @@
                 background={colors["--color-theme-2"]}>Sign In</Button
             >
         </div>
-        <div class="divider">
-            <span>Or continue with</span>
-        </div>
+        <LoginDivider />
         <div class="oauth-buttons">
             <!-- <button on:click={() => handleOAuthLogin("github")}>GitHub</button> -->
-            <button on:click={() => handleOAuthLogin("google")}>Google</button>
+            <Button
+                on:click={() => handleOAuthLogin("google")}
+                background={colors["--color-theme-2-D1"]}
+                style="width: 100%">Google</Button
+            >
         </div>
     </Card.Foot>
     {#if !!$helperText.text}

@@ -70,7 +70,7 @@ const handleAuthResult = async (result: any): Promise<void> => {
         setHelperText(true, error.message);
         return;
     } else if (user) {
-        saveAuthUserAndSession(user, session); // Optionally handle the user profile here as well for non-OAuth
+        saveAuthUserAndSession(user, session);
     } else {
         setHelperText(false, "An email has been sent to you for verification!");
     }

@@ -29,15 +29,15 @@
 
 <header>
 	<nav>
-		{#if authUserPresent}
-			{#each tabs as tab}
+		{#each tabs as tab}
+			{#if authUserPresent || (!authUserPresent && tab.path === "/profile")}
 				<Layout.NavTab
 					tabName={tab.name}
 					tabPath={tab.path}
 					{currentTab}
 				/>
-			{/each}
-		{/if}
+			{/if}
+		{/each}
 	</nav>
 	<div class="bars">
 		<div class="bar1" />

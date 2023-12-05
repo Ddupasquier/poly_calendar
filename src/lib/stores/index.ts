@@ -1,2 +1,2 @@
-export { helperTextStore, setHelperText, toastMessages, addToast } from "./reactiveTextStore";
+export { helperTextStore, setHelperText, toastMessages, addToast, removeToast } from "./reactiveTextStore";
 export { authUser, authSession, saveAuthUserAndSession, clearAuthUserAndSession, checkLocalStorageForVerificationStatus } from "./userStore";

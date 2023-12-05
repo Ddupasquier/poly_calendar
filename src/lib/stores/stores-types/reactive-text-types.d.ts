@@ -4,8 +4,8 @@ interface HelperText {
 }
 
 interface ToastAlertOptions {
-    duration: number;
-    closable: boolean;
+    duration?: number;
+    closable?: boolean;
     openTilClosed?: boolean;
     style?: string;
     // component?: SvelteComponent | null; // Uncomment if needed

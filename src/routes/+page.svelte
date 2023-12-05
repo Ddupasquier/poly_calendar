@@ -4,7 +4,7 @@
 	// Supabase imports: Authentication and database connections for user management and data retrieval.
 
 	// UI components: Custom Svelte components and UI elements from design system libraries.
-	import { toastMessages, addToast } from "$lib/stores";
+	import { addToast } from "$lib/stores";
 	import { Common } from "$lib/components";
 
 	// Services: Business logic, API calls, and other service-related interactions.
@@ -21,7 +21,7 @@
 	// Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 </script>
 
-<Common.Toast toastMessages={$toastMessages} />
+<Common.Toast />
 
 <div class="container">
 	WELCOME TO {siteName}!!!
@@ -29,8 +29,8 @@
 	<button
 		on:click={() =>
 			addToast("New message", {
-				duration: 5000,
 				closable: true,
+				openTilClosed: true,
 			})}
 	>
 		Show Toast
