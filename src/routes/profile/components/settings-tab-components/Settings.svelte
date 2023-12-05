@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { settingsStructure } from "./settings-sections-and-info";
-
-    import type { UserSettingsModel } from "$lib/models";
+    import { Common } from "$lib/components";
     import SettingsSection from "./SettingsSection.svelte";
     import SettingsInfoItem from "./SettingsInfoItem.svelte";
-    import { Common } from "$lib/components";
+    import { settingsStructure } from "./settings-sections-and-info";
+    
+    import type { UserSettingsModel } from "$lib/models";
+
     import { colors } from "$lib/constants";
 
     export let settingsData: UserSettingsModel | undefined;

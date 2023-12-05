@@ -1,23 +1,12 @@
 <script lang="ts">
-    // Svelte-specific imports: Framework imports for lifecycle and reactivity.
-
-    // Supabase imports: Authentication and database connections for user management and data retrieval.
-
-    // UI components: Custom Svelte components and UI elements from design system libraries.
-    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
     import { Toggle } from "mysvelte-ui";
 
-    // Services: Business logic, API calls, and other service-related interactions.
     import { updateSingleUserSettingsField } from "$lib/services";
-
-    // Models: Type definitions and interfaces for structured data representation.
-
-    // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-
-    // Store: Svelte stores and reactive variables for state management.
     import { authUser } from "$lib/stores";
     import { colors } from "$lib/constants";
+
+    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+    import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
     export let icon: IconDefinition;
     export let label: string;

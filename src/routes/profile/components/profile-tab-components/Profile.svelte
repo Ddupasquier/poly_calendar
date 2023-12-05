@@ -1,33 +1,20 @@
 <script lang="ts">
-    // Svelte-specific imports: Framework imports for lifecycle and reactivity.
-
-    // Supabase imports: Authentication and database connections for user management and data retrieval.
     import type { AuthUser } from "@supabase/supabase-js";
 
-    // UI components: Custom Svelte components and UI elements from design system libraries.
     import { Common } from "$lib/components";
     import ProfileSection from "./ProfileSection.svelte";
     import ProfileInfoItem from "./ProfileInfoItem.svelte";
-
-    // Services: Business logic, API calls, and other service-related interactions.
-
-    // Models: Type definitions and interfaces for structured data representation.
-    import type { UserProfileModel } from "$lib/models";
     import { profileStructure } from "./profile-sections-and-info";
-
-    // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
-    import { colors } from "$lib/constants";
-
-    // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
+    
+    import type { UserProfileModel } from "$lib/models";
     import {
         authUser,
         checkLocalStorageForVerificationStatus,
     } from "$lib/stores";
 
-    // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
+    import { colors } from "$lib/constants";
+    
     import { checkDate, formatDate } from "$lib/utils";
-
-    // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
     export let profileData: UserProfileModel | undefined = undefined;
 
@@ -41,9 +28,7 @@
                 profileData[item.column as keyof UserProfileModel];
             if (item.type === "date") {
                 const dateString = profileValue as string;
-                return checkDate(dateString)
-                    ? formatDate(dateString)
-                    : "";
+                return checkDate(dateString) ? formatDate(dateString) : "";
             } else if (
                 typeof profileValue === "string" ||
                 typeof profileValue === "number" ||
@@ -58,9 +43,7 @@
 
             if (item.type === "date") {
                 const dateString = authUserValue as string;
-                return checkDate(dateString)
-                    ? formatDate(dateString)
-                    : "";
+                return checkDate(dateString) ? formatDate(dateString) : "";
             } else if (item.label === "Account Status") {
                 return `${
                     checkLocalStorageForVerificationStatus()

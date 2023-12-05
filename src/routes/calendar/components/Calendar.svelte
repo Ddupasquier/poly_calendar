@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AgendaView, DayView, MonthView, WeekView } from "../components";
+    import { AgendaView, DayView, MonthView, WeekView } from "..";
     import {
         filterType,
         filteredEvents,

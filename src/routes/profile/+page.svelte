@@ -8,7 +8,7 @@
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button } from "mysvelte-ui";
-    import { Profile, Settings } from "./components";
+    import { Profile, Settings } from ".";
 
     import { Common, Auth } from "$lib/components";
 

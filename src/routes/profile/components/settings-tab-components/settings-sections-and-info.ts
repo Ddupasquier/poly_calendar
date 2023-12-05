@@ -1,3 +1,5 @@
+import { colors } from "$lib/constants";
+import type { UserSettingsModel } from "$lib/models";
 import {
     faCalendar,
     faMailBulk,
@@ -6,11 +8,9 @@ import {
     faPersonThroughWindow,
     faPaintBrush,
 } from "@fortawesome/free-solid-svg-icons";
-import { colors } from "$lib/constants";
 import type {
     IconDefinition
 } from "@fortawesome/fontawesome-svg-core";
-import type { UserSettingsModel } from "$lib/models";
 
 interface InfoSection {
     label: string;
