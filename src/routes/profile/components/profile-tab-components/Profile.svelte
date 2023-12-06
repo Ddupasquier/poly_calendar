@@ -2,10 +2,8 @@
     import type { AuthUser } from "@supabase/supabase-js";
 
     import { Common } from "$lib/components";
-    import ProfileSection from "./ProfileSection.svelte";
-    import ProfileInfoItem from "./ProfileInfoItem.svelte";
-    import { profileStructure } from "./profile-sections-and-info";
-    
+    import { ProfileSection, ProfileInfoItem, profileStructure } from "../..";
+
     import type { UserProfileModel } from "$lib/models";
     import {
         authUser,
@@ -13,7 +11,7 @@
     } from "$lib/stores";
 
     import { colors } from "$lib/constants";
-    
+
     import { checkDate, formatDate } from "$lib/utils";
 
     export let profileData: UserProfileModel | undefined = undefined;

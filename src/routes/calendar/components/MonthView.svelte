@@ -1,13 +1,29 @@
 <script lang="ts">
-  import { startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
-    import type { CalendarEvent } from '../types';
+  import {
+    startOfMonth,
+    endOfMonth,
+    eachDayOfInterval,
+    isSameDay,
+    getDay,
+    addDays,
+  } from "date-fns";
+  import type { CalendarEvent } from "../types";
+  import { WeekdayBar } from "..";
+  import { filterType, setCurrentView, setFilterType } from "$lib/stores";
 
   export let events: CalendarEvent[] = [];
 
-  // Assuming you want to show the current month
   const now = new Date();
   const start = startOfMonth(now);
   const end = endOfMonth(now);
+  const firstDayOfMonth = getDay(start);
+  let daysBeforeStartOfMonth: Date[] = [];
+
+  if (firstDayOfMonth !== 0) {
+    for (let i = firstDayOfMonth; i > 0; i--) {
+      daysBeforeStartOfMonth.push(addDays(start, -i));
+    }
+  }
   const daysInMonth = eachDayOfInterval({ start, end });
 
   function eventFallsOnDay(event: CalendarEvent, day: Date): boolean {
@@ -15,7 +31,14 @@
   }
 </script>
 
+<WeekdayBar />
 <div class="month-view">
+  {#each daysBeforeStartOfMonth as padDay}
+    <div class="pad">
+      <div class="slash" />
+      <h3>{padDay.getDate()}</h3>
+    </div>
+  {/each}
   {#each daysInMonth as day}
     <div class="day">
       <h3>{day.getDate()}</h3>
@@ -30,3 +53,89 @@
     </div>
   {/each}
 </div>
+
+<style lang="scss">
+  .month-view {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    padding: 1rem 1.5rem;
+    background-color: hsl(0, 0%, 97%);
+    border-radius: var(--primary-border-radius);
+  }
+
+  .day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border-radius: var(--primary-border-radius);
+    transition: background-color 0.2s ease-in-out;
+    min-height: 3rem;
+
+    h3 {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      margin: 0;
+      width: 100%;
+      background-color: var(--color-theme-1-L1);
+      color: #333;
+      text-align: center;
+      border-radius: 4px 4px 0 0;
+      padding: 0.25rem 0.5rem;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    .event {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      background-color: var(--color-theme-2-L3);
+      border: 1px solid var(--color-theme-2-L2);
+      border-radius: 4px;
+      box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
+      transition: background-color 0.2s ease-in-out;
+      cursor: pointer;
+
+      h2 {
+        font-size: 0.85rem;
+        margin: 0;
+      }
+
+      &:hover {
+        background-color: var(--color-theme-2-L2);
+      }
+    }
+  }
+
+  .pad {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    position: relative;
+    background-color: hsl(0, 0%, 90%);
+    border-radius: var(--primary-border-radius);
+    overflow: hidden;
+    box-shadow: none;
+
+    .slash {
+      position: absolute;
+      align-self: center;
+      justify-self: center;
+      width: 5px;
+      height: 150px;
+      background-color: hsl(0, 0%, 97%);
+      margin-right: 3.7rem;
+      transform: rotate(-60deg);
+    }
+
+    h3 {
+      user-select: none;
+      color: hsl(0, 0%, 0%);
+      margin: 0;
+      padding: 0.25rem;
+      z-index: 1;
+    }
+  }
+</style>

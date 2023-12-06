@@ -8,7 +8,6 @@ interface ToastAlertOptions {
     closable?: boolean;
     openTilClosed?: boolean;
     style?: string;
-    // component?: SvelteComponent | null; // Uncomment if needed
 }
 
 interface ToastAlert {

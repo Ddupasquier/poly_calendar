@@ -1,9 +1,7 @@
 <script lang="ts">
     import { Common } from "$lib/components";
-    import SettingsSection from "./SettingsSection.svelte";
-    import SettingsInfoItem from "./SettingsInfoItem.svelte";
-    import { settingsStructure } from "./settings-sections-and-info";
-    
+    import { SettingsSection, SettingsInfoItem, settingsStructure } from "../..";
+
     import type { UserSettingsModel } from "$lib/models";
 
     import { colors } from "$lib/constants";

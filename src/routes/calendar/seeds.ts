@@ -1,4 +1,4 @@
-import type { CalendarEvent } from './types';
+import type{ CalendarEvent } from './types';
 
 export const calendarEvents: CalendarEvent[] = [
     {

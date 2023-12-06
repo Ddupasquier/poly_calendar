@@ -4,6 +4,7 @@
 	$terracotta: hsl(13, 69%, 63%);
 	$jade-green: hsl(168, 76%, 36%);
 
+	// Base colors
 	--color-bg-0: hsl(215, 8%, 55%);
 	/* Basalt Gray */
 	--color-bg-1: hsl(204, 64%, 44%);
@@ -12,16 +13,38 @@
 	/* Marble White */
 	--color-theme-1: #{$terracotta};
 	/* Terracotta */
-	--color-theme-1-D1: #{darken($terracotta, 10%)};
-	/* Slightly darker Terracotta */
-	--color-theme-1-L1: #{lighten($terracotta, 10%)};
-	/* Slightly lighter Terracotta */
 	--color-theme-2: #{$jade-green};
 	/* Jade Green */
+
+	// Terracotta variations
+	--color-theme-1-D1: #{darken($terracotta, 10%)};
+	/* Slightly darker Terracotta */
+	--color-theme-1-D2: #{darken($terracotta, 20%)};
+	/* Darker Terracotta */
+	--color-theme-1-D3: #{darken($terracotta, 30%)};
+	/* Even darker Terracotta */
+	--color-theme-1-L1: #{lighten($terracotta, 10%)};
+	/* Slightly lighter Terracotta */
+	--color-theme-1-L2: #{lighten($terracotta, 20%)};
+	/* Lighter Terracotta */
+	--color-theme-1-L3: #{lighten($terracotta, 30%)};
+	/* Even lighter Terracotta */
+
+	// Jade Green variations
 	--color-theme-2-D1: #{darken($jade-green, 10%)};
 	/* Slightly darker Jade Green */
+	--color-theme-2-D2: #{darken($jade-green, 20%)};
+	/* Darker Jade Green */
+	--color-theme-2-D3: #{darken($jade-green, 30%)};
+	/* Even darker Jade Green */
 	--color-theme-2-L1: #{lighten($jade-green, 10%)};
 	/* Slightly lighter Jade Green */
+	--color-theme-2-L2: #{lighten($jade-green, 20%)};
+	/* Lighter Jade Green */
+	--color-theme-2-L3: #{lighten($jade-green, 30%)};
+	/* Even lighter Jade Green */
+
+	// Text colors
 	--color-text-dark: hsl(0, 0%, 8%);
 	/* Lava Stone */
 	--color-text-light: hsl(240, 1%, 31%);
@@ -34,6 +57,7 @@
 	$rust-red: hsl(6, 78%, 57%);
 	$sunset-orange: hsl(37, 90%, 51%);
 
+	// Base colors
 	--color-bg-0: hsl(184, 9%, 62%);
 	/* Concrete Gray */
 	--color-bg-1: hsl(216, 38%, 47%);
@@ -42,16 +66,38 @@
 	/* Sandy Beige */
 	--color-theme-1: #{$rust-red};
 	/* Rust Red */
-	--color-theme-1-D1: #{darken($rust-red, 10%)};
-	/* Slightly darker Rust Red */
-	--color-theme-1-L1: #{lighten($rust-red, 10%)};
-	/* Slightly lighter Rust Red */
 	--color-theme-2: #{$sunset-orange};
 	/* Sunset Orange */
+
+	// Rust Red variations
+	--color-theme-1-D1: #{darken($rust-red, 10%)};
+	/* Slightly darker Rust Red */
+	--color-theme-1-D2: #{darken($rust-red, 20%)};
+	/* Darker Rust Red */
+	--color-theme-1-D3: #{darken($rust-red, 30%)};
+	/* Even darker Rust Red */
+	--color-theme-1-L1: #{lighten($rust-red, 10%)};
+	/* Slightly lighter Rust Red */
+	--color-theme-1-L2: #{lighten($rust-red, 20%)};
+	/* Lighter Rust Red */
+	--color-theme-1-L3: #{lighten($rust-red, 30%)};
+	/* Even lighter Rust Red */
+
+	// Sunset Orange variations
 	--color-theme-2-D1: #{darken($sunset-orange, 10%)};
 	/* Slightly darker Sunset Orange */
+	--color-theme-2-D2: #{darken($sunset-orange, 20%)};
+	/* Darker Sunset Orange */
+	--color-theme-2-D3: #{darken($sunset-orange, 30%)};
+	/* Even darker Sunset Orange */
 	--color-theme-2-L1: #{lighten($sunset-orange, 10%)};
 	/* Slightly lighter Sunset Orange */
+	--color-theme-2-L2: #{lighten($sunset-orange, 20%)};
+	/* Lighter Sunset Orange */
+	--color-theme-2-L3: #{lighten($sunset-orange, 30%)};
+	/* Even lighter Sunset Orange */
+
+	// Text color
 	--color-text: hsl(210, 29%, 24%);
 	/* Midnight Black */
 }
@@ -60,6 +106,7 @@
 	$charcoal-black: hsl(193, 9%, 19%);
 	$oyster: hsl(67, 54%, 48%);
 
+	// Base colors
 	--color-bg-0: hsl(196, 7%, 42%);
 	/* Smog Gray */
 	--color-bg-1: hsl(198, 12%, 73%);
@@ -68,16 +115,38 @@
 	/* Ash White */
 	--color-theme-1: #{$charcoal-black};
 	/* Charcoal Black */
-	--color-theme-1-D1: #{darken($charcoal-black, 10%)};
-	/* Slightly darker Charcoal Black */
-	--color-theme-1-L1: #{lighten($charcoal-black, 10%)};
-	/* Slightly lighter Charcoal Black */
 	--color-theme-2: #{$oyster};
 	/* Oyster */
+
+	// Charcoal Black variations
+	--color-theme-1-D1: #{darken($charcoal-black, 10%)};
+	/* Slightly darker Charcoal Black */
+	--color-theme-1-D2: #{darken($charcoal-black, 20%)};
+	/* Darker Charcoal Black */
+	--color-theme-1-D3: #{darken($charcoal-black, 30%)};
+	/* Even darker Charcoal Black */
+	--color-theme-1-L1: #{lighten($charcoal-black, 10%)};
+	/* Slightly lighter Charcoal Black */
+	--color-theme-1-L2: #{lighten($charcoal-black, 20%)};
+	/* Lighter Charcoal Black */
+	--color-theme-1-L3: #{lighten($charcoal-black, 30%)};
+	/* Even lighter Charcoal Black */
+
+	// Oyster variations
 	--color-theme-2-D1: #{darken($oyster, 10%)};
 	/* Slightly darker Oyster */
+	--color-theme-2-D2: #{darken($oyster, 20%)};
+	/* Darker Oyster */
+	--color-theme-2-D3: #{darken($oyster, 30%)};
+	/* Even darker Oyster */
 	--color-theme-2-L1: #{lighten($oyster, 10%)};
 	/* Slightly lighter Oyster */
+	--color-theme-2-L2: #{lighten($oyster, 20%)};
+	/* Lighter Oyster */
+	--color-theme-2-L3: #{lighten($oyster, 30%)};
+	/* Even lighter Oyster */
+
+	// Text color
 	--color-text: hsl(206, 17%, 24%);
 	/* Graphite Shadow */
 }
