@@ -1,17 +1,17 @@
 <script lang="ts">
     import { AgendaView, DayView, MonthView, WeekView } from "..";
-    import { filteredEvents, currentView } from "$lib/stores";
+    import { filteredEvents, currentView, numberLimitedEvents } from "$lib/stores";
 </script>
 
 <div class="calendar-body">
     {#if $currentView === "day"}
-        <DayView events={$filteredEvents} />
+        <DayView events={$numberLimitedEvents} />
     {:else if $currentView === "week"}
         <WeekView events={$filteredEvents} />
     {:else if $currentView === "month"}
         <MonthView events={$filteredEvents} />
-    {:else if $currentView === "agenda"}
-        <AgendaView events={$filteredEvents} />
+    <!-- {:else if $currentView === "agenda"}
+        <AgendaView events={$numberLimitedEvents} /> -->
     {/if}
 </div>
 

@@ -3,7 +3,6 @@
   import type { CalendarEvent } from "../types";
 
   export let events: CalendarEvent[] = [];
-  // Logic to filter events for the specific day
 </script>
 
 <div class="day-view">
@@ -28,6 +27,8 @@
     background-color: hsl(0, 0%, 97%);
     border-radius: var(--primary-border-radius);
     width: 100%;
+    max-height: 50rem;
+    overflow-y: auto;
     box-sizing: border-box;
 
     .event {

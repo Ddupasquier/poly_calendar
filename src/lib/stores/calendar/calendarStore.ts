@@ -20,6 +20,13 @@ export const setFilterType = (type: EventTypesModel): void => {
     filterType.set(type);
 };
 
+// Store for the number of records to show (initially 25) with explicit type annotation
+export const numberOfRecordsShown: Writable<number> = writable<number>(15);
+
+export const setNumberOfRecordsShown = (numRecords: number): void => {
+    numberOfRecordsShown.set(numRecords);
+}
+
 // Store for the calendar events (initially empty) with explicit type annotation
 export const calendarEvents: Writable<CalendarEvent[]> = writable<CalendarEvent[]>([]);
 
@@ -40,6 +47,13 @@ export const filteredEvents: Readable<CalendarEvent[]> = derived(
     }
 );
 
+export const numberLimitedEvents: Readable<CalendarEvent[]> = derived(
+    [filteredEvents, numberOfRecordsShown],
+    ([$filteredEvents, $numberOfRecordsShown]): CalendarEvent[] => {
+        return $filteredEvents.slice(0, $numberOfRecordsShown);
+    }
+);
+
 export const mapEventTypes = (eventType: string): EventTypesEnum => {
     switch (eventType) {
         case "meeting":
@@ -48,6 +62,8 @@ export const mapEventTypes = (eventType: string): EventTypesEnum => {
             return EventTypesEnum.Appointment;
         case "birthday":
             return EventTypesEnum.Birthday;
+        case "date":
+            return EventTypesEnum.Date;
         default:
             return EventTypesEnum.All;
     }

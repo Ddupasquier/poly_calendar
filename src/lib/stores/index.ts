@@ -21,5 +21,8 @@ export {
     filterType,
     filteredEvents,
     setCurrentView,
-    setFilterType
+    setFilterType,
+    numberOfRecordsShown,
+    setNumberOfRecordsShown,
+    numberLimitedEvents,
 } from "./calendar/calendarStore";

@@ -2,5 +2,6 @@ export enum EventTypesEnum {
     All = 'all',
     Meeting = 'meeting',
     Appointment = 'appointment',
-    Birthday = 'birthday'
+    Birthday = 'birthday',
+    Date = 'date',
 }
