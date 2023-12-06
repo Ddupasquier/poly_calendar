@@ -29,7 +29,10 @@
 <div class="week-view">
   {#each weekDays as day}
     <div class="day">
-      <h3>{format(day, "EEEE")}, {format(day, "MMM d")}</h3>
+      <h3>
+        {format(day, "EEEE")},
+        <br />{format(day, "MMM d")}
+      </h3>
       {#each events as event}
         {#if eventFallsOnDay(event, day)}
           <div class="event">
@@ -45,44 +48,72 @@
 <style lang="scss">
   .week-view {
     display: grid;
-    grid-template-columns: repeat(7, 1fr); // Assuming 7 days in the week view
-    gap: 15px;
-    margin-top: 1rem;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    padding: 1rem 1.5rem;
+    background-color: hsl(0, 0%, 97%);
+    border-radius: var(--primary-border-radius);
+
+    @media (max-width: 600px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 400px) {
+      grid-template-columns: 1fr;
+    }
 
     .day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: var(--primary-border-radius);
+      transition: background-color 0.2s ease-in-out;
+      min-height: 3rem;
 
       h3 {
-        font-size: 0.9rem;
-        color: #555;
-        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        margin: 0;
+        width: 100%;
+        background-color: var(--color-theme-1-L1);
+        color: #333;
         text-align: center;
+        border-radius: 4px 4px 0 0;
+        padding: 0.25rem 0.5rem;
+        box-sizing: border-box;
+        user-select: none;
+        font-size: 0.85rem;
+        min-height: 2.5rem;
+
+        @media (max-width: 600px) {
+          font-size: 0.75rem;
+        }
       }
 
       .event {
-        background-color: #eff6ff;
-        border-left: 3px solid #2a7bff;
-        padding: 5px 10px;
-        margin: 5px 0;
-        border-radius: 3px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin: 0.5rem;
+        padding: 0.5rem;
+        background-color: var(--color-theme-2-L3);
+        border: 1px solid var(--color-theme-2-L2);
+        border-radius: 4px;
+        box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
+        transition: background-color 0.2s ease-in-out;
+        cursor: pointer;
 
         h2 {
-          font-size: 0.8rem;
+          font-size: 0.8rem; // Adjusted for week view
           margin: 0;
+
+          @media (max-width: 600px) {
+            font-size: 0.75rem;
+          }
         }
 
-        // Additional event details styles go here
-      }
-
-      // Highlight today's date with a different background color
-      &:nth-child(7) {
-        // Assuming the last column is the current day
-        background-color: #f9f9f9;
+        &:hover {
+          background-color: var(--color-theme-2-L2);
+        }
       }
     }
   }

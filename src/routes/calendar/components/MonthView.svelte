@@ -62,6 +62,14 @@
     padding: 1rem 1.5rem;
     background-color: hsl(0, 0%, 97%);
     border-radius: var(--primary-border-radius);
+
+    @media (max-width: 600px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 400px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .day {
@@ -107,6 +115,18 @@
         background-color: var(--color-theme-2-L2);
       }
     }
+
+    @media (max-width: 600px) {
+      h3 {
+        font-size: 0.75rem;
+      }
+
+      .event {
+        h2 {
+          font-size: 0.75rem;
+        }
+      }
+    }
   }
 
   .pad {
@@ -136,6 +156,10 @@
       margin: 0;
       padding: 0.25rem;
       z-index: 1;
+    }
+
+    @media (max-width: 600px) {
+      display: none;
     }
   }
 </style>
