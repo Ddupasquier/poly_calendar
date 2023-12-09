@@ -42,12 +42,38 @@
 
         return "";
     };
+
+    const scrollToEvent = (eventId: string, clickedElement: HTMLElement) => {
+        const eventElements = document.querySelectorAll(
+            `[data-event-id="${eventId}"]`,
+        );
+
+        const clickedContainer = clickedElement.closest(".events-container");
+
+        eventElements.forEach((eventEl) => {
+            const container = eventEl.closest(".events-container");
+            if (container && container !== clickedContainer) {
+                const htmlEventEl = eventEl as HTMLElement;
+                container.scrollTo({
+                    top: htmlEventEl.offsetTop - 10,
+                    behavior: "smooth",
+                });
+            }
+        });
+    };
 </script>
 
 <div class="events-container">
     {#each getEventsForDay(day) as event}
         <div
             class="event"
+            data-event-id={event.id}
+            on:click={(e) => scrollToEvent(event.id, e.currentTarget)}
+            on:keydown={(e) => {
+                if (e.key === "Enter") {
+                    scrollToEvent(event.id, e.currentTarget);
+                }
+            }}
             on:mouseover={() => setActiveEvent(event)}
             on:focus={() => setActiveEvent(event)}
             role="button"
@@ -55,7 +81,6 @@
             class:active={event === activeEvent}
         >
             <h2>{event.title} {eventDayIndicator(event, day)}</h2>
-            <!-- Display other event details -->
         </div>
     {/each}
 </div>
@@ -65,8 +90,9 @@
         display: flex;
         flex-direction: column;
         overflow-y: auto;
-        padding: 0.5rem;
+        padding: 0.75rem;
         position: relative;
+        gap: 0.5rem;
     }
 
     .event {

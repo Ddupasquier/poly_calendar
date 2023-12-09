@@ -5,12 +5,10 @@
     eachDayOfInterval,
     getDay,
     addDays,
-    differenceInCalendarDays,
     isWithinInterval,
     isValid,
     isBefore,
     endOfDay,
-    startOfDay,
     compareAsc,
   } from "date-fns";
   import type { CalendarEvent } from "../types";
@@ -102,8 +100,8 @@
     align-items: center;
     background-color: #fff;
     border-radius: var(--primary-border-radius);
-    transition: background-color 0.2s ease-in-out;
     min-height: 3rem;
+    max-height: 10rem;
 
     h3 {
       display: flex;
