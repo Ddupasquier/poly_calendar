@@ -1,3 +1,4 @@
+import { addDays } from "date-fns";
 import type { CalendarEvent } from './types';
 
 const getRandomInt = (max: number) => {
@@ -7,6 +8,18 @@ const getRandomInt = (max: number) => {
 // get random date between two dates
 const getRandomDate = (start: Date, end: Date) => {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+// get a random end date that is 1-2 days after the start date, or up to a week for about 30% of them
+const getRandomEndDate = (startDate: Date, chanceOfLongEvent: number) => {
+    // 70% chance for 1-2 days event, 30% chance for up to a week
+    if (Math.random() < chanceOfLongEvent) {
+        // Longer event, up to a week
+        return addDays(startDate, getRandomInt(7));
+    } else {
+        // Shorter event, 1-2 days
+        return addDays(startDate, getRandomInt(2) + 1);
+    }
 }
 
 const generateSeedData = (numRecords: number): CalendarEvent[] => {
@@ -64,6 +77,7 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
 
     const seedData: CalendarEvent[] = [];
     for (let i = 0; i < numRecords; i++) {
+        const startDate = getRandomDate(new Date(2023, 0, 1), new Date(2024, 11, 31));
         seedData.push({
             id: (i + 1).toString(),
             title: titles[getRandomInt(titles.length)],
@@ -73,12 +87,12 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
             isAllDay: false,
             isRecurring: false,
             recurrence: recurrence[getRandomInt(recurrence.length)],
-            startDate: getRandomDate(new Date(2023, 0, 1), new Date(2024, 11, 31)),
-            endDate: getRandomDate(new Date(2023, 0, 1), new Date(2024, 11, 31)),
+            startDate: startDate,
+            endDate: getRandomEndDate(startDate, 0.3),
             attendees: attendees.slice(0, getRandomInt(attendees.length + 1)), // up to both attendees can attend
         });
     }
     return seedData;
-};
+}
 
 export const calendarEvents: CalendarEvent[] = generateSeedData(600);

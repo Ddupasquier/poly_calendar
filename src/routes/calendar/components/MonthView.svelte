@@ -3,15 +3,23 @@
     startOfMonth,
     endOfMonth,
     eachDayOfInterval,
-    isSameDay,
     getDay,
     addDays,
+    differenceInCalendarDays,
+    isWithinInterval,
+    // compareDesc,
+    isValid,
+    isBefore,
+    isAfter,
+    differenceInDays,
   } from "date-fns";
   import type { CalendarEvent } from "../types";
   import { WeekdayBar } from "..";
-  import { filterType, setCurrentView, setFilterType } from "$lib/stores";
 
   export let events: CalendarEvent[] = [];
+
+  $: console.log(events[0]);
+  // $: events.sort((a, b) => compareDesc(a.startDate, b.startDate));
 
   const now = new Date();
   const start = startOfMonth(now);
@@ -26,8 +34,42 @@
   }
   const daysInMonth = eachDayOfInterval({ start, end });
 
+  function eventDuration(event: CalendarEvent): number {
+    return differenceInCalendarDays(event.endDate, event.startDate) + 1;
+  }
+
+  function eventDayIndicator(event: CalendarEvent, day: Date): string {
+    if (!isValid(event.startDate) || !isValid(event.endDate)) {
+      return "";
+    }
+
+    // Check if the day is within the event duration
+    if (isWithinInterval(day, { start: event.startDate, end: event.endDate })) {
+      // Calculate the day index
+      let dayIndex = differenceInDays(day, event.startDate) + 1;
+      const duration = differenceInCalendarDays(event.endDate, event.startDate) + 1;
+      return `Day ${dayIndex} of ${duration}`;
+    }
+
+    return "";
+  }
+
   function eventFallsOnDay(event: CalendarEvent, day: Date): boolean {
-    return isSameDay(event.startDate, day) || isSameDay(event.endDate, day);
+    // Directly use the Date objects
+    if (!isValid(event.startDate) || !isValid(event.endDate)) {
+      console.error("Invalid date in event:", event);
+      return false;
+    }
+
+    if (isBefore(event.endDate, event.startDate)) {
+      console.error("Event end date is before start date:", event);
+      return false;
+    }
+
+    return isWithinInterval(day, {
+      start: event.startDate,
+      end: event.endDate,
+    });
   }
 </script>
 
@@ -42,14 +84,16 @@
   {#each daysInMonth as day}
     <div class="day">
       <h3>{day.getDate()}</h3>
-      {#each events as event}
-        {#if eventFallsOnDay(event, day)}
-          <div class="event">
-            <h2>{event.title}</h2>
-            <!-- Display event details -->
-          </div>
-        {/if}
-      {/each}
+      <div class="event-container">
+        {#each events as event}
+          {#if eventFallsOnDay(event, day)}
+            <div class="event">
+              <h2>{event.title} {eventDayIndicator(event, day)}</h2>
+              <!-- Display other event details -->
+            </div>
+          {/if}
+        {/each}
+      </div>
     </div>
   {/each}
 </div>
@@ -107,6 +151,9 @@
       cursor: pointer;
 
       h2 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         font-size: 0.85rem;
         margin: 0;
       }
