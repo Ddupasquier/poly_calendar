@@ -7,19 +7,22 @@
     addDays,
     differenceInCalendarDays,
     isWithinInterval,
-    // compareDesc,
     isValid,
     isBefore,
-    isAfter,
-    differenceInDays,
+    endOfDay,
+    startOfDay,
+    compareAsc,
   } from "date-fns";
   import type { CalendarEvent } from "../types";
-  import { WeekdayBar } from "..";
+  import { EventsContainer, WeekdayBar } from "..";
 
   export let events: CalendarEvent[] = [];
 
-  $: console.log(events[0]);
-  // $: events.sort((a, b) => compareDesc(a.startDate, b.startDate));
+  let activeEvent: CalendarEvent | null = null;
+
+  const setActiveEvent = (event: CalendarEvent | null) => {
+    activeEvent = event;
+  };
 
   const now = new Date();
   const start = startOfMonth(now);
@@ -34,43 +37,29 @@
   }
   const daysInMonth = eachDayOfInterval({ start, end });
 
-  function eventDuration(event: CalendarEvent): number {
-    return differenceInCalendarDays(event.endDate, event.startDate) + 1;
-  }
-
-  function eventDayIndicator(event: CalendarEvent, day: Date): string {
+  const eventFallsOnDay = (event: CalendarEvent, day: Date): boolean => {
     if (!isValid(event.startDate) || !isValid(event.endDate)) {
-      return "";
-    }
-
-    // Check if the day is within the event duration
-    if (isWithinInterval(day, { start: event.startDate, end: event.endDate })) {
-      // Calculate the day index
-      let dayIndex = differenceInDays(day, event.startDate) + 1;
-      const duration = differenceInCalendarDays(event.endDate, event.startDate) + 1;
-      return `Day ${dayIndex} of ${duration}`;
-    }
-
-    return "";
-  }
-
-  function eventFallsOnDay(event: CalendarEvent, day: Date): boolean {
-    // Directly use the Date objects
-    if (!isValid(event.startDate) || !isValid(event.endDate)) {
-      console.error("Invalid date in event:", event);
       return false;
     }
 
     if (isBefore(event.endDate, event.startDate)) {
-      console.error("Event end date is before start date:", event);
       return false;
     }
 
-    return isWithinInterval(day, {
+    const endOfCurrentDay = endOfDay(day);
+    const adjustedEndDate = endOfDay(event.endDate);
+
+    return isWithinInterval(endOfCurrentDay, {
       start: event.startDate,
-      end: event.endDate,
+      end: adjustedEndDate,
     });
-  }
+  };
+
+  $: getEventsForDay = (day: Date) => {
+    const eventsForDay = events.filter((event) => eventFallsOnDay(event, day));
+    eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
+    return eventsForDay;
+  };
 </script>
 
 <WeekdayBar />
@@ -84,16 +73,7 @@
   {#each daysInMonth as day}
     <div class="day">
       <h3>{day.getDate()}</h3>
-      <div class="event-container">
-        {#each events as event}
-          {#if eventFallsOnDay(event, day)}
-            <div class="event">
-              <h2>{event.title} {eventDayIndicator(event, day)}</h2>
-              <!-- Display other event details -->
-            </div>
-          {/if}
-        {/each}
-      </div>
+      <EventsContainer {getEventsForDay} {day} {activeEvent} {setActiveEvent} />
     </div>
   {/each}
 </div>
@@ -140,38 +120,9 @@
       user-select: none;
     }
 
-    .event {
-      margin: 0.5rem;
-      padding: 0.5rem;
-      background-color: var(--color-theme-2-L3);
-      border: 1px solid var(--color-theme-2-L2);
-      border-radius: 4px;
-      box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
-      transition: background-color 0.2s ease-in-out;
-      cursor: pointer;
-
-      h2 {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.85rem;
-        margin: 0;
-      }
-
-      &:hover {
-        background-color: var(--color-theme-2-L2);
-      }
-    }
-
     @media (max-width: 600px) {
       h3 {
         font-size: 0.75rem;
-      }
-
-      .event {
-        h2 {
-          font-size: 0.75rem;
-        }
       }
     }
   }
@@ -191,7 +142,7 @@
       align-self: center;
       justify-self: center;
       width: 5px;
-      height: 150px;
+      height: 150%;
       background-color: hsl(0, 0%, 97%);
       margin-right: 3.7rem;
       transform: rotate(-60deg);

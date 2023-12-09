@@ -44,6 +44,22 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
         'Team Meeting',
         'Doctor Appointment',
         "Jane's Birthday",
+        'Date Night',
+        'Vacation',
+        'Conference',
+        'Dentist Appointment',
+        'Interview',
+        'Haircut',
+        'Gym',
+        'Workout',
+        'Lunch',
+        'Dinner',
+        'Breakfast',
+        'Brunch',
+        'Meeting',
+        'Appointment',
+        'Birthday',
+        'Date',
     ];
 
     const descriptions = [
@@ -92,6 +108,21 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
             attendees: attendees.slice(0, getRandomInt(attendees.length + 1)), // up to both attendees can attend
         });
     }
+
+    const decemberFirst = new Date(2023, 11, 1); // Note: Months are 0-indexed in JavaScript Dates
+    seedData.push({
+        id: (numRecords + 1).toString(),
+        title: "Special December First Event",
+        description: "This event occurs only on December 1st.",
+        location: "Special Location",
+        type: "special-event",
+        isAllDay: true,
+        isRecurring: false,
+        recurrence: "",
+        startDate: decemberFirst,
+        endDate: decemberFirst
+    });
+
     return seedData;
 }
 
