@@ -26,3 +26,5 @@ export {
     setNumberOfRecordsShown,
     numberLimitedEvents,
 } from "./calendar/calendarStore";
+
+export { eventContainers } from "./calendar/eventContainersStore";

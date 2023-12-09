@@ -68,10 +68,16 @@
       <h3>{padDay.getDate()}</h3>
     </div>
   {/each}
-  {#each daysInMonth as day}
+  {#each daysInMonth as day, index}
     <div class="day">
       <h3>{day.getDate()}</h3>
-      <EventsContainer {getEventsForDay} {day} {activeEvent} {setActiveEvent} />
+      <EventsContainer
+        {getEventsForDay}
+        {day}
+        {activeEvent}
+        {setActiveEvent}
+        {index}
+      />
     </div>
   {/each}
 </div>

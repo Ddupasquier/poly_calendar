@@ -7,3 +7,4 @@ export { default as MonthView } from './components/MonthView.svelte';
 export { default as WeekView } from './components/WeekView.svelte';
 export { default as WeekdayBar } from './components/WeekdayBar.svelte';
 export { default as EventsContainer } from './components/EventsContainer.svelte';
+export { default as Event } from './components/Event.svelte';
