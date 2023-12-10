@@ -2,8 +2,6 @@
   import {
     startOfMonth,
     endOfMonth,
-    addMonths,
-    eachDayOfInterval,
     getDay,
     addDays,
     isWithinInterval,
@@ -12,16 +10,14 @@
     endOfDay,
     compareAsc,
     format,
+    eachDayOfInterval,
   } from "date-fns";
   import type { CalendarEventModel } from "$lib/models";
-  import { EventsContainer, WeekdayBar } from "../..";
-
   import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
   import {
     faChevronLeft,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
-
   import {
     selectedMonth,
     setSelectedMonth,
@@ -29,87 +25,59 @@
     setSelectedYear,
     allFilteredEventsOccurringInSelectedMonthYear,
   } from "$lib/stores";
+  import { EventsContainer, WeekdayBar } from "../..";
 
-  const goToNextMonth = () => {
-    if ($selectedMonth === 12) {
-      setSelectedMonth(1);
-      setSelectedYear($selectedYear + 1);
-    } else {
-      setSelectedMonth($selectedMonth + 1);
-    }
-  };
-
-  const goToPreviousMonth = () => {
-    if ($selectedMonth === 1) {
-      setSelectedMonth(12);
-      setSelectedYear($selectedYear - 1);
-    } else {
-      setSelectedMonth($selectedMonth - 1);
-    }
+  const changeMonth = (increment: number) => {
+    const newMonth = $selectedMonth + increment;
+    setSelectedMonth(newMonth === 13 ? 1 : newMonth === 0 ? 12 : newMonth);
+    if (newMonth > 12) setSelectedYear($selectedYear + 1);
+    if (newMonth < 1) setSelectedYear($selectedYear - 1);
   };
 
   let activeEvent: CalendarEventModel | null = null;
-
-  const setActiveEvent = (event: CalendarEventModel | null) => {
-    activeEvent = event;
-  };
+  const setActiveEvent = (event: CalendarEventModel | null) =>
+    (activeEvent = event);
 
   $: start = startOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
   $: end = endOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
   $: firstDayOfMonth = getDay(start);
   $: daysInMonth = eachDayOfInterval({ start, end });
+  $: daysBeforeStartOfMonth =
+    firstDayOfMonth !== 0
+      ? Array.from({ length: firstDayOfMonth }, (_, i) =>
+          addDays(start, -i - 1),
+        ).reverse()
+      : [];
 
-  let daysBeforeStartOfMonth: Date[] = [];
-
-  $: {
-    daysBeforeStartOfMonth = [];
-    if (firstDayOfMonth !== 0) {
-      for (let i = 0; i < firstDayOfMonth; i++) {
-        daysBeforeStartOfMonth.unshift(addDays(start, -i - 1));
-      }
-    }
-  }
-
-  const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
-    if (!isValid(event.startDate) || !isValid(event.endDate)) {
-      return false;
-    }
-
-    if (isBefore(event.endDate, event.startDate)) {
-      return false;
-    }
-
-    const endOfCurrentDay = endOfDay(day);
-    const adjustedEndDate = endOfDay(event.endDate);
-
-    return isWithinInterval(endOfCurrentDay, {
+  const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean =>
+    isValid(event.startDate) &&
+    isValid(event.endDate) &&
+    !isBefore(event.endDate, event.startDate) &&
+    isWithinInterval(endOfDay(day), {
       start: event.startDate,
-      end: adjustedEndDate,
+      end: endOfDay(event.endDate),
     });
-  };
 
   $: getEventsForDay = (day: Date) => {
     const eventsForDay = $allFilteredEventsOccurringInSelectedMonthYear.filter(
       (event) => eventFallsOnDay(event, day),
     );
-    eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
-    return eventsForDay;
+    return eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
   };
 
-  $: formattedMonth = format(
+  $: formattedMonthYear = `${format(
     new Date($selectedYear, $selectedMonth - 1),
     "MMMM",
-  );
-  $: formattedMonthYear = `${formattedMonth}, ${$selectedYear}`;
+  )}, ${$selectedYear}`;
 </script>
 
 <div class="month-view">
   <div class="month-navigation">
-    <button on:click={goToPreviousMonth}>
+    <button on:click={() => changeMonth(-1)}>
       <FontAwesomeIcon icon={faChevronLeft} />
     </button>
     <span class="current-month">{formattedMonthYear}</span>
-    <button on:click={goToNextMonth}>
+    <button on:click={() => changeMonth(1)}>
       <FontAwesomeIcon icon={faChevronRight} />
     </button>
   </div>
