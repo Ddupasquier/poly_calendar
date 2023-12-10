@@ -6,41 +6,69 @@
     isSameDay,
     addWeeks,
     format,
+    compareAsc,
+    endOfDay,
+    isBefore,
+    isValid,
+    isWithinInterval,
   } from "date-fns";
   import type { CalendarEvent } from "../types";
+  import { EventsContainer } from "..";
 
   export let events: CalendarEvent[] = [];
 
-  // This could be dynamic, e.g., passed as a prop or managed by a store for reactivity
-  const now = new Date();
+  let activeEvent: CalendarEvent | null = null;
 
-  // Calculate the start and end of the week
-  const start = startOfWeek(now, { weekStartsOn: 1 }); // Set weekStartsOn: 1 for Monday as the first day of the week
+  const setActiveEvent = (event: CalendarEvent | null) => {
+    activeEvent = event;
+  };
+
+  const now = new Date();
+  const start = startOfWeek(now, { weekStartsOn: 1 });
   const end = endOfWeek(now, { weekStartsOn: 1 });
 
   // Create an array of days for the current week
   const weekDays = eachDayOfInterval({ start, end });
 
-  function eventFallsOnDay(event: CalendarEvent, day: Date): boolean {
-    return isSameDay(event.startDate, day) || isSameDay(event.endDate, day);
-  }
+  const eventFallsOnDay = (event: CalendarEvent, day: Date): boolean => {
+    if (!isValid(event.startDate) || !isValid(event.endDate)) {
+      return false;
+    }
+
+    if (isBefore(event.endDate, event.startDate)) {
+      return false;
+    }
+
+    const endOfCurrentDay = endOfDay(day);
+    const adjustedEndDate = endOfDay(event.endDate);
+
+    return isWithinInterval(endOfCurrentDay, {
+      start: event.startDate,
+      end: adjustedEndDate,
+    });
+  };
+
+  $: getEventsForDay = (day: Date) => {
+    const eventsForDay = events.filter((event) => eventFallsOnDay(event, day));
+    eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
+    return eventsForDay;
+  };
 </script>
 
 <div class="week-view">
-  {#each weekDays as day}
+  {#each weekDays as day, index}
     <div class="day">
       <h3>
         {format(day, "EEEE")},
         <br />{format(day, "MMM d")}
       </h3>
-      {#each events as event}
-        {#if eventFallsOnDay(event, day)}
-          <div class="event">
-            <h2>{event.title}</h2>
-            <!-- Display event details -->
-          </div>
-        {/if}
-      {/each}
+      <EventsContainer
+        {getEventsForDay}
+        {day}
+        {activeEvent}
+        {setActiveEvent}
+        {index}
+      />
     </div>
   {/each}
 </div>
@@ -49,10 +77,12 @@
   .week-view {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 0.5rem;
     padding: 1rem 1.5rem;
     background-color: hsl(0, 0%, 97%);
     border-radius: var(--primary-border-radius);
+    width: 100%;
+    box-sizing: border-box;
 
     @media (max-width: 600px) {
       grid-template-columns: repeat(3, 1fr);
@@ -65,10 +95,8 @@
     .day {
       display: flex;
       flex-direction: column;
-      align-items: center;
       background-color: #fff;
       border-radius: var(--primary-border-radius);
-      transition: background-color 0.2s ease-in-out;
       min-height: 3rem;
 
       h3 {
@@ -89,30 +117,6 @@
 
         @media (max-width: 600px) {
           font-size: 0.75rem;
-        }
-      }
-
-      .event {
-        margin: 0.5rem;
-        padding: 0.5rem;
-        background-color: var(--color-theme-2-L3);
-        border: 1px solid var(--color-theme-2-L2);
-        border-radius: 4px;
-        box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
-        transition: background-color 0.2s ease-in-out;
-        cursor: pointer;
-
-        h2 {
-          font-size: 0.8rem; // Adjusted for week view
-          margin: 0;
-
-          @media (max-width: 600px) {
-            font-size: 0.75rem;
-          }
-        }
-
-        &:hover {
-          background-color: var(--color-theme-2-L2);
         }
       }
     }

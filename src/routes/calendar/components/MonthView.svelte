@@ -86,7 +86,7 @@
   .month-view {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 0.5rem;
     padding: 1rem 1.5rem;
     background-color: hsl(0, 0%, 97%);
     border-radius: var(--primary-border-radius);
@@ -103,7 +103,6 @@
   .day {
     display: flex;
     flex-direction: column;
-    align-items: center;
     background-color: #fff;
     border-radius: var(--primary-border-radius);
     min-height: 3rem;

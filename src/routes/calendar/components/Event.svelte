@@ -38,7 +38,7 @@
                 return "";
             }
 
-            return `Day ${dayIndex} of ${duration}`;
+            return `${dayIndex} / ${duration}`;
         }
 
         return "";
@@ -74,16 +74,25 @@
     }}
     on:mouseover={() => setActiveEvent(event)}
     on:focus={() => setActiveEvent(event)}
+    on:mouseleave={() => setActiveEvent(null)}
+    on:blur={() => setActiveEvent(null)}
     role="button"
     tabindex="0"
     class:active={event === activeEvent}
 >
-    <h2>{event.title} {eventDayIndicator(event, day)}</h2>
+    <h2>{event.title}</h2>
+    <span class="event-day-indicator">
+        {eventDayIndicator(event, day)}
+    </span>
 </div>
 
 <style lang="scss">
     .event {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
         padding: 0.5rem;
+        // width: 100%;
         background-color: var(--color-theme-2-L3);
         border: 1px solid var(--color-theme-2-L2);
         border-radius: 4px;
@@ -115,8 +124,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin: 0;
+        }
+
+        .event-day-indicator {
+            width: 100%;
+            text-align: right;
+            font-size: 0.75rem;
         }
 
         @media (max-width: 600px) {
