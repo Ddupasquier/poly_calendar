@@ -9,7 +9,7 @@
     {:else if $currentView === "week"}
         <WeekView events={$filteredEvents} />
     {:else if $currentView === "month"}
-        <MonthView events={$filteredEvents} />
+        <MonthView />
         <!-- {:else if $currentView === "agenda"}
         <AgendaView events={$numberLimitedEvents} /> -->
     {/if}

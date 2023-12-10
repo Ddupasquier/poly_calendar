@@ -1,5 +1,6 @@
 // src/routes/calendar/+page.ts or src/routes/calendar/+page.server.ts
 import type { Load } from '@sveltejs/kit';
+import { setCalendarEvents } from '$lib/stores';
 
 
 // TEMPORARY
@@ -13,9 +14,13 @@ export const load: Load = async ({ fetch }) => {
     // const response = await fetch(eventsUrl);
     // const events = await response.json();
 
-    // Return the events as props
-    return {
-        events
+    if (events) {
+        // Set the calendar events in the store
+        setCalendarEvents(events);
     }
+    // Return the events as props
+    // return {
+    //     events
+    // }
 
 };

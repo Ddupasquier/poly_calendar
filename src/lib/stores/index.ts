@@ -17,6 +17,7 @@ export {
 
 export {
     calendarEvents,
+    setCalendarEvents,
     currentView,
     filterType,
     filteredEvents,

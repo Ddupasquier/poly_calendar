@@ -54,16 +54,19 @@
     activeEvent = event;
   };
 
-  const now = new Date();
-  $: start = startOfMonth(new Date($selectedYear, $selectedMonth - 1));
-  $: end = endOfMonth(new Date($selectedYear, $selectedMonth - 1));
+  $: start = startOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
+  $: end = endOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
+  $: firstDayOfMonth = getDay(start);
   $: daysInMonth = eachDayOfInterval({ start, end });
-  let firstDayOfMonth = getDay(start);
+
   let daysBeforeStartOfMonth: Date[] = [];
 
-  if (firstDayOfMonth !== 0) {
-    for (let i = firstDayOfMonth; i > 0; i--) {
-      daysBeforeStartOfMonth.push(addDays(start, -i));
+  $: {
+    daysBeforeStartOfMonth = [];
+    if (firstDayOfMonth !== 0) {
+      for (let i = 0; i < firstDayOfMonth; i++) {
+        daysBeforeStartOfMonth.unshift(addDays(start, -i - 1));
+      }
     }
   }
 
