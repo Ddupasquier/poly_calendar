@@ -8,4 +8,4 @@ export { default as MonthView } from './components/month/MonthView.svelte';
 export { default as WeekView } from './components/week/WeekView.svelte';
 export { default as WeekdayBar } from './components/month/WeekdayBar.svelte';
 export { default as EventsContainer } from './components/common/EventsContainer.svelte';
-export { default as Event } from './components/common/Event.svelte';
+export { default as Event } from './components/month/MonthEvent.svelte';

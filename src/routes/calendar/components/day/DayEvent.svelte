@@ -3,7 +3,7 @@
     import { Button } from "mysvelte-ui";
 
     export let event: CalendarEventModel;
-    let showAttendees = false; // Local variable to toggle attendees
+    let showAttendees = false;
 </script>
 
 <div class="event">

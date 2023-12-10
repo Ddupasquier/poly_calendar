@@ -10,14 +10,14 @@
     isValid,
     isWithinInterval,
   } from "date-fns";
-  import type { CalendarEvent } from "../../types";
+  import type { CalendarEventModel } from "$lib/models";
   import { EventsContainer } from "../..";
 
-  export let events: CalendarEvent[] = [];
+  export let events: CalendarEventModel[] = [];
 
-  let activeEvent: CalendarEvent | null = null;
+  let activeEvent: CalendarEventModel | null = null;
 
-  const setActiveEvent = (event: CalendarEvent | null) => {
+  const setActiveEvent = (event: CalendarEventModel | null) => {
     activeEvent = event;
   };
 
@@ -26,7 +26,7 @@
   const end = endOfWeek(now, { weekStartsOn: 1 });
   const weekDays = eachDayOfInterval({ start, end });
 
-  const eventFallsOnDay = (event: CalendarEvent, day: Date): boolean => {
+  const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
     if (!isValid(event.startDate) || !isValid(event.endDate)) {
       return false;
     }

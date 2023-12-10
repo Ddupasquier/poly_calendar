@@ -2,6 +2,7 @@
   import {
     startOfMonth,
     endOfMonth,
+    addMonths,
     eachDayOfInterval,
     getDay,
     addDays,
@@ -10,22 +11,39 @@
     isBefore,
     endOfDay,
     compareAsc,
+    format,
   } from "date-fns";
-  import type { CalendarEvent } from "../../types";
+  import type { CalendarEventModel } from "$lib/models";
   import { EventsContainer, WeekdayBar } from "../..";
 
-  export let events: CalendarEvent[] = [];
+  import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+  import {
+    faChevronLeft,
+    faChevronRight,
+  } from "@fortawesome/free-solid-svg-icons";
 
-  let activeEvent: CalendarEvent | null = null;
+  export let events: CalendarEventModel[] = [];
 
-  const setActiveEvent = (event: CalendarEvent | null) => {
+  const goToNextMonth = () => {
+    currentMonth = addMonths(currentMonth, 1);
+    updateCalendar();
+  };
+
+  const goToPreviousMonth = () => {
+    currentMonth = addMonths(currentMonth, -1);
+    updateCalendar();
+  };
+
+  let activeEvent: CalendarEventModel | null = null;
+
+  const setActiveEvent = (event: CalendarEventModel | null) => {
     activeEvent = event;
   };
 
   const now = new Date();
-  const start = startOfMonth(now);
-  const end = endOfMonth(now);
-  const firstDayOfMonth = getDay(start);
+  let start = startOfMonth(now);
+  let end = endOfMonth(now);
+  let firstDayOfMonth = getDay(start);
   let daysBeforeStartOfMonth: Date[] = [];
 
   if (firstDayOfMonth !== 0) {
@@ -33,9 +51,10 @@
       daysBeforeStartOfMonth.push(addDays(start, -i));
     }
   }
-  const daysInMonth = eachDayOfInterval({ start, end });
 
-  const eventFallsOnDay = (event: CalendarEvent, day: Date): boolean => {
+  let daysInMonth = eachDayOfInterval({ start, end });
+
+  const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
     if (!isValid(event.startDate) || !isValid(event.endDate)) {
       return false;
     }
@@ -53,39 +72,69 @@
     });
   };
 
+  let currentMonth = start;
+
+  const updateCalendar = () => {
+    start = startOfMonth(currentMonth);
+    end = endOfMonth(currentMonth);
+    firstDayOfMonth = getDay(start);
+    daysBeforeStartOfMonth = [];
+    if (firstDayOfMonth !== 0) {
+      for (let i = firstDayOfMonth; i > 0; i--) {
+        daysBeforeStartOfMonth.push(addDays(start, -i));
+      }
+    }
+    daysInMonth = eachDayOfInterval({ start, end });
+  };
+
   $: getEventsForDay = (day: Date) => {
     const eventsForDay = events.filter((event) => eventFallsOnDay(event, day));
     eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
     return eventsForDay;
   };
+
+  $: formattedMonth = format(currentMonth, "MMMM yyyy");
 </script>
 
-<WeekdayBar />
 <div class="month-view">
-  {#each daysBeforeStartOfMonth as padDay}
-    <div class="pad">
-      <div class="slash-container">
-        <div class="slash" />
+  <div class="month-navigation">
+    <button on:click={goToPreviousMonth}>
+      <FontAwesomeIcon icon={faChevronLeft} />
+    </button>
+    <span class="current-month">{formattedMonth}</span>
+    <button on:click={goToNextMonth}>
+      <FontAwesomeIcon icon={faChevronRight} />
+    </button>
+  </div>
+
+  <WeekdayBar />
+
+  <div class="dates-container">
+    {#each daysBeforeStartOfMonth as padDay}
+      <div class="pad">
+        <div class="slash-container">
+          <div class="slash" />
+        </div>
+        <h3>{padDay.getDate()}</h3>
       </div>
-      <h3>{padDay.getDate()}</h3>
-    </div>
-  {/each}
-  {#each daysInMonth as day, index}
-    <div class="day">
-      <h3>{day.getDate()}</h3>
-      <EventsContainer
-        {getEventsForDay}
-        {day}
-        {activeEvent}
-        {setActiveEvent}
-        {index}
-      />
-    </div>
-  {/each}
+    {/each}
+    {#each daysInMonth as day, index}
+      <div class="day">
+        <h3>{day.getDate()}</h3>
+        <EventsContainer
+          {getEventsForDay}
+          {day}
+          {activeEvent}
+          {setActiveEvent}
+          {index}
+        />
+      </div>
+    {/each}
+  </div>
 </div>
 
 <style lang="scss">
-  .month-view {
+  .dates-container {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 0.5rem;
@@ -170,6 +219,34 @@
 
     @media (max-width: 600px) {
       display: none;
+    }
+  }
+
+  .month-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    color: var(--color-text-dark);
+    border-radius: var(--primary-border-radius);
+
+    button {
+      color: rgb(0, 0, 0);
+      border: none;
+      padding: 0.5rem 1rem;
+      background: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .current-month {
+      font-size: 1.25rem;
+      font-weight: bold;
     }
   }
 </style>

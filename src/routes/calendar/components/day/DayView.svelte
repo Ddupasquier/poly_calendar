@@ -1,9 +1,45 @@
 <script lang="ts">
-  import { allFilteredEventsOccuringOnTheSelectedDate } from "$lib/stores";
+  import {
+    allFilteredEventsOccuringOnTheSelectedDate,
+    setSelectedDate,
+    selectedDate,
+  } from "$lib/stores";
+  import { format, addDays, parseISO } from "date-fns";
   import DayEvent from "./DayEvent.svelte";
+  import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+  import {
+    faChevronLeft,
+    faChevronRight,
+  } from "@fortawesome/free-solid-svg-icons";
+
+  const goToNextDay = () => {
+    selectedDate.update((current) =>
+      format(addDays(parseISO(current), 1), "yyyy-MM-dd"),
+    );
+  };
+
+  const goToPreviousDay = () => {
+    selectedDate.update((current) =>
+      format(addDays(parseISO(current), -1), "yyyy-MM-dd"),
+    );
+  };
+
+  let formattedDate = "";
+  selectedDate.subscribe((value) => {
+    formattedDate = format(parseISO(value), "MMMM d, yyyy");
+  });
 </script>
 
 <div class="day-view">
+  <div class="day-navigation">
+    <button on:click={goToPreviousDay}>
+      <FontAwesomeIcon icon={faChevronLeft} />
+    </button>
+    <span class="current-day">{formattedDate}</span>
+    <button on:click={goToNextDay}>
+      <FontAwesomeIcon icon={faChevronRight} />
+    </button>
+  </div>
   {#each $allFilteredEventsOccuringOnTheSelectedDate as event}
     {#if event}
       <DayEvent {event} />
@@ -24,5 +60,33 @@
     max-height: 50rem;
     overflow-y: auto;
     box-sizing: border-box;
+  }
+
+  .day-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    color: var(--color-text-dark);
+    border-radius: var(--primary-border-radius);
+
+    button {
+      color: rgb(0, 0, 0);
+      border: none;
+      padding: 0.5rem 1rem;
+      background: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .current-day {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
   }
 </style>

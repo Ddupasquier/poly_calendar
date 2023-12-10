@@ -7,15 +7,18 @@
         isWithinInterval,
         startOfDay,
     } from "date-fns";
-    import type { CalendarEvent } from "../../types";
+    import type { CalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
 
     export let day: Date;
-    export let activeEvent: CalendarEvent | null;
-    export let setActiveEvent: (event: CalendarEvent | null) => void;
-    export let event: CalendarEvent;
+    export let activeEvent: CalendarEventModel | null;
+    export let setActiveEvent: (event: CalendarEventModel | null) => void;
+    export let event: CalendarEventModel;
 
-    const eventDayIndicator = (event: CalendarEvent, day: Date): string => {
+    const eventDayIndicator = (
+        event: CalendarEventModel,
+        day: Date,
+    ): string => {
         if (!isValid(event.startDate) || !isValid(event.endDate)) {
             return "";
         }
