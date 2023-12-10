@@ -21,6 +21,14 @@
     faChevronLeft,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
+  
+  import {
+    selectedMonth,
+    setSelectedMonth,
+    selectedYear,
+    setSelectedYear,
+    allFilteredEventsOccurringInSelectedMonthYear,
+  } from "$lib/stores";
 
   export let events: CalendarEventModel[] = [];
 

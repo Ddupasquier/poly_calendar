@@ -3,7 +3,7 @@ import type { EventTypesModel, ViewTypesModel } from '$lib/models';
 import { writable, derived } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
 import type { CalendarEventModel } from '$lib/models';
-import { format } from 'date-fns';
+import { format, fromUnixTime, getMonth, getYear, parseISO } from 'date-fns';
 
 // Use the enum for the initial value to ensure type safety
 export const currentView: Writable<ViewTypesModel> = writable<ViewTypesModel>(ViewTypesEnum.Month);
@@ -21,7 +21,7 @@ export const setFilterType = (type: EventTypesModel): void => {
     filterType.set(type);
 };
 
-// Store for the number of records to show (initially 25) with explicit type annotation
+// Store for the number of records to show (initially 15) with explicit type annotation
 export const numberOfRecordsShown: Writable<number> = writable<number>(15);
 
 export const setNumberOfRecordsShown = (numRecords: number): void => {
@@ -53,8 +53,7 @@ export const filteredEvents: Readable<CalendarEventModel[]> = derived(
     }
 );
 
-export const selectedDate: Writable<string> = writable<string>(format(new Date(), 'yyyy-MM-dd')); // default to today's local date
-
+export const selectedDate: Writable<string> = writable<string>(format(new Date(), 'yyyy-MM-dd'));
 export const setSelectedDate = (date: string): void => {
     selectedDate.set(date);
 }
@@ -66,6 +65,25 @@ export const allFilteredEventsOccuringOnTheSelectedDate: Readable<CalendarEventM
             // Assuming startDate is a string in ISO format, we compare only the date part
             const eventDate = new Date(event.startDate).toISOString().split('T')[0];
             return eventDate === $selectedDate;
+        });
+    }
+);
+
+export const selectedMonth: Writable<number> = writable(getMonth(new Date()) + 1);
+export const setSelectedMonth = (month: number): void => {
+    selectedMonth.set(month);
+};
+
+export const selectedYear: Writable<number> = writable(getYear(new Date()));
+export const setSelectedYear = (year: number): void => {
+    selectedYear.set(year);
+};
+
+export const allFilteredEventsOccurringInSelectedMonthYear: Readable<CalendarEventModel[]> = derived(
+    [filteredEvents, selectedMonth, selectedYear],
+    ([$filteredEvents, $selectedMonth, $selectedYear]) => {
+        return $filteredEvents.filter(event => {
+            return getYear(event.startDate) === $selectedYear && (getMonth(event.startDate) + 1) === $selectedMonth;
         });
     }
 );

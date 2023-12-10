@@ -25,8 +25,13 @@ export {
     numberOfRecordsShown,
     setNumberOfRecordsShown,
     allFilteredEventsOccuringOnTheSelectedDate,
+    allFilteredEventsOccurringInSelectedMonthYear,
     selectedDate,
-    setSelectedDate
+    setSelectedDate,
+    selectedMonth,
+    setSelectedMonth,
+    selectedYear,
+    setSelectedYear
 } from "./calendar/calendarStore";
 
 export { eventContainers } from "./calendar/eventContainersStore";

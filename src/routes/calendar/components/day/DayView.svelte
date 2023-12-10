@@ -13,21 +13,14 @@
   } from "@fortawesome/free-solid-svg-icons";
 
   const goToNextDay = () => {
-    selectedDate.update((current) =>
-      format(addDays(parseISO(current), 1), "yyyy-MM-dd"),
-    );
+    setSelectedDate(format(addDays(parseISO($selectedDate), 1), "yyyy-MM-dd"));
   };
 
   const goToPreviousDay = () => {
-    selectedDate.update((current) =>
-      format(addDays(parseISO(current), -1), "yyyy-MM-dd"),
-    );
+    setSelectedDate(format(addDays(parseISO($selectedDate), -1), "yyyy-MM-dd"));
   };
 
-  let formattedDate = "";
-  selectedDate.subscribe((value) => {
-    formattedDate = format(parseISO(value), "MMMM d, yyyy");
-  });
+  $: formattedDate = format(parseISO($selectedDate), "MMMM d, yyyy");
 </script>
 
 <div class="day-view">
