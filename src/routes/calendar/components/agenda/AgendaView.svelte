@@ -1,6 +1,6 @@
 <!-- AgendaView.svelte -->
 <script lang="ts">
-  import type { CalendarEvent } from "../types";
+  import type { CalendarEvent } from "../../types";
 
   export let events: CalendarEvent[] = [];
   // Optionally add logic to sort events by date

@@ -1,3 +1,5 @@
+import type { EventTypesModel } from '$lib/models';
+
 export interface Attendee {
     name: string;
     email: string;
@@ -6,12 +8,12 @@ export interface Attendee {
     rsvpResponse: string;
 }
 
-export interface CalendarEvent {
+export interface CalendarEventModel {
     id: string;
     title: string;
     startDate: Date;
     endDate: Date;
-    type: string;
+    type: EventTypesModel;
     description?: string;
     location?: string;
     isAllDay?: boolean;

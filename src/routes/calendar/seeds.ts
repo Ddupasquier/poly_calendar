@@ -1,5 +1,6 @@
 import { addDays } from "date-fns";
-import type { CalendarEvent } from './types';
+import type { CalendarEventModel } from '$lib/models';
+import { EventTypesEnum } from "$lib/enums";
 
 const getRandomInt = (max: number) => {
     return Math.floor(Math.random() * max);
@@ -22,7 +23,13 @@ const getRandomEndDate = (startDate: Date, chanceOfLongEvent: number) => {
     }
 }
 
-const generateSeedData = (numRecords: number): CalendarEvent[] => {
+const getRandomEnumValue = <T>(anEnum: { [s: string]: T | string } | ArrayLike<T>): T => {
+    const enumValues = Object.values(anEnum).filter(val => typeof val === "string") as T[];
+    const randomIndex = Math.floor(Math.random() * enumValues.length);
+    return enumValues[randomIndex];
+};
+
+const generateSeedData = (numRecords: number): CalendarEventModel[] => {
     const attendees = [
         {
             name: 'John Doe',
@@ -91,7 +98,7 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
         'yearly',
     ];
 
-    const seedData: CalendarEvent[] = [];
+    const seedData: CalendarEventModel[] = [];
     for (let i = 0; i < numRecords; i++) {
         const startDate = getRandomDate(new Date(2023, 0, 1), new Date(2024, 11, 31));
         seedData.push({
@@ -99,7 +106,7 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
             title: titles[getRandomInt(titles.length)],
             description: descriptions[getRandomInt(descriptions.length)],
             location: locations[getRandomInt(locations.length)],
-            type: types[getRandomInt(types.length)],
+            type: getRandomEnumValue(EventTypesEnum),
             isAllDay: false,
             isRecurring: false,
             recurrence: recurrence[getRandomInt(recurrence.length)],
@@ -110,13 +117,12 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
     }
 
     const decemberNinth = new Date(2023, 11, 9); // December 9th, 2023
-    console.log(decemberNinth)
     seedData.push({
         id: (numRecords + 1).toString(),
         title: "Special December Ninth Event",
         description: "This event occurs only on December 9th.",
         location: "Special Location",
-        type: "special-event",
+        type: "date",
         isAllDay: true,
         isRecurring: false,
         recurrence: "",
@@ -127,4 +133,4 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
     return seedData;
 }
 
-export const calendarEvents: CalendarEvent[] = generateSeedData(600);
+export const calendarEvents: CalendarEventModel[] = generateSeedData(600);

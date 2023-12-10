@@ -49,6 +49,7 @@
     {#each viewTypes as viewType (viewType)}
       <Button
         background="var(--color-theme-2)"
+        size="small"
         on:click={() => {
           setCurrentView(viewType);
           goto(`/calendar?view=${viewType}`);

@@ -5,3 +5,5 @@ export type { UserProfileModel } from './profile/user-profile-model';
 export type { EventTypesModel } from './calendar/event-types-model';
 
 export type { ViewTypesModel } from './calendar/view-types-model';
+
+export type {CalendarEventModel} from './calendar/calendar-event-model';

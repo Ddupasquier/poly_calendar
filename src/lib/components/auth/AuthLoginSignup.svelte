@@ -26,7 +26,7 @@
     };
 </script>
 
-<Card background={colors["--color-bg-2"]}>
+<Card background={"var(--color-bg-2)"}>
     <form on:submit={handleSubmit}>
         <Card.Head style="text-align: center">Lets get you logged in!</Card.Head
         >
@@ -50,7 +50,7 @@
             <div class="button-group">
                 <Button
                     disabled={isSubmitting}
-                    background={colors["--color-theme-2"]}
+                    background={"var(--color-theme-2)"}
                     on:click={() => {
                         isSubmitting = true;
                         signUp(email, password)
@@ -64,7 +64,7 @@
                 >
                 <Button
                     on:click={() => signIn(email, password)}
-                    background={colors["--color-theme-2"]}>Sign In</Button
+                    background={"var(--color-theme-2)"}>Sign In</Button
                 >
             </div>
             <LoginDivider />
@@ -72,7 +72,7 @@
                 <!-- <button on:click={() => handleOAuthLogin("github")}>GitHub</button> -->
                 <Button
                     on:click={() => handleOAuthLogin("google")}
-                    background={colors["--color-theme-2-D1"]}
+                    background={"var(--color-theme-2-D2)"}
                     style="width: 100%">Google</Button
                 >
             </div>

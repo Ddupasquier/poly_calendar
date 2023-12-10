@@ -11,8 +11,8 @@
     endOfDay,
     compareAsc,
   } from "date-fns";
-  import type { CalendarEvent } from "../types";
-  import { EventsContainer, WeekdayBar } from "..";
+  import type { CalendarEvent } from "../../types";
+  import { EventsContainer, WeekdayBar } from "../..";
 
   export let events: CalendarEvent[] = [];
 

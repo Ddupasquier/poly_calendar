@@ -7,7 +7,7 @@
         isWithinInterval,
         startOfDay,
     } from "date-fns";
-    import type { CalendarEvent } from "../types";
+    import type { CalendarEvent } from "../../types";
     import { eventContainers } from "$lib/stores";
 
     export let day: Date;

@@ -5,7 +5,7 @@
 
 <div class="calendar-body">
     {#if $currentView === "day"}
-        <DayView events={$filteredEvents} />
+        <DayView />
     {:else if $currentView === "week"}
         <WeekView events={$filteredEvents} />
     {:else if $currentView === "month"}

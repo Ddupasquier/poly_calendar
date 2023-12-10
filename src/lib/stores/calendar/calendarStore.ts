@@ -2,7 +2,7 @@ import { EventTypesEnum, ViewTypesEnum } from '$lib/enums';
 import type { EventTypesModel, ViewTypesModel } from '$lib/models';
 import { writable, derived } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
-import type { CalendarEvent } from './types';
+import type { CalendarEventModel } from '$lib/models';
 import { format } from 'date-fns';
 
 // Use the enum for the initial value to ensure type safety
@@ -29,17 +29,17 @@ export const setNumberOfRecordsShown = (numRecords: number): void => {
 }
 
 // Store for the calendar events (initially empty) with explicit type annotation
-export const calendarEvents: Writable<CalendarEvent[]> = writable<CalendarEvent[]>([]);
+export const calendarEvents: Writable<CalendarEventModel[]> = writable<CalendarEventModel[]>([]);
 
-export const setCalendarEvents = (events: CalendarEvent[]): void => {
+export const setCalendarEvents = (events: CalendarEventModel[]): void => {
     calendarEvents.set(events);
 }
 
 // Derived store to filter events based on the selected filter type
 // The return type of the derived store is explicitly stated for clarity
-export const filteredEvents: Readable<CalendarEvent[]> = derived(
+export const filteredEvents: Readable<CalendarEventModel[]> = derived(
     [calendarEvents, filterType],
-    ([$calendarEvents, $filterType]): CalendarEvent[] => {
+    ([$calendarEvents, $filterType]): CalendarEventModel[] => {
         let events = $calendarEvents;
 
         if ($filterType !== EventTypesEnum.All) {
@@ -59,9 +59,9 @@ export const setSelectedDate = (date: string): void => {
     selectedDate.set(date);
 }
 
-export const allFilteredEventsOccuringOnTheSelectedDate: Readable<CalendarEvent[]> = derived(
+export const allFilteredEventsOccuringOnTheSelectedDate: Readable<CalendarEventModel[]> = derived(
     [filteredEvents, selectedDate],
-    ([$filteredEvents, $selectedDate]): CalendarEvent[] => {
+    ([$filteredEvents, $selectedDate]): CalendarEventModel[] => {
         return $filteredEvents.filter(event => {
             // Assuming startDate is a string in ISO format, we compare only the date part
             const eventDate = new Date(event.startDate).toISOString().split('T')[0];

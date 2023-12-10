@@ -98,7 +98,7 @@
                 {/each}
                 <Button
                     on:click={logout}
-                    background={colors["--color-theme-2-D1"]}
+                    background={"var(--color-theme-2-D1)"}
                     style="width: 100%;"
                 >
                     Logout

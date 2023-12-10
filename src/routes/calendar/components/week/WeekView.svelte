@@ -10,8 +10,8 @@
     isValid,
     isWithinInterval,
   } from "date-fns";
-  import type { CalendarEvent } from "../types";
-  import { EventsContainer } from "..";
+  import type { CalendarEvent } from "../../types";
+  import { EventsContainer } from "../..";
 
   export let events: CalendarEvent[] = [];
 

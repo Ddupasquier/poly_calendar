@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Event } from "..";
-    import type { CalendarEvent } from "../types";
+    import { Event } from "../..";
+    import type { CalendarEvent } from "../../types";
     import { eventContainers } from "$lib/stores";
 
     export let getEventsForDay: (day: Date) => CalendarEvent[] = () => [];

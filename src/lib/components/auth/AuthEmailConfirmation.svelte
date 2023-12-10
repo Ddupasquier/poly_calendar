@@ -8,7 +8,7 @@
 
 <div class="container">
     {#if token}
-        <Card background={colors["--color-bg-2"]}>
+        <Card background={"var(--color-bg-2)"}>
             <Card.Head style="text-align: center">Confirm Your Signup</Card.Head
             >
             <Card.Content style="margin-bottom: 1rem">
