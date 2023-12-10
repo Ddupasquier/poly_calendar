@@ -109,18 +109,19 @@ const generateSeedData = (numRecords: number): CalendarEvent[] => {
         });
     }
 
-    const decemberFirst = new Date(2023, 11, 1); // Note: Months are 0-indexed in JavaScript Dates
+    const decemberNinth = new Date(2023, 11, 9); // December 9th, 2023
+    console.log(decemberNinth)
     seedData.push({
         id: (numRecords + 1).toString(),
-        title: "Special December First Event",
-        description: "This event occurs only on December 1st.",
+        title: "Special December Ninth Event",
+        description: "This event occurs only on December 9th.",
         location: "Special Location",
         type: "special-event",
         isAllDay: true,
         isRecurring: false,
         recurrence: "",
-        startDate: decemberFirst,
-        endDate: decemberFirst
+        startDate: decemberNinth,
+        endDate: decemberNinth
     });
 
     return seedData;

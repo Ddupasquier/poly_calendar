@@ -2,6 +2,7 @@
     import {
         differenceInCalendarDays,
         endOfDay,
+        format,
         isValid,
         isWithinInterval,
         startOfDay,
@@ -84,6 +85,7 @@
     <span class="event-day-indicator">
         {eventDayIndicator(event, day)}
     </span>
+    <!-- {format(event.startDate, "MM/dd/yyyy")} - {format(event.endDate, "MM/dd/yyyy")} -->
 </div>
 
 <style lang="scss">
@@ -92,7 +94,6 @@
         flex-direction: column;
         gap: 0.25rem;
         padding: 0.5rem;
-        // width: 100%;
         background-color: var(--color-theme-2-L3);
         border: 1px solid var(--color-theme-2-L2);
         border-radius: 4px;

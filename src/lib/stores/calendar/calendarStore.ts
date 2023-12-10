@@ -3,6 +3,7 @@ import type { EventTypesModel, ViewTypesModel } from '$lib/models';
 import { writable, derived } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
 import type { CalendarEvent } from './types';
+import { format } from 'date-fns';
 
 // Use the enum for the initial value to ensure type safety
 export const currentView: Writable<ViewTypesModel> = writable<ViewTypesModel>(ViewTypesEnum.Month);
@@ -39,18 +40,33 @@ export const setCalendarEvents = (events: CalendarEvent[]): void => {
 export const filteredEvents: Readable<CalendarEvent[]> = derived(
     [calendarEvents, filterType],
     ([$calendarEvents, $filterType]): CalendarEvent[] => {
-        if ($filterType === EventTypesEnum.All) {
-            return $calendarEvents;
-        } else {
-            return $calendarEvents.filter(event => event.type === $filterType);
+        let events = $calendarEvents;
+
+        if ($filterType !== EventTypesEnum.All) {
+            events = events.filter(event => event.type === $filterType);
         }
+
+        // Sort the events by startDate
+        events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+        return events;
     }
 );
 
-export const numberLimitedEvents: Readable<CalendarEvent[]> = derived(
-    [filteredEvents, numberOfRecordsShown],
-    ([$filteredEvents, $numberOfRecordsShown]): CalendarEvent[] => {
-        return $filteredEvents.slice(0, $numberOfRecordsShown);
+export const selectedDate: Writable<string> = writable<string>(format(new Date(), 'yyyy-MM-dd')); // default to today's local date
+
+export const setSelectedDate = (date: string): void => {
+    selectedDate.set(date);
+}
+
+export const allFilteredEventsOccuringOnTheSelectedDate: Readable<CalendarEvent[]> = derived(
+    [filteredEvents, selectedDate],
+    ([$filteredEvents, $selectedDate]): CalendarEvent[] => {
+        return $filteredEvents.filter(event => {
+            // Assuming startDate is a string in ISO format, we compare only the date part
+            const eventDate = new Date(event.startDate).toISOString().split('T')[0];
+            return eventDate === $selectedDate;
+        });
     }
 );
 

@@ -64,7 +64,9 @@
 <div class="month-view">
   {#each daysBeforeStartOfMonth as padDay}
     <div class="pad">
-      <div class="slash" />
+      <div class="slash-container">
+        <div class="slash" />
+      </div>
       <h3>{padDay.getDate()}</h3>
     </div>
   {/each}
@@ -140,15 +142,22 @@
     overflow: hidden;
     box-shadow: none;
 
-    .slash {
+    .slash-container {
       position: absolute;
-      align-self: center;
-      justify-self: center;
-      width: 5px;
-      height: 150%;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .slash {
+      width: 150%;
+      height: 0.75rem;
       background-color: hsl(0, 0%, 97%);
-      margin-right: 3.7rem;
-      transform: rotate(-60deg);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(32.5deg);
     }
 
     h3 {

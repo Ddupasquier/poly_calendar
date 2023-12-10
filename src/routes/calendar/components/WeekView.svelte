@@ -3,8 +3,6 @@
     startOfWeek,
     endOfWeek,
     eachDayOfInterval,
-    isSameDay,
-    addWeeks,
     format,
     compareAsc,
     endOfDay,
@@ -26,8 +24,6 @@
   const now = new Date();
   const start = startOfWeek(now, { weekStartsOn: 1 });
   const end = endOfWeek(now, { weekStartsOn: 1 });
-
-  // Create an array of days for the current week
   const weekDays = eachDayOfInterval({ start, end });
 
   const eventFallsOnDay = (event: CalendarEvent, day: Date): boolean => {

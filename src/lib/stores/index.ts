@@ -24,7 +24,9 @@ export {
     setFilterType,
     numberOfRecordsShown,
     setNumberOfRecordsShown,
-    numberLimitedEvents,
+    allFilteredEventsOccuringOnTheSelectedDate,
+    selectedDate,
+    setSelectedDate
 } from "./calendar/calendarStore";
 
 export { eventContainers } from "./calendar/eventContainersStore";

@@ -1,17 +1,21 @@
-<!-- DayView.svelte -->
 <script lang="ts">
   import type { CalendarEvent } from "../types";
+  import {filteredEvents, allFilteredEventsOccuringOnTheSelectedDate} from "$lib/stores";
 
   export let events: CalendarEvent[] = [];
+
+  $: console.log('numberLimitedEvents', events);
+  $: console.log('filteredEvents', $allFilteredEventsOccuringOnTheSelectedDate);
 </script>
 
 <div class="day-view">
-  {#each events as event}
+  {#each $allFilteredEventsOccuringOnTheSelectedDate as event}
     {#if event}
       <div class="event">
         <h2>{event.title}</h2>
         <p>
-          {event.startDate?.toTimeString()} - {event.endDate.toTimeString()}
+          {event.startDate}<br />
+          {event.endDate}
         </p>
       </div>
     {/if}
@@ -33,16 +37,22 @@
 
     .event {
       padding: 0.5rem;
-      border-left: 4px solid var(--color-theme-2-L3);
       background-color: #fff;
       border-radius: 4px;
-      box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
-      transition: all 0.2s ease-in-out;
+      box-shadow: inset 15px 0 0 -10px var(--color-theme-2-L3);
+      transition: box-shadow 1s ease-in;
+      cursor: pointer;
+
+      &:hover {
+        // background-color: var(--color-theme-2-L2);
+        box-shadow: inset 1000px 0 0 -10px var(--color-theme-2-L3);
+      }
 
       h2 {
         font-size: 0.85rem;
         color: #333;
         margin: 0 0 0.5rem 0;
+        user-select: none;
 
         @media (max-width: 600px) {
           font-size: 0.75rem;
@@ -53,15 +63,11 @@
         font-size: 0.75rem;
         color: #666;
         margin: 0;
+        user-select: none;
 
         @media (max-width: 600px) {
           font-size: 0.7rem;
         }
-      }
-
-      &:hover {
-        background-color: var(--color-theme-2-L2);
-        border-left: 14px solid var(--color-theme-2-L3);
       }
     }
   }
