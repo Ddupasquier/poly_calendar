@@ -2,7 +2,6 @@
     import {
         differenceInCalendarDays,
         endOfDay,
-        format,
         isValid,
         isWithinInterval,
         startOfDay,

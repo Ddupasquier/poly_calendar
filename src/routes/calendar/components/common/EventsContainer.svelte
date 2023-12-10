@@ -1,12 +1,12 @@
 <script lang="ts">
     import { Event } from "../..";
-    import type { CalendarEvent } from "../../types";
+    import type { CalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
 
-    export let getEventsForDay: (day: Date) => CalendarEvent[] = () => [];
+    export let getEventsForDay: (day: Date) => CalendarEventModel[] = () => [];
     export let day: Date;
-    export let activeEvent: CalendarEvent | null;
-    export let setActiveEvent: (event: CalendarEvent | null) => void;
+    export let activeEvent: CalendarEventModel | null;
+    export let setActiveEvent: (event: CalendarEventModel | null) => void;
     export let index: number;
 </script>
 

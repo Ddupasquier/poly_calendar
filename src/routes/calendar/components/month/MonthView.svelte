@@ -21,7 +21,7 @@
     faChevronLeft,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
-  
+
   import {
     selectedMonth,
     setSelectedMonth,
@@ -30,16 +30,22 @@
     allFilteredEventsOccurringInSelectedMonthYear,
   } from "$lib/stores";
 
-  export let events: CalendarEventModel[] = [];
-
   const goToNextMonth = () => {
-    currentMonth = addMonths(currentMonth, 1);
-    updateCalendar();
+    if ($selectedMonth === 12) {
+      setSelectedMonth(1);
+      setSelectedYear($selectedYear + 1);
+    } else {
+      setSelectedMonth($selectedMonth + 1);
+    }
   };
 
   const goToPreviousMonth = () => {
-    currentMonth = addMonths(currentMonth, -1);
-    updateCalendar();
+    if ($selectedMonth === 1) {
+      setSelectedMonth(12);
+      setSelectedYear($selectedYear - 1);
+    } else {
+      setSelectedMonth($selectedMonth - 1);
+    }
   };
 
   let activeEvent: CalendarEventModel | null = null;
@@ -49,8 +55,9 @@
   };
 
   const now = new Date();
-  let start = startOfMonth(now);
-  let end = endOfMonth(now);
+  $: start = startOfMonth(new Date($selectedYear, $selectedMonth - 1));
+  $: end = endOfMonth(new Date($selectedYear, $selectedMonth - 1));
+  $: daysInMonth = eachDayOfInterval({ start, end });
   let firstDayOfMonth = getDay(start);
   let daysBeforeStartOfMonth: Date[] = [];
 
@@ -59,8 +66,6 @@
       daysBeforeStartOfMonth.push(addDays(start, -i));
     }
   }
-
-  let daysInMonth = eachDayOfInterval({ start, end });
 
   const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
     if (!isValid(event.startDate) || !isValid(event.endDate)) {
@@ -80,28 +85,19 @@
     });
   };
 
-  let currentMonth = start;
-
-  const updateCalendar = () => {
-    start = startOfMonth(currentMonth);
-    end = endOfMonth(currentMonth);
-    firstDayOfMonth = getDay(start);
-    daysBeforeStartOfMonth = [];
-    if (firstDayOfMonth !== 0) {
-      for (let i = firstDayOfMonth; i > 0; i--) {
-        daysBeforeStartOfMonth.push(addDays(start, -i));
-      }
-    }
-    daysInMonth = eachDayOfInterval({ start, end });
-  };
-
   $: getEventsForDay = (day: Date) => {
-    const eventsForDay = events.filter((event) => eventFallsOnDay(event, day));
+    const eventsForDay = $allFilteredEventsOccurringInSelectedMonthYear.filter(
+      (event) => eventFallsOnDay(event, day),
+    );
     eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
     return eventsForDay;
   };
 
-  $: formattedMonth = format(currentMonth, "MMMM yyyy");
+  $: formattedMonth = format(
+    new Date($selectedYear, $selectedMonth - 1),
+    "MMMM",
+  );
+  $: formattedMonthYear = `${formattedMonth}, ${$selectedYear}`;
 </script>
 
 <div class="month-view">
@@ -109,7 +105,7 @@
     <button on:click={goToPreviousMonth}>
       <FontAwesomeIcon icon={faChevronLeft} />
     </button>
-    <span class="current-month">{formattedMonth}</span>
+    <span class="current-month">{formattedMonthYear}</span>
     <button on:click={goToNextMonth}>
       <FontAwesomeIcon icon={faChevronRight} />
     </button>
