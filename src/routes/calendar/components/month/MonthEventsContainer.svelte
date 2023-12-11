@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Event } from "../..";
+    import { MonthEvent } from "../..";
     import type { CalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
 
@@ -12,7 +12,7 @@
 
 <div class="events-container" bind:this={$eventContainers[index]}>
     {#each getEventsForDay(day) as event}
-        <Event {event} {day} {activeEvent} {setActiveEvent} />
+        <MonthEvent {event} {day} {activeEvent} {setActiveEvent} />
     {/each}
 </div>
 

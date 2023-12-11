@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { page } from "$app/stores";
+
   import {
     filterType,
     setCurrentView,
     setFilterType,
-    // numberOfRecordsShown,
-    // setNumberOfRecordsShown,
+    numberOfRecordsShown,
+    setNumberOfRecordsShown,
   } from "$lib/stores";
   import { ViewTypesEnum, EventTypesEnum } from "$lib/enums";
   import { Button } from "mysvelte-ui";
@@ -31,18 +33,20 @@
       </select>
     </div>
 
-    <!-- <div class="filter-item">
-      <label for="number-of-records">Number:</label>
-      <select
-        bind:value={$numberOfRecordsShown}
-        on:change={() => setNumberOfRecordsShown($numberOfRecordsShown)}
-      >
-        <option value={15}>15</option>
-        <option value={25}>25</option>
-        <option value={50}>50</option>
-        <option value={75}>75</option>
-      </select>
-    </div> -->
+    {#if $page.url.searchParams.get("view") === "agenda"}
+      <div class="filter-item">
+        <label for="number-of-records">Number:</label>
+        <select
+          bind:value={$numberOfRecordsShown}
+          on:change={() => setNumberOfRecordsShown($numberOfRecordsShown)}
+        >
+          <option value={15}>15</option>
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+          <option value={75}>75</option>
+        </select>
+      </div>
+    {/if}
   </div>
 
   <div class="set-view-types">

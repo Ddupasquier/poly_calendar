@@ -13,7 +13,7 @@
     flex-direction: column;
     background-color: var(--color-bg-2);
     border-radius: var(--primary-border-radius);
-    margin: 1rem auto;
-    box-sizing: border-box;
+    margin: 2rem auto;
+    width: 100%;
   }
 </style>

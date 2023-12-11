@@ -25,7 +25,7 @@
     setSelectedYear,
     allFilteredEventsOccurringInSelectedMonthYear,
   } from "$lib/stores";
-  import { EventsContainer, WeekdayBar } from "../..";
+  import { MonthEventsContainer, WeekdayBar } from "../..";
 
   const changeMonth = (increment: number) => {
     const newMonth = $selectedMonth + increment;
@@ -96,7 +96,7 @@
     {#each daysInMonth as day, index}
       <div class="day">
         <h3>{day.getDate()}</h3>
-        <EventsContainer
+        <MonthEventsContainer
           {getEventsForDay}
           {day}
           {activeEvent}
@@ -111,7 +111,7 @@
 <style lang="scss">
   .dates-container {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(100px, 1fr));
     gap: 0.5rem;
     padding: 1rem 1.5rem;
     background-color: hsl(0, 0%, 97%);
@@ -133,6 +133,7 @@
     border-radius: var(--primary-border-radius);
     min-height: 3rem;
     max-height: 10rem;
+    overflow: hidden; 
 
     h3 {
       display: flex;
@@ -149,9 +150,17 @@
       user-select: none;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       h3 {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+        padding: 0.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h3 {
+        font-size: 0.6rem;
+        padding: 0.1rem;
       }
     }
   }
@@ -192,8 +201,18 @@
       z-index: 1;
     }
 
-    @media (max-width: 600px) {
-      display: none;
+    @media (max-width: 768px) {
+      h3 {
+        font-size: 0.7rem;
+        padding: 0.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h3 {
+        font-size: 0.6rem;
+        padding: 0.1rem;
+      }
     }
   }
 

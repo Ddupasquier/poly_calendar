@@ -9,11 +9,23 @@
     isBefore,
     isValid,
     isWithinInterval,
+    subWeeks,
+    addWeeks,
   } from "date-fns";
   import type { CalendarEventModel } from "$lib/models";
-  import { EventsContainer } from "../..";
+  import { WeekEventsContainer } from "../..";
+  import {
+    allFilteredEventsOccurringInSelectedWeek,
+    selectedWeekStart,
+    setSelectedWeekStart,
+  } from "$lib/stores";
+  import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+  import {
+    faChevronLeft,
+    faChevronRight,
+  } from "@fortawesome/free-solid-svg-icons";
 
-  export let events: CalendarEventModel[] = [];
+  // export let events: CalendarEventModel[] = [];
 
   let activeEvent: CalendarEventModel | null = null;
 
@@ -21,10 +33,9 @@
     activeEvent = event;
   };
 
-  const now = new Date();
-  const start = startOfWeek(now, { weekStartsOn: 0 });
-  const end = endOfWeek(now, { weekStartsOn: 0 });
-  const weekDays = eachDayOfInterval({ start, end });
+  $: start = startOfWeek($selectedWeekStart, { weekStartsOn: 0 });
+  $: end = endOfWeek($selectedWeekStart, { weekStartsOn: 0 });
+  $: weekDays = eachDayOfInterval({ start, end });
 
   const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
     if (!isValid(event.startDate) || !isValid(event.endDate)) {
@@ -45,12 +56,36 @@
   };
 
   $: getEventsForDay = (day: Date) => {
-    const eventsForDay = events.filter((event) => eventFallsOnDay(event, day));
+    const eventsForDay = $allFilteredEventsOccurringInSelectedWeek.filter(
+      (event) => eventFallsOnDay(event, day),
+    );
     eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
     return eventsForDay;
   };
+
+  const goToPreviousWeek = () => {
+    setSelectedWeekStart(subWeeks($selectedWeekStart, 1));
+  };
+
+  const goToNextWeek = () => {
+    setSelectedWeekStart(addWeeks($selectedWeekStart, 1));
+  };
+
+  $: formattedWeekStart = `Week starting with ${format(
+    $selectedWeekStart,
+    "MMM d",
+  )}`;
 </script>
 
+<div class="week-navigation">
+  <button on:click={goToPreviousWeek}>
+    <FontAwesomeIcon icon={faChevronLeft} />
+  </button>
+  <span class="current-weekstart">{formattedWeekStart}</span>
+  <button on:click={goToNextWeek}>
+    <FontAwesomeIcon icon={faChevronRight} />
+  </button>
+</div>
 <div class="week-view">
   {#each weekDays as day, index}
     <div class="day">
@@ -58,7 +93,7 @@
         {format(day, "EEEE")},
         <br />{format(day, "MMM d")}
       </h3>
-      <EventsContainer
+      <WeekEventsContainer
         {getEventsForDay}
         {day}
         {activeEvent}
@@ -70,6 +105,34 @@
 </div>
 
 <style lang="scss">
+  .week-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    color: var(--color-text-dark);
+    border-radius: var(--primary-border-radius);
+
+    button {
+      color: rgb(0, 0, 0);
+      border: none;
+      padding: 0.5rem 1rem;
+      background: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .current-weekstart {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  }
+
   .week-view {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -77,23 +140,29 @@
     padding: 1rem 1.5rem;
     background-color: hsl(0, 0%, 97%);
     border-radius: var(--primary-border-radius);
-    width: 100%;
     box-sizing: border-box;
 
-    @media (max-width: 600px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    @media (max-width: 400px) {
+    @media (max-width: 900px) {
       grid-template-columns: 1fr;
     }
 
     .day {
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
       background-color: #fff;
       border-radius: var(--primary-border-radius);
       min-height: 3rem;
+      width: 100%;
+
+      @media (max-width: 840px) {
+          filter: brightness(1.1) opacity(0.8);
+          transition: filter 0.2s ease-in-out;
+
+          &:hover {
+            filter: brightness(1) opacity(1);
+          }
+        }
 
       h3 {
         display: flex;

@@ -23,16 +23,16 @@
   $: formattedDate = format(parseISO($selectedDate), "MMMM d, yyyy");
 </script>
 
+<div class="day-navigation">
+  <button on:click={goToPreviousDay}>
+    <FontAwesomeIcon icon={faChevronLeft} />
+  </button>
+  <span class="current-day">{formattedDate}</span>
+  <button on:click={goToNextDay}>
+    <FontAwesomeIcon icon={faChevronRight} />
+  </button>
+</div>
 <div class="day-view">
-  <div class="day-navigation">
-    <button on:click={goToPreviousDay}>
-      <FontAwesomeIcon icon={faChevronLeft} />
-    </button>
-    <span class="current-day">{formattedDate}</span>
-    <button on:click={goToNextDay}>
-      <FontAwesomeIcon icon={faChevronRight} />
-    </button>
-  </div>
   {#each $allFilteredEventsOccuringOnTheSelectedDate as event}
     {#if event}
       <DayEvent {event} />
@@ -49,7 +49,6 @@
     background-color: hsl(0, 0%, 97%);
     border-radius: var(--primary-border-radius);
     width: 100%;
-    min-width: 30rem;
     max-height: 50rem;
     overflow-y: auto;
     box-sizing: border-box;
