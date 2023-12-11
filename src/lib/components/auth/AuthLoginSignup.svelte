@@ -97,19 +97,4 @@
         gap: 1rem;
         width: 100%;
     }
-
-    .oauth-buttons {
-        button {
-            width: 70%;
-            margin: 0.75rem auto;
-            display: block;
-            padding: 0.5rem 1rem;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            &:hover {
-                background-color: #0056b3;
-            }
-        }
-    }
 </style>
