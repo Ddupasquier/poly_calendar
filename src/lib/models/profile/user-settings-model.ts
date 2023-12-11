@@ -11,4 +11,5 @@ export interface UserSettingsModel {
     marketing_emails_enabled?: boolean; // BOOLEAN DEFAULT false
     two_factor_auth_enabled?: boolean; // BOOLEAN DEFAULT false
     data_sharing_enabled?: boolean; // BOOLEAN DEFAULT false
+    google_calendar_integration: boolean; // BOOLEAN DEFAULT false
 }

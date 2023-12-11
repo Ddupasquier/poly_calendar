@@ -42,3 +42,6 @@ export const Auth = {
 /*===== IMAGES =====*/
 
 export const Images = {}
+
+/*===== SVG ICONS =====*/
+export { default as Google } from "./svg/Google.svelte";

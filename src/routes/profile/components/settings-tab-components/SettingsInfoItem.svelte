@@ -7,14 +7,16 @@
 
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+    import { Google } from "$lib/components";
 
-    export let icon: IconDefinition;
+    export let icon: IconDefinition | string;
     export let label: string;
     export let column: string | null = null;
     export let value: number | string | boolean | undefined;
     export let color: string;
     export let editable: boolean;
 
+    let isUpdating = false;
     let previousValue = value;
 
     $: if (value !== previousValue) {
@@ -25,12 +27,12 @@
     const submitEdit = async () => {
         if (typeof value === "boolean" || value === undefined) {
             try {
+                isUpdating = true;
                 await updateSingleUserSettingsField($authUser, {
                     field: column ?? "",
                     value,
-                }).catch((error) => {
-                    console.error("Error updating user settings:", error);
                 });
+                isUpdating = false;
             } catch (error) {
                 console.error("Error updating user settings:", error);
             }
@@ -60,23 +62,34 @@
 </script>
 
 <div class="settings-info">
-    <div class="icon-container">
-        <FontAwesomeIcon {icon} style={`color: ${color}`} />
-    </div>
+    {#if typeof icon === "string"}
+        {#if icon === "GOOGLE"}
+            <Google />
+        {/if}
+    {:else}
+        <div class="icon-container">
+            <FontAwesomeIcon {icon} style={`color: ${color}`} />
+        </div>
+    {/if}
     {#if typeof value === "boolean"}
         <Toggle
             id={label}
             bind:isChecked={value}
-            disable={!editable}
+            disable={!editable || isUpdating}
             color={colors["--color-theme-1"]}
         />
         <strong>
             :
             {replacePlaceholderWithValue(
                 label,
-                ["##PUBLIC##", "##NOTIFICATION##", "##THEME##"],
-                ["Public", "Enabled", "Dark"],
-                ["Private", "Disabled", "Light"],
+                [
+                    "##PUBLIC##",
+                    "##NOTIFICATION##",
+                    "##THEME##",
+                    "##INTEGRATION##",
+                ],
+                ["Public", "Enabled", "Dark", "Enbled"],
+                ["Private", "Disabled", "Light", "Disabled"],
                 value,
             )}
         </strong>

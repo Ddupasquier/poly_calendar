@@ -8,6 +8,8 @@
 
     export let settingsData: UserSettingsModel | undefined;
 
+    $: console.log(settingsData);
+
     const getValue = (item: {
         column: keyof UserSettingsModel;
     }): string | number | boolean | undefined => {

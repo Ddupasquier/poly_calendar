@@ -15,7 +15,7 @@ import type {
 interface InfoSection {
     label: string;
     column: keyof UserSettingsModel;
-    icon: IconDefinition;
+    icon: IconDefinition | string;
     color: string;
     editable: boolean;
 }
@@ -75,6 +75,18 @@ const settingsStructure: SettingsStructure = [
                 label: "Theme ##THEME##",
                 column: "theme_dark_mode_enabled",
                 icon: faPaintBrush,
+                color: colors["--color-theme-2-D1"],
+                editable: true
+            }
+        ]
+    },
+    {
+        sectionTitle: "Integrations",
+        infoSections: [
+            {
+                label: "Google Calendar ##INTEGRATION##",
+                column: "google_calendar_integration",
+                icon: "GOOGLE",
                 color: colors["--color-theme-2-D1"],
                 editable: true
             }
