@@ -22,8 +22,8 @@
   };
 
   const now = new Date();
-  const start = startOfWeek(now, { weekStartsOn: 1 });
-  const end = endOfWeek(now, { weekStartsOn: 1 });
+  const start = startOfWeek(now, { weekStartsOn: 0 });
+  const end = endOfWeek(now, { weekStartsOn: 0 });
   const weekDays = eachDayOfInterval({ start, end });
 
   const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
