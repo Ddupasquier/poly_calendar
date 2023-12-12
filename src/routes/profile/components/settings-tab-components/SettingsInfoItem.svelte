@@ -1,10 +1,13 @@
 <script lang="ts">
     import { Toggle } from "mysvelte-ui";
 
-    import { updateSingleUserSettingsField } from "$lib/services";
+    import {
+        integrateGoogleCalendar,
+        updateSingleUserSettingsField,
+    } from "$lib/services";
     import { authUser } from "$lib/stores";
-    import { colors } from "$lib/constants";
 
+    import { faCheck } from "@fortawesome/free-solid-svg-icons";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
     import { Google } from "$lib/components";
@@ -64,35 +67,51 @@
 <div class="settings-info">
     {#if typeof icon === "string"}
         {#if icon === "GOOGLE"}
-            <Google />
+            <button
+                class="google-integration"
+                title={`Google Calendar ${
+                    value ? "integrated" : "not integrated"
+                }`}
+                on:click={integrateGoogleCalendar}
+            >
+                <Google />
+                {#if value === true}
+                    <div class="checkmark">
+                        <FontAwesomeIcon
+                            icon={faCheck}
+                            style={"color: green; font-size: 1.5rem"}
+                        />
+                    </div>
+                {/if}
+            </button>
         {/if}
     {:else}
         <div class="icon-container">
             <FontAwesomeIcon {icon} style={`color: ${color}`} />
         </div>
-    {/if}
-    {#if typeof value === "boolean"}
-        <Toggle
-            id={label}
-            bind:isChecked={value}
-            disable={!editable || isUpdating}
-            color={colors["--color-theme-1"]}
-        />
-        <strong>
-            :
-            {replacePlaceholderWithValue(
-                label,
-                [
-                    "##PUBLIC##",
-                    "##NOTIFICATION##",
-                    "##THEME##",
-                    "##INTEGRATION##",
-                ],
-                ["Public", "Enabled", "Dark", "Enbled"],
-                ["Private", "Disabled", "Light", "Disabled"],
-                value,
-            )}
-        </strong>
+        {#if typeof value === "boolean"}
+            <Toggle
+                id={label}
+                bind:isChecked={value}
+                disable={!editable || isUpdating}
+                color={"var(--color-theme-1)"}
+            />
+            <strong>
+                :
+                {replacePlaceholderWithValue(
+                    label,
+                    [
+                        "##PUBLIC##",
+                        "##NOTIFICATION##",
+                        "##THEME##",
+                        "##INTEGRATION##",
+                    ],
+                    ["Public", "Enabled", "Dark", "Enbled"],
+                    ["Private", "Disabled", "Light", "Disabled"],
+                    value,
+                )}
+            </strong>
+        {/if}
     {/if}
 </div>
 
@@ -117,6 +136,40 @@
         justify-content: center;
         margin-right: 8px;
         background: transparent;
+    }
+
+    .google-integration {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border-radius: 50rem;
+        border: none;
+        padding: 0.25rem;
+        cursor: pointer;
+        transition: transform 0.1s ease-in-out;
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-radius: 50rem;
+            background: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &:hover {
+            transform: rotate(10deg) scale(1.05);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
     }
 
     // .cancel {

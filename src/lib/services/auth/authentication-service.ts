@@ -1,5 +1,10 @@
 import { supabase } from "$lib/supabase";
-import { addToast, clearAuthUserAndSession, saveAuthUserAndSession, setHelperText } from "$lib/stores";
+import {
+    addToast,
+    clearAuthUserAndSession,
+    saveAuthUserAndSession,
+    setHelperText,
+} from "$lib/stores";
 import { upsertUserProfile } from "$lib/services";
 import type { Provider, Session, User } from "@supabase/supabase-js";
 
@@ -28,19 +33,23 @@ const handleUserSession = async (user: User, session: Session): Promise<void> =>
     welcomeMessage(user);
 };
 
-// Welcome message function
 const welcomeMessage = (user: User): void => {
+    // Retrieve the context from localStorage
+    const currentContext = localStorage.getItem('auth_context');
+
     const provider = user.app_metadata?.provider;
     const username = user.user_metadata?.full_name || user.user_metadata?.username;
     const isNewUser = user.created_at === user.last_sign_in_at;
+    let message = `Welcome back, ${username || user.email}!`;
 
-    if (isNewUser && provider === 'google') {
-        const welcomeMessage = `First time ${provider} sign in as ${username || user.email}`;
-        addToast(welcomeMessage, { duration: 5000, closable: true });
-    } else {
-        const welcomeBackMessage = `Welcome back, ${username || user.email}!`;
-        addToast(welcomeBackMessage, { duration: 5000, closable: true });
+    if (currentContext === 'google_calendar_integration') {
+        message = `Google Calendar integrated successfully for ${username || user.email}!`;
+        localStorage.removeItem('auth_context');
+    } else if (isNewUser && provider === 'google') {
+        message = `First time ${provider} sign in as ${username || user.email}`;
     }
+
+    addToast(message, { duration: 5000, closable: true });
 };
 
 // Error handling function

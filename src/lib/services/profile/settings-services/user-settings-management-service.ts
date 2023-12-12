@@ -35,6 +35,9 @@ export const getUserSettings = async (authUserData: AuthUser | null): Promise<Us
 
     if (error) {
         console.error("Supabase error:", error);
+        if (error.code === 'PGRST116') {
+            console.error(`No settings found for ${authUserData.id}, consider initializing settings.`);
+        }
         return null;
     }
 

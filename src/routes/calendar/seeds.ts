@@ -133,4 +133,4 @@ const generateSeedData = (numRecords: number): CalendarEventModel[] => {
     return seedData;
 }
 
-export const calendarEvents: CalendarEventModel[] = generateSeedData(100);
+export const calendarEvents: CalendarEventModel[] = generateSeedData(600);
