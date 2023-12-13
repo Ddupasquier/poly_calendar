@@ -3,7 +3,9 @@
 
     import {
         integrateGoogleCalendar,
+        disableGoogleCalendarIntegration,
         updateSingleUserSettingsField,
+        getSingleUserSettingField,
     } from "$lib/services";
     import { authUser } from "$lib/stores";
 
@@ -62,6 +64,28 @@
             return text.replace(regex, replacementValue);
         }, input);
     };
+
+    const handleIntegrationClick = async () => {
+        const isIntegrated = await getSingleUserSettingField(
+            $authUser,
+            "google_calendar_integration",
+        );
+
+        console.log("Integration setting retrieved:", isIntegrated);
+
+        if (isIntegrated) {
+            if (
+                confirm(
+                    "Your Google integration is already enabled. Do you want to disable Google Calendar integration?",
+                )
+            ) {
+                await disableGoogleCalendarIntegration($authUser);
+                value = false;
+            }
+        } else {
+            await integrateGoogleCalendar();
+        }
+    };
 </script>
 
 <div class="settings-info">
@@ -72,7 +96,7 @@
                 title={`Google Calendar ${
                     value ? "integrated" : "not integrated"
                 }`}
-                on:click={integrateGoogleCalendar}
+                on:click={handleIntegrationClick}
             >
                 <Google />
                 {#if value === true}

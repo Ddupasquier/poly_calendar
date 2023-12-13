@@ -63,3 +63,29 @@ export const updateSingleUserSettingsField = async (authUserData: AuthUser | nul
 
     return data;
 };
+
+
+export const getSingleUserSettingField = async (
+    authUserData: AuthUser | null,
+    field: string
+): Promise<boolean | undefined> => {
+    if (!authUserData) {
+        throw new Error("No user data provided.");
+    }
+
+    const { data, error } = await supabase
+        .from('settings')
+        .select(field)
+        .eq('user_uuid', authUserData.id)
+        .single();
+
+    if (error) {
+        console.error("Supabase error:", error);
+        return undefined;
+    }
+
+    const settingsData = data as { [key: string]: any };
+    const settingValue = settingsData ? settingsData[field] : undefined;
+
+    return typeof settingValue === 'boolean' ? settingValue : undefined;
+};

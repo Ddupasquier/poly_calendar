@@ -49,6 +49,19 @@ export const integrateGoogleCalendar = async (): Promise<void> => {
     }
 };
 
+export const disableGoogleCalendarIntegration = async (user: User): Promise<void> => {
+    try {
+        // ... rest of the logic to handle disabling the integration
+        await updateSingleUserSettingsField(user, {
+            field: 'google_calendar_integration',
+            value: false
+        });
+        addToast('Google Calendar integration disabled successfully.', { duration: 5000, closable: true });
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 const handleError = (error: any): void => {
     let message = 'An error occurred during Google Calendar integration.';
     if (error instanceof Error) {
