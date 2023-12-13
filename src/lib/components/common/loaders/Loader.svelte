@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { colors } from "$lib/constants";
     import { Loader } from "mysvelte-ui";
 
-    export let color: string = colors["--color-theme-1-D1"];
+    export let color: string = "var(--color-theme-1-D1)";
     export let size: "small" | "medium" | "large" = "medium";
     export let speed: "slow" | "medium" | "fast" = "medium";
 </script>

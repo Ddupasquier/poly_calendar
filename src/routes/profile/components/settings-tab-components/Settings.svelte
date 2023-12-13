@@ -1,13 +1,4 @@
 <script lang="ts">
-    import {onMount} from "svelte";
-    import {authUser} from "$lib/stores";
-
-    onMount(async () => {
-        const updateResult = await updateSingleUserSettingsField($authUser, {
-                field: 'google_calendar_integration',
-                value: true
-            });
-    });
     import { Common } from "$lib/components";
     import {
         SettingsSection,
@@ -16,9 +7,6 @@
     } from "../..";
 
     import type { UserSettingsModel } from "$lib/models";
-
-    import { colors } from "$lib/constants";
-    import { updateSingleUserSettingsField } from "$lib/services";
 
     export let settingsData: UserSettingsModel | undefined;
 
@@ -47,7 +35,7 @@
             </SettingsSection>
         {/each}
     {:else}
-        <Common.Loader size={"small"} color={colors["--color-theme-2-D1"]} />
+        <Common.Loader size={"small"} color={"var(--color-theme-2-D1)"} />
     {/if}
 </div>
 

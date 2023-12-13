@@ -1,7 +1,6 @@
 <script lang="ts">
     import { Card } from "mysvelte-ui";
     import { helperTextStore as helperText } from "$lib/stores";
-    import { colors } from "$lib/constants";
 
     export let token: string | null = null;
 </script>

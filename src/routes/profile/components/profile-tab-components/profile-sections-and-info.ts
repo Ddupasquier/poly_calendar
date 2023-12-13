@@ -9,7 +9,6 @@ import {
     faPowerOff,
     faLock,
 } from "@fortawesome/free-solid-svg-icons";
-import { colors } from "$lib/constants";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface ProfileInfoItem {
@@ -38,7 +37,7 @@ const profileStructure: ProfileStructure = [
                 label: "Username",
                 column: "username",
                 icon: faUser,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "text",
                 editable: true
             },
@@ -46,7 +45,7 @@ const profileStructure: ProfileStructure = [
                 label: "First",
                 column: "first_name",
                 icon: faUser,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "text",
                 editable: true
             },
@@ -54,7 +53,7 @@ const profileStructure: ProfileStructure = [
                 label: "Last",
                 column: "last_name",
                 icon: faUser,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "text",
                 editable: true
             },
@@ -62,7 +61,7 @@ const profileStructure: ProfileStructure = [
                 label: "Email",
                 column: "email",
                 icon: faMailBulk,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "text",
                 editable: true
             },
@@ -70,7 +69,7 @@ const profileStructure: ProfileStructure = [
                 label: "Phone",
                 column: "phone",
                 icon: faPhone,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "tel",
                 editable: true
             }
@@ -83,7 +82,7 @@ const profileStructure: ProfileStructure = [
                 label: "Language",
                 column: "language",
                 icon: faGlobe,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "text",
                 editable: true
             },
@@ -91,7 +90,7 @@ const profileStructure: ProfileStructure = [
                 label: "Birthday",
                 column: "birthday",
                 icon: faBirthdayCake,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "date",
                 editable: true
             },
@@ -99,7 +98,7 @@ const profileStructure: ProfileStructure = [
                 label: "About",
                 column: "about",
                 icon: faInfo,
-                color: colors["--color-theme-2-D1"],
+                color: "var(--color-theme-2-D1",
                 type: "text",
                 editable: true
             }
@@ -112,13 +111,13 @@ const profileStructure: ProfileStructure = [
                 label: "Member Since",
                 column: "created_at",
                 icon: faCalendar,
-                color: colors["--color-theme-2-D1"]
+                color: "var(--color-theme-2-D1"
             },
             {
                 label: "Last Login",
                 column: "last_sign_in_at",
                 icon: faPowerOff,
-                color: colors["--color-theme-2-D1"]
+                color: "var(--color-theme-2-D1"
             }
         ]
     },
@@ -129,7 +128,7 @@ const profileStructure: ProfileStructure = [
                 label: "Account Status",
                 column: "confirmed_at",
                 icon: faLock,
-                color: colors["--color-theme-2-D1"]
+                color: "var(--color-theme-2-D1"
             }
         ]
     }

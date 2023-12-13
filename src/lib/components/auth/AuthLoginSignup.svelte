@@ -2,7 +2,6 @@
     import { Button, Card } from "mysvelte-ui";
     import { signUp, signIn, handleOAuthLogin } from "$lib/services";
     import { helperTextStore as helperText } from "$lib/stores";
-    import { colors } from "$lib/constants";
     import { Common } from "$lib/components";
     import LoginDivider from "./LoginDivider.svelte";
 
@@ -34,13 +33,13 @@
             <div class="form-group">
                 <Common.EmailInput
                     bind:value={email}
-                    color={colors["--color-theme-2"]}
+                    color={"var(--color-theme-2)"}
                     background="transparent"
                     placeholder="Email"
                 />
                 <Common.PasswordInput
                     bind:value={password}
-                    color={colors["--color-theme-2"]}
+                    color={"var(--color-theme-2)"}
                     background="transparent"
                     placeholder="Password"
                 />

@@ -10,8 +10,6 @@
         checkLocalStorageForVerificationStatus,
     } from "$lib/stores";
 
-    import { colors } from "$lib/constants";
-
     import { checkDate, formatDate } from "$lib/utils";
 
     export let profileData: UserProfileModel | undefined = undefined;
@@ -94,7 +92,7 @@
             </ProfileSection>
         {/each}
     {:else}
-        <Common.Loader size={"small"} color={colors["--color-theme-2-D1"]} />
+        <Common.Loader size={"small"} color="var(--color-theme-2-D1" />
     {/if}
 </div>
 
