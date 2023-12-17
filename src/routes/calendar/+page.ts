@@ -15,12 +15,6 @@ export const load: Load = async ({ fetch }) => {
     // const events = await response.json();
 
     if (events) {
-        // Set the calendar events in the store
         setCalendarEvents(events);
     }
-    // Return the events as props
-    // return {
-    //     events
-    // }
-
 };

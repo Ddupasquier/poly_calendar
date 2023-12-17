@@ -43,6 +43,11 @@ export const saveAuthUserAndSession = (user: User, session: Session) => {
     if (isBrowser) {
         localStorage.setItem('authUser', JSON.stringify(formattedUser));
         localStorage.setItem('authSession', JSON.stringify(session));
+
+        if (user.app_metadata.provider === 'google') {
+            if (session.provider_token)
+                localStorage.setItem('google_provider_token', session.provider_token);
+        }
     }
 
     authUser.set(formattedUser);
@@ -53,6 +58,7 @@ export const clearAuthUserAndSession = () => {
     if (isBrowser) {
         localStorage.removeItem('authUser');
         localStorage.removeItem('authSession');
+        localStorage.removeItem('google_provider_token');
     }
     authUser.set({} as User);
     authSession.set({} as Session);

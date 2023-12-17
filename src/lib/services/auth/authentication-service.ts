@@ -8,7 +8,6 @@ import {
 import { upsertUserProfile } from "$lib/services";
 import type { Provider, Session, User } from "@supabase/supabase-js";
 
-// Common function to handle sign-in, sign-up, and OAuth login results
 const processAuthResult = async (result: any): Promise<void> => {
     const { user, error, session } = result;
 
@@ -22,7 +21,6 @@ const processAuthResult = async (result: any): Promise<void> => {
     }
 };
 
-// Common function to handle user session
 const handleUserSession = async (user: User, session: Session): Promise<void> => {
     saveAuthUserAndSession(user, session);
 
@@ -34,7 +32,6 @@ const handleUserSession = async (user: User, session: Session): Promise<void> =>
 };
 
 const welcomeMessage = (user: User): void => {
-    // Retrieve the context from localStorage
     const currentContext = localStorage.getItem('auth_context');
 
     const provider = user.app_metadata?.provider;
@@ -52,7 +49,6 @@ const welcomeMessage = (user: User): void => {
     addToast(message, { duration: 5000, closable: true });
 };
 
-// Error handling function
 const handleError = (error: any): void => {
     const rateLimitMatch = error.message.match(/after (\d+) seconds/);
     if (rateLimitMatch) {
@@ -62,7 +58,6 @@ const handleError = (error: any): void => {
     }
 };
 
-// Authentication actions
 export const signIn = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signInWithPassword({ email, password });
@@ -75,7 +70,19 @@ export const signIn = async (email: string, password: string): Promise<void> => 
 export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
     if (!provider) return;
     try {
-        const result = await supabase.auth.signInWithOAuth({ provider });
+        const options = {
+            // redirectTo: `${window.location.origin}/profile?tab=profile`,
+            scopes: '',
+        };
+
+        if (provider === 'google') {
+            options.scopes = 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events';
+        }
+
+        const result = await supabase.auth.signInWithOAuth({
+            provider,
+            options,
+        });
         await processAuthResult(result);
     } catch (error) {
         handleError(error);
@@ -86,11 +93,9 @@ export const signUp = async (email: string, password: string): Promise<void> => 
     try {
         const result = await supabase.auth.signUp({ email, password });
         const { error, data } = result;
-        // After signing up, inform the user to check their email.
         if (data.user && !error) {
             setHelperText(false, "A confirmation email has been sent. Please check your inbox.");
         } else {
-            // Handle any errors that may occur during sign up
             handleError(error);
         }
     } catch (error) {
@@ -112,7 +117,6 @@ export const logout = async (): Promise<void> => {
     }
 };
 
-// Initialization of auth state listener
 export const initializeAuthListener = (): void => {
     supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
@@ -121,6 +125,5 @@ export const initializeAuthListener = (): void => {
             clearAuthUserAndSession();
             setHelperText(true, "You have been signed out.");
         }
-        // Handle other auth state changes as needed
     });
 };

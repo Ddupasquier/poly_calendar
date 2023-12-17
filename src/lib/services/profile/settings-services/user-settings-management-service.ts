@@ -1,5 +1,5 @@
 import { supabase } from "$lib/supabase";
-import type { AuthUser } from "@supabase/supabase-js";
+import type { AuthUser, User } from "@supabase/supabase-js";
 import type { UserSettingsModel } from "$lib/models";
 
 export const upsertUserSettings = async (authUserData: AuthUser | null) => {
@@ -7,7 +7,6 @@ export const upsertUserSettings = async (authUserData: AuthUser | null) => {
         throw new Error("No user data provided.");
     }
 
-    // Assuming settings fields need to be populated or updated
     const { data, error } = await supabase.from("settings").upsert([
         {
             user_uuid: authUserData.id,
@@ -19,12 +18,17 @@ export const upsertUserSettings = async (authUserData: AuthUser | null) => {
         throw error;
     }
 
-    if (data) {
-        return data;
-    }
+    return data;
 };
 
-export const getUserSettings = async (authUserData: AuthUser | null): Promise<UserSettingsModel | null> => {
+export const getUserSettings = async (): Promise<UserSettingsModel | null> => {
+    const authUserDataString = localStorage.getItem('authUser');
+    if (!authUserDataString) {
+        throw new Error('Authentication data not found.');
+    }
+
+    const authUserData: User = JSON.parse(authUserDataString);
+
     if (!authUserData) return null;
 
     const { data, error } = await supabase
@@ -34,41 +38,70 @@ export const getUserSettings = async (authUserData: AuthUser | null): Promise<Us
         .single();
 
     if (error) {
-        console.error("Supabase error:", error);
-        if (error.code === 'PGRST116') {
-            console.error(`No settings found for ${authUserData.id}, consider initializing settings.`);
+        throw error;
+    }
+
+    return data;
+};
+
+export interface UpdateResponse<T> {
+    data: T | null;
+    error: Error | null;
+}
+
+export const updateSingleUserSettingsField = async (
+    formObject: {
+        field: keyof UserSettingsModel;
+        value: boolean;
+    }
+): Promise<UpdateResponse<Partial<UserSettingsModel>[]>> => {
+    const authUserDataString = localStorage.getItem('authUser');
+    if (!authUserDataString) {
+        throw new Error('Authentication data not found.');
+    }
+
+    const authUserData: User = JSON.parse(authUserDataString);
+
+    if (!authUserData.id) {
+        return { data: null, error: new Error('User ID is missing') };
+    }
+
+    const updatePayload = {
+        [formObject.field]: formObject.value,
+    };
+
+    try {
+        const updateResponse = await supabase
+            .from('settings')
+            .update(updatePayload)
+            .eq('user_uuid', authUserData.id)
+            .select(formObject.field);
+
+        if (updateResponse.error) {
+            throw updateResponse.error;
         }
-        return null;
-    }
 
-    return data;
+        if (!updateResponse.data) {
+            return { data: null, error: new Error('No rows updated') };
+        }
+
+        return { data: updateResponse.data, error: null };
+    } catch (error) {
+        console.error("Error while updating settings from updateSingleUserSettingsField:", error);
+        return { data: null, error: error instanceof Error ? error : new Error(String(error)) };
+    }
 };
-
-export const updateSingleUserSettingsField = async (authUserData: AuthUser | null, formObject: { field: string; value: boolean | undefined }) => {
-    if (!authUserData) {
-        throw new Error("No user data provided.");
-    }
-
-    const { data, error } = await supabase
-        .from('settings')
-        .update({
-            [formObject.field.toLowerCase()]: formObject.value,
-        })
-        .eq('user_uuid', authUserData.id);
-
-    if (error) {
-        console.error("Supabase error:", error);
-        return null;
-    }
-
-    return data;
-};
-
 
 export const getSingleUserSettingField = async (
-    authUserData: AuthUser | null,
-    field: string
-): Promise<boolean | undefined> => {
+    field: keyof UserSettingsModel
+): Promise<string | number | boolean | undefined> => {
+    const authUserDataString = localStorage.getItem('authUser');
+    if (!authUserDataString) {
+        throw new Error('Authentication data not found.');
+    }
+
+    const authUserData: User = JSON.parse(authUserDataString);
+
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
@@ -80,12 +113,9 @@ export const getSingleUserSettingField = async (
         .single();
 
     if (error) {
-        console.error("Supabase error:", error);
-        return undefined;
+        throw error;
     }
 
-    const settingsData = data as { [key: string]: any };
-    const settingValue = settingsData ? settingsData[field] : undefined;
-
-    return typeof settingValue === 'boolean' ? settingValue : undefined;
+    const settingsData = data as UserSettingsModel;
+    return settingsData[field];
 };

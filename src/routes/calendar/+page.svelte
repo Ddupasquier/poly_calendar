@@ -1,5 +1,16 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+    import { fetchGoogleCalendarEvents } from "$lib/services";
     import { Calendar } from ".";
+
+    let exteriorEvents = [];
+    $: console.log(exteriorEvents);
+
+    onMount(() => {
+        fetchGoogleCalendarEvents().then((events) => {
+            exteriorEvents = events;
+        });
+    });
 </script>
 
 <div class="calendar-container">

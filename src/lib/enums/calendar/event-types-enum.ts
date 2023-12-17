@@ -4,4 +4,5 @@ export enum EventTypesEnum {
     Appointment = 'appointment',
     Birthday = 'birthday',
     Date = 'date',
+    Default = 'default'
 }

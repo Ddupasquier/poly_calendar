@@ -13,11 +13,12 @@
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
     import { Google } from "$lib/components";
+    import type { UserSettingsModel } from "$lib/models";
 
     export let icon: IconDefinition | string;
     export let label: string;
     export let column: string | null = null;
-    export let value: number | string | boolean | undefined;
+    export let value: boolean;
     export let color: string;
     export let editable: boolean;
 
@@ -29,17 +30,31 @@
         previousValue = value;
     }
 
+    const isKeyOfUserSettingsModel = (
+        key: string,
+    ): key is keyof UserSettingsModel => {
+        return (key as keyof UserSettingsModel) !== undefined;
+    };
+
     const submitEdit = async () => {
         if (typeof value === "boolean" || value === undefined) {
+            if (!column || !isKeyOfUserSettingsModel(column)) {
+                console.error(
+                    `Invalid column: ${column} is not a key of UserSettingsModel.`,
+                );
+                return;
+            }
+
             try {
                 isUpdating = true;
-                await updateSingleUserSettingsField($authUser, {
-                    field: column ?? "",
+                await updateSingleUserSettingsField({
+                    field: column as keyof UserSettingsModel,
                     value,
                 });
-                isUpdating = false;
             } catch (error) {
                 console.error("Error updating user settings:", error);
+            } finally {
+                isUpdating = false;
             }
         } else {
             console.error(
@@ -79,7 +94,7 @@
                     "Your Google integration is already enabled. Do you want to disable Google Calendar integration?",
                 )
             ) {
-                await disableGoogleCalendarIntegration($authUser);
+                await disableGoogleCalendarIntegration();
                 value = false;
             }
         } else {

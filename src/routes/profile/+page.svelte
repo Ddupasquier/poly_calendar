@@ -1,6 +1,6 @@
 <script lang="ts">
     // Svelte-specific imports: Framework imports for lifecycle and reactivity.
-    import { onMount } from "svelte";
+    import { beforeUpdate, onMount } from "svelte";
 
     // Supabase imports: Authentication and database connections for user management and data retrieval.
 
@@ -31,6 +31,7 @@
     // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";
     import { isObjectEmpty } from "$lib/utils";
+    import { goto } from "$app/navigation";
 
     // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
 
@@ -49,13 +50,17 @@
 
     $: authUserPresent = $storedAuthUser && !isObjectEmpty($storedAuthUser);
 
+    beforeUpdate(() => {
+        goto(`/profile`);
+    });
+
     onMount(async () => {
         if ($storedAuthUser) {
             selectedOption = "profile";
 
             if (authUserPresent) {
                 profileData = await getUserProfile($storedAuthUser);
-                settingsData = await getUserSettings($storedAuthUser);
+                settingsData = await getUserSettings();
             }
         }
 

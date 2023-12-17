@@ -1,9 +1,11 @@
-import moment from 'moment';
+import { isValid, parse, format } from 'date-fns';
 
 const checkDate = (dateToCheck: string): string => {
     if (!dateToCheck) return "";
 
-    if (moment(dateToCheck, 'YYYY-MM-DD', true).isValid()) {
+    // Using parse and isValid from date-fns to check the validity of the date
+    const parsedDate = parse(dateToCheck, 'yyyy-MM-dd', new Date());
+    if (isValid(parsedDate)) {
         return dateToCheck;
     } else {
         return formatDate(dateToCheck);
@@ -13,9 +15,11 @@ const checkDate = (dateToCheck: string): string => {
 const formatDate = (date: string | Date): string => {
     if (!date) return "";
 
-    const d = new Date(date);
+    // Creating a Date object if the date is a string
+    const d = typeof date === 'string' ? new Date(date) : date;
 
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}` as string;
+    // Using format from date-fns to format the date
+    return format(d, 'yyyy-MM-dd');
 };
 
 export {

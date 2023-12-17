@@ -1,1 +1,1 @@
-export type EventTypesModel = "all" | "meeting" | "appointment" | "birthday" | "date";
+export type EventTypesModel = "all" | "meeting" | "appointment" | "birthday" | "date"| "default";

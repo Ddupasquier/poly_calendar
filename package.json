@@ -11,6 +11,7 @@
 		"palette": "node scripts/parseScss.js"
 	},
 	"devDependencies": {
+		"@googleapis/calendar": "^9.5.0",
 		"@fontsource/fira-mono": "^4.5.10",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
@@ -35,7 +36,6 @@
 		"@supabase/auth-helpers-sveltekit": "^0.10.7",
 		"@supabase/supabase-js": "^2.39.0",
 		"date-fns": "^2.30.0",
-		"moment": "^2.29.4",
 		"mysvelte-ui": "^0.0.32"
 	}
 }
