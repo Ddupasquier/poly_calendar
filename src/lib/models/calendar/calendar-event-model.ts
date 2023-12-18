@@ -1,87 +1,73 @@
-// Base interface for common event properties
+// Define a base interface for common properties
 export interface BaseEventModel {
     id: string;
     summary: string;
-    created: Date;
-    updated: Date;
+    created: string; // Google uses string for dates
+    updated: string;
     description?: string;
     location?: string;
-    start: {
-        date?: Date;
-        dateTime?: Date;
-        timeZone?: string;
-    };
-    end: {
-        date?: Date;
-        dateTime?: Date;
-        timeZone?: string;
-    };
+    start: EventDateTime;
+    end: EventDateTime;
+    eventType?: EventTypesModel;
 }
 
-// Interface for Google Calendar events
+// Specific to Google Calendar Event
 export interface GoogleCalendarEventModel extends BaseEventModel {
     kind: string;
     etag: string;
     status: string;
     htmlLink: string;
     colorId?: string;
-    creator: {
-        id?: string;
-        email: string;
-        displayName: string;
-        self: boolean;
-    };
-    organizer: {
-        id?: string;
-        email: string;
-        displayName: string;
-        self: boolean;
-    };
-    endTimeUnspecified?: boolean;
-    recurrence?: string[];
-    recurringEventId?: string;
-    originalStartTime?: {
-        date?: Date;
-        dateTime?: Date;
-        timeZone?: string;
-    };
-    transparency?: string;
-    visibility?: string;
-    iCalUID: string;
-    sequence: number;
-    attendees?: Array<{
-        id?: string;
-        email: string;
-        displayName?: string;
-        organizer?: boolean;
-        self?: boolean;
-        resource?: boolean;
-        optional?: boolean;
-        responseStatus?: string;
-        comment?: string;
-        additionalGuests?: number;
-    }>;
-    // ... Add any other specific properties of GoogleCalendarEventModel ...
+    creator: EventCreator;
+    organizer: EventOrganizer;
+    // ... other properties specific to Google Calendar Event
 }
 
-// Interface for your application's calendar events
+// Specific to your application's calendar event
 export interface CalendarEventModel extends BaseEventModel {
     type: EventTypesModel;
     isAllDay?: boolean;
     isRecurring?: boolean;
     recurrence?: string;
     attendees?: Attendee[];
-    // ... Add any other specific properties of CalendarEventModel ...
+    // ... other properties specific to your app's CalendarEventModel
 }
 
-// EventTypesModel as per your application's requirements
-export type EventTypesModel = "all" | "meeting" | "appointment" | "birthday" | "date" | "default";
+// Define detailed properties for date and time
+export interface EventDateTime {
+    date?: string;
+    dateTime?: string;
+    timeZone?: string;
+}
 
-// Attendee as per your application's requirements
-export interface Attendee {
-    name: string;
+// Define detailed properties for creators and organizers
+export interface EventCreator {
+    id?: string;
     email: string;
-    rsvp: boolean;
-    rsvpDate: Date;
-    rsvpResponse: string;
+    displayName: string;
+    self: boolean;
 }
+
+export interface EventOrganizer {
+    id?: string;
+    email: string;
+    displayName: string;
+    self: boolean;
+}
+
+// Define the Attendee structure
+export interface Attendee {
+    id?: string;
+    email: string;
+    displayName?: string;
+    organizer?: boolean;
+    self?: boolean;
+    resource?: boolean;
+    optional?: boolean;
+    responseStatus?: string;
+    comment?: string;
+    additionalGuests?: number;
+}
+
+// Define EventTypesModel based on your application's requirements
+export type EventTypesModel = 'meeting' | 'appointment' | 'birthday' | 'date' | 'default';

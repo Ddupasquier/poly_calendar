@@ -1,51 +1,12 @@
 <script lang="ts">
-    import {
-        differenceInCalendarDays,
-        endOfDay,
-        isValid,
-        isWithinInterval,
-        startOfDay,
-    } from "date-fns";
-    import type { CalendarEventModel } from "$lib/models";
+    import type { GoogleCalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
+    import { eventDayIndicator } from "$lib/utils";
 
     export let day: Date;
-    export let activeEvent: CalendarEventModel | null;
-    export let setActiveEvent: (event: CalendarEventModel | null) => void;
-    export let event: CalendarEventModel;
-
-    const eventDayIndicator = (
-        event: CalendarEventModel,
-        day: Date,
-    ): string => {
-        if (!isValid(event.startDate) || !isValid(event.endDate)) {
-            return "";
-        }
-
-        const startOfEvent = startOfDay(event.startDate);
-        const endOfEvent = endOfDay(event.endDate);
-        const currentDay = startOfDay(day);
-
-        if (
-            isWithinInterval(currentDay, {
-                start: startOfEvent,
-                end: endOfEvent,
-            })
-        ) {
-            let dayIndex =
-                differenceInCalendarDays(currentDay, startOfEvent) + 1;
-            const duration =
-                differenceInCalendarDays(endOfEvent, startOfEvent) + 1;
-
-            if (duration === 1) {
-                return "";
-            }
-
-            return `${dayIndex} / ${duration}`;
-        }
-
-        return "";
-    };
+    export let activeEvent: GoogleCalendarEventModel | null;
+    export let setActiveEvent: (event: GoogleCalendarEventModel | null) => void;
+    export let event: GoogleCalendarEventModel;
 
     const scrollToEvent = (eventId: string, clickedContainer: HTMLElement) => {
         $eventContainers.forEach((container) => {
@@ -83,11 +44,10 @@
     tabindex="0"
     class:active={event === activeEvent}
 >
-    <h2>{event.title}</h2>
+    <h2>{event?.summary}</h2>
     <span class="event-day-indicator">
         {eventDayIndicator(event, day)}
     </span>
-    <!-- {format(event.startDate, "MM/dd/yyyy")} - {format(event.endDate, "MM/dd/yyyy")} -->
 </div>
 
 <style lang="scss">

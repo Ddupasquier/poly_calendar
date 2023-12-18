@@ -8,11 +8,10 @@
     isValid,
     isBefore,
     endOfDay,
-    compareAsc,
     format,
     eachDayOfInterval,
   } from "date-fns";
-  import type { CalendarEventModel } from "$lib/models";
+  import type { GoogleCalendarEventModel } from "$lib/models";
   import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
   import {
     faChevronLeft,
@@ -34,8 +33,8 @@
     if (newMonth < 1) setSelectedYear($selectedYear - 1);
   };
 
-  let activeEvent: CalendarEventModel | null = null;
-  const setActiveEvent = (event: CalendarEventModel | null) =>
+  let activeEvent: GoogleCalendarEventModel | null = null;
+  const setActiveEvent = (event: GoogleCalendarEventModel | null) =>
     (activeEvent = event);
 
   $: start = startOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
@@ -49,20 +48,39 @@
         ).reverse()
       : [];
 
-  const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean =>
-    isValid(event.startDate) &&
-    isValid(event.endDate) &&
-    !isBefore(event.endDate, event.startDate) &&
-    isWithinInterval(endOfDay(day), {
-      start: event.startDate,
-      end: endOfDay(event.endDate),
-    });
+  const eventFallsOnDay = (
+    event: GoogleCalendarEventModel,
+    day: Date,
+  ): boolean => {
+    if (
+      typeof event?.start?.dateTime === "string" &&
+      typeof event?.end?.dateTime === "string"
+    ) {
+      const eventStart = new Date(event.start.dateTime);
+      const eventEnd = new Date(event.end.dateTime);
+      const eventStartValid = isValid(eventStart);
+      const eventEndValid = isValid(eventEnd);
+      const eventDateOrderValid = !isBefore(eventEnd, eventStart);
+      const eventWithinDay =
+        eventStartValid &&
+        eventEndValid &&
+        eventDateOrderValid &&
+        isWithinInterval(endOfDay(day), {
+          start: eventStart,
+          end: endOfDay(eventEnd),
+        });
+
+      return eventWithinDay;
+    }
+    return false;
+  };
 
   $: getEventsForDay = (day: Date) => {
     const eventsForDay = $allFilteredEventsOccurringInSelectedMonthYear.filter(
       (event) => eventFallsOnDay(event, day),
     );
-    return eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
+
+    return eventsForDay;
   };
 
   $: formattedMonthYear = `${format(
@@ -133,7 +151,7 @@
     border-radius: var(--primary-border-radius);
     min-height: 3rem;
     max-height: 10rem;
-    overflow: hidden; 
+    overflow: hidden;
 
     h3 {
       display: flex;

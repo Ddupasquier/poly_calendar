@@ -2,7 +2,7 @@ import { EventTypesEnum, ViewTypesEnum } from '$lib/enums';
 import type { EventTypesModel } from '$lib/models';
 import { writable, derived } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
-import type { CalendarEventModel } from '$lib/models';
+import type { GoogleCalendarEventModel } from '$lib/models';
 import { endOfWeek, format, getMonth, getYear, isWithinInterval, startOfWeek } from 'date-fns';
 import { browser } from '$app/environment';
 
@@ -34,21 +34,25 @@ export const setFilterType = (type: EventTypesModel): void => {
     filterType.set(type);
 };
 
-export const calendarEvents: Writable<CalendarEventModel[]> = writable<CalendarEventModel[]>([]);
-export const setCalendarEvents = (events: CalendarEventModel[]): void => {
+export const calendarEvents: Writable<GoogleCalendarEventModel[]> = writable<GoogleCalendarEventModel[]>([]);
+export const setCalendarEvents = (events: GoogleCalendarEventModel[]): void => {
     calendarEvents.set(events);
 }
 
-export const filteredEvents: Readable<CalendarEventModel[]> = derived(
+export const filteredEvents: Readable<GoogleCalendarEventModel[]> = derived(
     [calendarEvents, filterType],
-    ([$calendarEvents, $filterType]): CalendarEventModel[] => {
+    ([$calendarEvents, $filterType]): GoogleCalendarEventModel[] => {
         let events = $calendarEvents;
 
         if ($filterType !== EventTypesEnum.All) {
-            events = events.filter(event => event.type === $filterType);
+            events = events.filter(event => event.eventType === $filterType);
         }
 
-        events.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+        events.sort((a, b) => {
+            const aStartTime = a.start.dateTime ? new Date(a.start.dateTime).getTime() : (a.start.date ? new Date(a.start.date).getTime() : 0);
+            const bStartTime = b.start.dateTime ? new Date(b.start.dateTime).getTime() : (b.start.date ? new Date(b.start.date).getTime() : 0);
+            return aStartTime - bStartTime;
+        });
 
         return events;
     }
@@ -59,7 +63,7 @@ export const setNumberOfRecordsShown = (numRecords: number): void => {
     numberOfRecordsShown.set(numRecords);
 }
 
-export const limitedEvents: Readable<CalendarEventModel[]> = derived(
+export const limitedEvents: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, numberOfRecordsShown],
     ([$filteredEvents, $numberOfRecordsShown]) => {
         return $filteredEvents.slice(0, $numberOfRecordsShown);
@@ -71,11 +75,11 @@ export const setSelectedDate = (date: string): void => {
     selectedDate.set(date);
 }
 
-export const allFilteredEventsOccuringOnTheSelectedDate: Readable<CalendarEventModel[]> = derived(
+export const allFilteredEventsOccuringOnTheSelectedDate: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedDate],
-    ([$filteredEvents, $selectedDate]): CalendarEventModel[] => {
+    ([$filteredEvents, $selectedDate]): GoogleCalendarEventModel[] => {
         return $filteredEvents.filter(event => {
-            const eventDate = new Date(event.startDate).toISOString().split('T')[0];
+            const eventDate = event.start.dateTime
             return eventDate === $selectedDate;
         });
     }
@@ -86,18 +90,18 @@ export const setSelectedWeekStart = (date: Date): void => {
     selectedWeekStart.set(startOfWeek(date, { weekStartsOn: 0 }));
 };
 
-export const allFilteredEventsOccurringInSelectedWeek: Readable<CalendarEventModel[]> = derived(
+export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedWeekStart],
-    ([$filteredEvents, $selectedWeekStart]): CalendarEventModel[] => {
+    ([$filteredEvents, $selectedWeekStart]): GoogleCalendarEventModel[] => {
         const weekStart = $selectedWeekStart;
         const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
 
         return $filteredEvents.filter(event => {
-            const startDate = new Date(event.startDate);
-            const endDate = new Date(event.endDate);
+            const startDate = event.start.dateTime;
+            const endDate = event.end.dateTime;
 
-            return isWithinInterval(startDate, { start: weekStart, end: weekEnd }) ||
-                isWithinInterval(endDate, { start: weekStart, end: weekEnd });
+            return isWithinInterval(Number(startDate), { start: weekStart, end: weekEnd }) ||
+                isWithinInterval(Number(endDate), { start: weekStart, end: weekEnd });
         });
     }
 );
@@ -112,11 +116,24 @@ export const setSelectedYear = (year: number): void => {
     selectedYear.set(year);
 };
 
-export const allFilteredEventsOccurringInSelectedMonthYear: Readable<CalendarEventModel[]> = derived(
+export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedMonth, selectedYear],
     ([$filteredEvents, $selectedMonth, $selectedYear]) => {
-        return $filteredEvents.filter(event => {
-            return getYear(event.startDate) === $selectedYear && (getMonth(event.startDate) + 1) === $selectedMonth;
+
+        const filteredEventsForSelectedMonthYear = $filteredEvents.filter(event => {
+            if (!event.start.dateTime) {
+                console.log(`Skipping event due to no start.dateTime: ${event.summary}`);
+                return false;
+            }
+
+            const eventDate = new Date(event.start.dateTime);
+            const eventYear = eventDate.getFullYear();
+            const eventMonth = eventDate.getMonth() + 1;
+            const matches = eventYear === $selectedYear && eventMonth === $selectedMonth;
+
+            return matches;
         });
+
+        return filteredEventsForSelectedMonthYear;
     }
 );

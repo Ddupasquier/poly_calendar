@@ -4,7 +4,7 @@ import { setCalendarEvents } from '$lib/stores';
 
 
 // TEMPORARY
-import { calendarEvents as events } from './seeds';
+// import { calendarEvents as events } from './seeds';
 
 export const load: Load = async ({ fetch }) => {
     // Replace this URL with the endpoint you're using to fetch calendar events
@@ -14,7 +14,7 @@ export const load: Load = async ({ fetch }) => {
     // const response = await fetch(eventsUrl);
     // const events = await response.json();
 
-    if (events) {
-        setCalendarEvents(events);
-    }
+    // if (events) {
+    //     setCalendarEvents(events);
+    // }
 };

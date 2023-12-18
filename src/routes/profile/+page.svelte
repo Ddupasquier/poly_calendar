@@ -1,39 +1,21 @@
 <script lang="ts">
-    // Svelte-specific imports: Framework imports for lifecycle and reactivity.
     import { beforeUpdate, onMount } from "svelte";
-
-    // Supabase imports: Authentication and database connections for user management and data retrieval.
-
-    // UI components: Custom Svelte components and UI elements from design system libraries.
+    import { goto } from "$app/navigation";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button } from "mysvelte-ui";
     import { Profile, Settings } from ".";
-
     import { Common, Auth } from "$lib/components";
-
-    // Services: Business logic, API calls, and other service-related interactions.
     import { logout, getUserProfile, getUserSettings } from "$lib/services";
-
-    // Models: Type definitions and interfaces for structured data representation.
     import type { UserProfileModel, UserSettingsModel } from "$lib/models";
-    import type { ComponentProps } from "./types";
-
-    // Utilities and constants: Reusable code snippets and app-wide constants for color schemes, etc.
     import { navigationButtons, colors } from "$lib/constants";
-
-    // Store: Svelte stores and reactive variables for state management (placeholder for future additions).
     import {
         checkLocalStorageForVerificationStatus,
         authUser as storedAuthUser,
     } from "$lib/stores";
-
-    // Helpers: Utility functions for common tasks like formatting dates or numbers (placeholder for future additions).
-    import { inRotateScale } from "$lib/transitions/in-rotate-scale";
     import { isObjectEmpty } from "$lib/utils";
-    import { goto } from "$app/navigation";
-
-    // Global styles: Centralized styling sheets that define universal CSS rules for the app (placeholder for future additions).
+    import type { ComponentProps } from "./types";
+    import { inRotateScale } from "$lib/transitions/in-rotate-scale";
 
     let isLoading: boolean = true;
     let profileData: UserProfileModel | null;

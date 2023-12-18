@@ -82,11 +82,8 @@
 
     const handleIntegrationClick = async () => {
         const isIntegrated = await getSingleUserSettingField(
-            $authUser,
             "google_calendar_integration",
         );
-
-        console.log("Integration setting retrieved:", isIntegrated);
 
         if (isIntegrated) {
             if (
