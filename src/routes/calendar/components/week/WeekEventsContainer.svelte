@@ -1,12 +1,12 @@
 <script lang="ts">
     import { WeekEvent } from "../..";
-    import type { CalendarEventModel } from "$lib/models";
+    import type { GoogleCalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
 
-    export let getEventsForDay: (day: Date) => CalendarEventModel[] = () => [];
+    export let getEventsForDay: (day: Date) => GoogleCalendarEventModel[] = () => [];
     export let day: Date;
-    export let activeEvent: CalendarEventModel | null;
-    export let setActiveEvent: (event: CalendarEventModel | null) => void;
+    export let activeEvent: GoogleCalendarEventModel | null;
+    export let setActiveEvent: (event: GoogleCalendarEventModel | null) => void;
     export let index: number;
 </script>
 

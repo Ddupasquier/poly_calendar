@@ -85,7 +85,7 @@ export const allFilteredEventsOccuringOnTheSelectedDate: Readable<GoogleCalendar
     }
 );
 
-export const selectedWeekStart: Writable<Date> = writable(new Date());
+export const selectedWeekStart: Writable<Date> = writable(startOfWeek(new Date(), { weekStartsOn: 0 }));
 export const setSelectedWeekStart = (date: Date): void => {
     selectedWeekStart.set(startOfWeek(date, { weekStartsOn: 0 }));
 };
@@ -97,11 +97,18 @@ export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEv
         const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
 
         return $filteredEvents.filter(event => {
-            const startDate = event.start.dateTime;
-            const endDate = event.end.dateTime;
+            if (!event.start.dateTime || !event.end.dateTime) {
+                console.log(`Skipping event due to no start.dateTime: ${event.summary}`);
+                return false;
+            }
 
-            return isWithinInterval(Number(startDate), { start: weekStart, end: weekEnd }) ||
-                isWithinInterval(Number(endDate), { start: weekStart, end: weekEnd });
+            const startDate = new Date(event.start.dateTime);
+            const endDate = new Date(event.end.dateTime)
+            const startsBeforeWeekStarts = startDate <= weekStart && endDate >= weekStart;
+            const endsAfterWeekEnds = startDate <= weekEnd && endDate >= weekEnd;
+            const isWithinTheWeek = startDate >= weekStart && endDate <= weekEnd;
+
+            return startsBeforeWeekStarts || endsAfterWeekEnds || isWithinTheWeek;
         });
     }
 );

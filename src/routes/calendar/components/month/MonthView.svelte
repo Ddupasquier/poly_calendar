@@ -4,10 +4,6 @@
     endOfMonth,
     getDay,
     addDays,
-    isWithinInterval,
-    isValid,
-    isBefore,
-    endOfDay,
     format,
     eachDayOfInterval,
   } from "date-fns";
@@ -25,6 +21,7 @@
     allFilteredEventsOccurringInSelectedMonthYear,
   } from "$lib/stores";
   import { MonthEventsContainer, WeekdayBar } from "../..";
+    import { eventFallsOnDay } from "$lib/utils";
 
   const changeMonth = (increment: number) => {
     const newMonth = $selectedMonth + increment;
@@ -47,33 +44,6 @@
           addDays(start, -i - 1),
         ).reverse()
       : [];
-
-  const eventFallsOnDay = (
-    event: GoogleCalendarEventModel,
-    day: Date,
-  ): boolean => {
-    if (
-      typeof event?.start?.dateTime === "string" &&
-      typeof event?.end?.dateTime === "string"
-    ) {
-      const eventStart = new Date(event.start.dateTime);
-      const eventEnd = new Date(event.end.dateTime);
-      const eventStartValid = isValid(eventStart);
-      const eventEndValid = isValid(eventEnd);
-      const eventDateOrderValid = !isBefore(eventEnd, eventStart);
-      const eventWithinDay =
-        eventStartValid &&
-        eventEndValid &&
-        eventDateOrderValid &&
-        isWithinInterval(endOfDay(day), {
-          start: eventStart,
-          end: endOfDay(eventEnd),
-        });
-
-      return eventWithinDay;
-    }
-    return false;
-  };
 
   $: getEventsForDay = (day: Date) => {
     const eventsForDay = $allFilteredEventsOccurringInSelectedMonthYear.filter(

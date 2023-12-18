@@ -4,15 +4,15 @@
     endOfWeek,
     eachDayOfInterval,
     format,
-    compareAsc,
     endOfDay,
     isBefore,
     isValid,
     isWithinInterval,
     subWeeks,
     addWeeks,
+    startOfDay,
   } from "date-fns";
-  import type { CalendarEventModel } from "$lib/models";
+  import type { GoogleCalendarEventModel } from "$lib/models";
   import { WeekEventsContainer } from "../..";
   import {
     allFilteredEventsOccurringInSelectedWeek,
@@ -24,42 +24,24 @@
     faChevronLeft,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
+    import { eventFallsOnDay } from "$lib/utils";
 
-  // export let events: CalendarEventModel[] = [];
+  $: console.log($allFilteredEventsOccurringInSelectedWeek);
 
-  let activeEvent: CalendarEventModel | null = null;
+  let activeEvent: GoogleCalendarEventModel | null = null;
 
-  const setActiveEvent = (event: CalendarEventModel | null) => {
+  const setActiveEvent = (event: GoogleCalendarEventModel | null) => {
     activeEvent = event;
   };
 
   $: start = startOfWeek($selectedWeekStart, { weekStartsOn: 0 });
   $: end = endOfWeek($selectedWeekStart, { weekStartsOn: 0 });
   $: weekDays = eachDayOfInterval({ start, end });
-
-  const eventFallsOnDay = (event: CalendarEventModel, day: Date): boolean => {
-    if (!isValid(event.startDate) || !isValid(event.endDate)) {
-      return false;
-    }
-
-    if (isBefore(event.endDate, event.startDate)) {
-      return false;
-    }
-
-    const endOfCurrentDay = endOfDay(day);
-    const adjustedEndDate = endOfDay(event.endDate);
-
-    return isWithinInterval(endOfCurrentDay, {
-      start: event.startDate,
-      end: adjustedEndDate,
-    });
-  };
-
   $: getEventsForDay = (day: Date) => {
     const eventsForDay = $allFilteredEventsOccurringInSelectedWeek.filter(
       (event) => eventFallsOnDay(event, day),
     );
-    eventsForDay.sort((a, b) => compareAsc(a.startDate, b.startDate));
+
     return eventsForDay;
   };
 
@@ -156,13 +138,13 @@
       width: 100%;
 
       @media (max-width: 840px) {
-          filter: brightness(1.1) opacity(0.8);
-          transition: filter 0.2s ease-in-out;
+        filter: brightness(1.1) opacity(0.8);
+        transition: filter 0.2s ease-in-out;
 
-          &:hover {
-            filter: brightness(1) opacity(1);
-          }
+        &:hover {
+          filter: brightness(1) opacity(1);
         }
+      }
 
       h3 {
         display: flex;
