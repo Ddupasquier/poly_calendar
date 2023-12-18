@@ -3,7 +3,7 @@ import type { EventTypesModel } from '$lib/models';
 import { writable, derived } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
 import type { GoogleCalendarEventModel } from '$lib/models';
-import { endOfWeek, format, getMonth, getYear, isWithinInterval, startOfWeek } from 'date-fns';
+import { endOfWeek, format, getMonth, getYear, isSameDay, isWithinInterval, parseISO, startOfWeek } from 'date-fns';
 import { browser } from '$app/environment';
 
 const updateLocalStorage = (view: string) => {
@@ -78,9 +78,18 @@ export const setSelectedDate = (date: string): void => {
 export const allFilteredEventsOccuringOnTheSelectedDate: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedDate],
     ([$filteredEvents, $selectedDate]): GoogleCalendarEventModel[] => {
+        const selectedDateObject = parseISO($selectedDate); // Convert the selected date string to a Date object
+
         return $filteredEvents.filter(event => {
-            const eventDate = event.start.dateTime
-            return eventDate === $selectedDate;
+            if (!event.start.dateTime || !event.end.dateTime) {
+                console.log(`Skipping event due to no start.dateTime: ${event.summary}`);
+                return false;
+            }
+
+            const startDateTime = parseISO(event.start.dateTime);
+            const endDateTime = parseISO(event.end.dateTime);
+
+            return isSameDay(startDateTime, selectedDateObject) || isSameDay(endDateTime, selectedDateObject);
         });
     }
 );

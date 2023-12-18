@@ -70,4 +70,16 @@ const isObjectEmpty = (obj: object): boolean => {
     return Object.keys(obj).length === 0;
 };
 
-export { lighten, darken, startCountdownWithMessage, stopCountdown, getConfirmedStatus, isObjectEmpty };
+const uppercaseFirstLetter = (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export {
+    lighten,
+    darken,
+    startCountdownWithMessage,
+    stopCountdown,
+    getConfirmedStatus,
+    isObjectEmpty,
+    uppercaseFirstLetter
+};

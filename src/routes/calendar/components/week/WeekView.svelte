@@ -26,8 +26,6 @@
   } from "@fortawesome/free-solid-svg-icons";
     import { eventFallsOnDay } from "$lib/utils";
 
-  $: console.log($allFilteredEventsOccurringInSelectedWeek);
-
   let activeEvent: GoogleCalendarEventModel | null = null;
 
   const setActiveEvent = (event: GoogleCalendarEventModel | null) => {

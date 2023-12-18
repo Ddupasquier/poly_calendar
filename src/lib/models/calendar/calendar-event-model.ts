@@ -20,18 +20,19 @@ export interface GoogleCalendarEventModel extends BaseEventModel {
     colorId?: string;
     creator: EventCreator;
     organizer: EventOrganizer;
+    attendees?: Attendee[];
     // ... other properties specific to Google Calendar Event
 }
 
-// Specific to your application's calendar event
-export interface CalendarEventModel extends BaseEventModel {
-    type: EventTypesModel;
-    isAllDay?: boolean;
-    isRecurring?: boolean;
-    recurrence?: string;
-    attendees?: Attendee[];
-    // ... other properties specific to your app's CalendarEventModel
-}
+// // Specific to your application's calendar event
+// export interface CalendarEventModel extends BaseEventModel {
+//     type: EventTypesModel;
+//     isAllDay?: boolean;
+//     isRecurring?: boolean;
+//     recurrence?: string;
+//     attendees?: Attendee[];
+//     // ... other properties specific to your app's CalendarEventModel
+// }
 
 // Define detailed properties for date and time
 export interface EventDateTime {
@@ -64,7 +65,7 @@ export interface Attendee {
     self?: boolean;
     resource?: boolean;
     optional?: boolean;
-    responseStatus?: string;
+    responseStatus?: "accepted" | "declined" | "tentative" | "needsAction";
     comment?: string;
     additionalGuests?: number;
 }

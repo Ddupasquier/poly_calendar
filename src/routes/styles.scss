@@ -1,6 +1,7 @@
 @import '@fontsource/fira-mono';
 
 @mixin modernist-art {
+	$basalt-gray: hsl(215, 8%, 55%);
 	$terracotta: hsl(13, 69%, 63%);
 	$jade-green: hsl(168, 76%, 36%);
 
@@ -15,6 +16,22 @@
 	/* Terracotta */
 	--color-theme-2: #{$jade-green};
 	/* Jade Green */
+
+	// Basalt Gray variations
+	--color-bg-0-D1: #{darken($basalt-gray, 10%)};
+	/* Slightly darker Basalt Gray */
+	--color-bg-0-D2: #{darken($basalt-gray, 20%)};
+	/* Darker Basalt Gray */
+	--color-bg-0-D3: #{darken($basalt-gray, 30%)};
+	/* Even darker Basalt Gray */
+	--color-bg-0-L1: #{lighten($basalt-gray, 10%)};
+	/* Slightly lighter Basalt Gray */
+	--color-bg-0-L2: #{lighten($basalt-gray, 20%)};
+	/* Lighter Basalt Gray */
+	--color-bg-0-L3: #{lighten($basalt-gray, 30%)};
+	/* Even lighter Basalt Gray */
+	--color-bg-0-L4: #{lighten($basalt-gray, 40%)};
+	/* Even lighter Basalt Gray */
 
 	// Terracotta variations
 	--color-theme-1-D1: #{darken($terracotta, 10%)};
