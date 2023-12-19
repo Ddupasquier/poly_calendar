@@ -1,8 +1,7 @@
 import { addToast, selectedMonth, selectedYear } from '$lib/stores';
 import { get } from 'svelte/store';
-import { endOfMonth, startOfMonth } from 'date-fns';
 
-export const fetchGoogleCalendarEvents = async () => {
+export const fetchGoogleCalendarEvents = async (timeMin: string | undefined, timeMax: string | undefined) => {
     const year = get(selectedYear);
     const month = get(selectedMonth);
 
@@ -15,9 +14,6 @@ export const fetchGoogleCalendarEvents = async () => {
         if (!providerToken) {
             throw new Error('Access token not found in localStorage');
         }
-
-        const timeMin = startOfMonth(new Date(year, month - 1)).toISOString();
-        const timeMax = endOfMonth(new Date(year, month - 1)).toISOString();
 
         const eventsEndpoint = `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}`;
 

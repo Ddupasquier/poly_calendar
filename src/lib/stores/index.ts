@@ -36,7 +36,8 @@ export {
     selectedMonth,
     setSelectedMonth,
     selectedYear,
-    setSelectedYear
+    setSelectedYear,
+    fetchEvents
 } from "./calendar/calendarStore";
 
 export { eventContainers } from "./calendar/eventContainersStore";

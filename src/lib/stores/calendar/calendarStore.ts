@@ -1,10 +1,25 @@
 import { EventTypesEnum, ViewTypesEnum } from '$lib/enums';
 import type { EventTypesModel } from '$lib/models';
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
 import type { GoogleCalendarEventModel } from '$lib/models';
-import { endOfWeek, format, getMonth, getYear, isSameDay, isWithinInterval, parseISO, startOfWeek } from 'date-fns';
+import {
+    endOfWeek,
+    format,
+    getMonth,
+    getYear,
+    isSameDay,
+    isWithinInterval,
+    parseISO,
+    startOfMonth,
+    startOfWeek,
+    endOfMonth,
+    endOfDay,
+    addMonths
+} from 'date-fns';
 import { browser } from '$app/environment';
+import { fetchGoogleCalendarEvents } from '$lib/services';
+
 
 const updateLocalStorage = (view: string) => {
     localStorage.setItem('currentView', view);
@@ -153,3 +168,64 @@ export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalen
         return filteredEventsForSelectedMonthYear;
     }
 );
+
+export const fetchEvents = async () => {
+    let timeMin, timeMax;
+
+    switch (get(currentView)) {
+        case ViewTypesEnum.Month:
+            timeMin = startOfMonth(new Date(get(selectedYear), get(selectedMonth) - 1)).toISOString();
+            timeMax = endOfMonth(new Date(get(selectedYear), get(selectedMonth) - 1)).toISOString();
+            break;
+        case ViewTypesEnum.Week:
+            const weekStart = get(selectedWeekStart);
+            const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
+            timeMin = weekStart.toISOString();
+            timeMax = weekEnd.toISOString();
+            break;
+        case ViewTypesEnum.Day:
+            const selectedDay = parseISO(get(selectedDate));
+            timeMin = selectedDay.toISOString();
+            timeMax = endOfDay(selectedDay).toISOString();
+            break;
+        case ViewTypesEnum.Agenda:
+            const now = new Date();
+            const threeMonthsLater = addMonths(now, 3); // Add 3 months to the current date
+            timeMin = now.toISOString();
+            timeMax = threeMonthsLater.toISOString();
+            break;
+    }
+
+    try {
+        const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
+
+        const validEvents = eventsFromGoogle.filter((event: any) => {
+            const hasStartDateTime = event.start && (event.start.dateTime || event.start.date);
+            const hasEndDateTime = event.end && (event.end.dateTime || event.end.date);
+            return hasStartDateTime && hasEndDateTime;
+        });
+
+        setCalendarEvents(validEvents);
+    } catch (error) {
+        console.error("Error when fetching Google Calendar events:", error);
+    }
+};
+
+currentView.subscribe(() => {
+    if (browser) fetchEvents();
+});
+selectedMonth.subscribe(() => {
+    if (browser && get(currentView) === ViewTypesEnum.Month) fetchEvents();
+});
+selectedYear.subscribe(() => {
+    if (browser && get(currentView) === ViewTypesEnum.Month) fetchEvents();
+});
+selectedWeekStart.subscribe(() => {
+    if (browser && get(currentView) === ViewTypesEnum.Week) fetchEvents();
+});
+selectedDate.subscribe(() => {
+    if (browser && get(currentView) === ViewTypesEnum.Day) fetchEvents();
+});
+currentView.subscribe(() => {
+    if (browser) fetchEvents();
+});

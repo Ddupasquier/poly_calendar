@@ -5,9 +5,9 @@
 <div class="agenda-view">
   {#each $limitedEvents as event}
     <div class="event">
-      <h2>{event.title}</h2>
+      <h2>{event.summary}</h2>
       <p>
-        {event.startDate.toLocaleDateString()} - {event.endDate.toLocaleDateString()}
+        <!-- {event.startDate.toLocaleDateString()} - {event.endDate.toLocaleDateString()} -->
       </p>
       <!-- Display event details -->
     </div>
