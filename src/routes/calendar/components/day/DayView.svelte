@@ -3,6 +3,7 @@
     allFilteredEventsOccurringOnTheSelectedDate,
     setSelectedDate,
     selectedDate,
+    isLoadingEvents,
   } from "$lib/stores";
   import { format, addDays, parseISO } from "date-fns";
   import DayEvent from "./DayEvent.svelte";
@@ -11,6 +12,8 @@
     faChevronLeft,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
+  import { Common } from "$lib/components";
+  import { fade } from "svelte/transition";
 
   const goToNextDay = () => {
     setSelectedDate(format(addDays(parseISO($selectedDate), 1), "yyyy-MM-dd"));
@@ -21,12 +24,6 @@
   };
 
   $: formattedDate = format(parseISO($selectedDate), "MMMM d, yyyy");
-
-  /*
-  
-  maybe Sara trip dec 5-7, 6 isn't showing up
-  
-  */
 </script>
 
 <div class="day-navigation">
@@ -38,12 +35,19 @@
     <FontAwesomeIcon icon={faChevronRight} />
   </button>
 </div>
+
 <div class="day-view">
-  {#each $allFilteredEventsOccurringOnTheSelectedDate as event}
-    {#if event}
-      <DayEvent {event} />
-    {/if}
-  {/each}
+  {#if $isLoadingEvents}
+    <Common.Loader />
+  {:else if $allFilteredEventsOccurringOnTheSelectedDate.length === 0}
+    <p class="no-events" in:fade>No events found for this day.</p>
+  {:else}
+    {#each $allFilteredEventsOccurringOnTheSelectedDate as event}
+      {#if event}
+        <DayEvent {event} />
+      {/if}
+    {/each}
+  {/if}
 </div>
 
 <style lang="scss">
@@ -52,7 +56,7 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    background-color: hsl(0, 0%, 97%);
+    background-color: var(--color-bg-0-L4);
     border-radius: var(--primary-border-radius);
     width: 100%;
     max-height: 50rem;
@@ -70,7 +74,7 @@
     border-radius: var(--primary-border-radius);
 
     button {
-      color: rgb(0, 0, 0);
+      color: var(--color-text-dark);
       border: none;
       padding: 0.5rem 1rem;
       background: none;
@@ -86,5 +90,10 @@
       font-size: 1.25rem;
       font-weight: bold;
     }
+  }
+
+  .no-events {
+    text-align: center;
+    width: 100%;
   }
 </style>

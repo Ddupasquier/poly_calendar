@@ -4,18 +4,14 @@
     endOfWeek,
     eachDayOfInterval,
     format,
-    endOfDay,
-    isBefore,
-    isValid,
-    isWithinInterval,
     subWeeks,
     addWeeks,
-    startOfDay,
   } from "date-fns";
   import type { GoogleCalendarEventModel } from "$lib/models";
   import { WeekEventsContainer } from "../..";
   import {
     allFilteredEventsOccurringInSelectedWeek,
+    isLoadingEvents,
     selectedWeekStart,
     setSelectedWeekStart,
   } from "$lib/stores";
@@ -24,7 +20,9 @@
     faChevronLeft,
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
-    import { eventFallsOnDay } from "$lib/utils";
+  import { eventFallsOnDay } from "$lib/utils";
+  import { Common } from "$lib/components";
+  import { fade } from "svelte/transition";
 
   let activeEvent: GoogleCalendarEventModel | null = null;
 
@@ -66,23 +64,32 @@
     <FontAwesomeIcon icon={faChevronRight} />
   </button>
 </div>
-<div class="week-view">
-  {#each weekDays as day, index}
-    <div class="day">
-      <h3>
-        {format(day, "EEEE")},
-        <br />{format(day, "MMM d")}
-      </h3>
-      <WeekEventsContainer
-        {getEventsForDay}
-        {day}
-        {activeEvent}
-        {setActiveEvent}
-        {index}
-      />
-    </div>
-  {/each}
-</div>
+
+{#if $isLoadingEvents}
+  <div class="no-events">
+    <Common.Loader />
+  </div>
+{:else if $allFilteredEventsOccurringInSelectedWeek.length === 0}
+  <p class="no-events" in:fade>No events found for this week.</p>
+{:else}
+  <div class="week-view">
+    {#each weekDays as day, index}
+      <div class="day">
+        <h3>
+          {format(day, "EEEE")},
+          <br />{format(day, "MMM d")}
+        </h3>
+        <WeekEventsContainer
+          {getEventsForDay}
+          {day}
+          {activeEvent}
+          {setActiveEvent}
+          {index}
+        />
+      </div>
+    {/each}
+  </div>
+{/if}
 
 <style lang="scss">
   .week-navigation {
@@ -95,7 +102,7 @@
     border-radius: var(--primary-border-radius);
 
     button {
-      color: rgb(0, 0, 0);
+      color: var(--color-text-dark);
       border: none;
       padding: 0.5rem 1rem;
       background: none;
@@ -118,7 +125,7 @@
     grid-template-columns: repeat(7, 1fr);
     gap: 0.5rem;
     padding: 1rem 1.5rem;
-    background-color: hsl(0, 0%, 97%);
+    background-color: var(--color-bg-0-L4);
     border-radius: var(--primary-border-radius);
     box-sizing: border-box;
 
@@ -130,7 +137,7 @@
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      background-color: #fff;
+      background-color: var(--color-bg-2);
       border-radius: var(--primary-border-radius);
       min-height: 3rem;
       width: 100%;
@@ -151,7 +158,7 @@
         margin: 0;
         width: 100%;
         background-color: var(--color-theme-1-L1);
-        color: #333;
+        color: var(--color-text-light);
         text-align: center;
         border-radius: 4px 4px 0 0;
         padding: 0.25rem 0.5rem;
@@ -165,5 +172,14 @@
         }
       }
     }
+  }
+
+  .no-events {
+    text-align: center;
+    width: 100%;
+    background-color: var(--color-bg-0-L4);
+    border-radius: var(--primary-border-radius);
+    padding: 2rem;
+    box-sizing: border-box;
   }
 </style>

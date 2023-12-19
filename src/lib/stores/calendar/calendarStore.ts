@@ -104,6 +104,7 @@ export const selectedDate: Writable<string> = writable(format(new Date(), 'yyyy-
 export const selectedWeekStart: Writable<Date> = writable(startOfWeek(new Date(), { weekStartsOn: 0 }));
 export const selectedMonth: Writable<number> = writable(getMonth(new Date()) + 1);
 export const selectedYear: Writable<number> = writable(getYear(new Date()));
+export const isLoadingEvents: Writable<boolean> = writable(false);
 
 // ============================================================
 // Svelte Derived Stores
@@ -167,6 +168,7 @@ export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalen
  * It uses the currentView store to decide the time range for fetching events.
  */
 export const fetchEvents = async (): Promise<void> => {
+    isLoadingEvents.set(true);
     let timeMin, timeMax;
 
     switch (get(currentView)) {
@@ -200,8 +202,9 @@ export const fetchEvents = async (): Promise<void> => {
         setCalendarEvents(sortEventsByStartTime(validEvents));
     } catch (error) {
         console.error("Error when fetching Google Calendar events:", error);
+    } finally {
+        isLoadingEvents.set(false);
     }
-
 };
 
 const triggerFetchEvents = derived(

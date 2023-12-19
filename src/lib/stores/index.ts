@@ -16,6 +16,7 @@ export {
 } from "./userStore";
 
 export {
+    isLoadingEvents,
     calendarEvents,
     setCalendarEvents,
     currentView,

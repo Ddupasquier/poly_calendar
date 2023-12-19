@@ -19,9 +19,12 @@
     selectedYear,
     setSelectedYear,
     allFilteredEventsOccurringInSelectedMonthYear,
+    isLoadingEvents,
   } from "$lib/stores";
   import { MonthEventsContainer, WeekdayBar } from "../..";
-    import { eventFallsOnDay } from "$lib/utils";
+  import { eventFallsOnDay } from "$lib/utils";
+  import { Common } from "$lib/components";
+  import { fade } from "svelte/transition";
 
   const changeMonth = (increment: number) => {
     const newMonth = $selectedMonth + increment;
@@ -70,30 +73,37 @@
     </button>
   </div>
 
-  <WeekdayBar />
-
-  <div class="dates-container">
-    {#each daysBeforeStartOfMonth as padDay}
-      <div class="pad">
-        <div class="slash-container">
-          <div class="slash" />
+  {#if $isLoadingEvents}
+    <div class="no-events">
+      <Common.Loader />
+    </div>
+  {:else if $allFilteredEventsOccurringInSelectedMonthYear.length === 0}
+    <p class="no-events" in:fade>No events scheduled for this month.</p>
+  {:else}
+    <WeekdayBar />
+    <div class="dates-container">
+      {#each daysBeforeStartOfMonth as padDay}
+        <div class="pad">
+          <div class="slash-container">
+            <div class="slash" />
+          </div>
+          <h3>{padDay.getDate()}</h3>
         </div>
-        <h3>{padDay.getDate()}</h3>
-      </div>
-    {/each}
-    {#each daysInMonth as day, index}
-      <div class="day">
-        <h3>{day.getDate()}</h3>
-        <MonthEventsContainer
-          {getEventsForDay}
-          {day}
-          {activeEvent}
-          {setActiveEvent}
-          {index}
-        />
-      </div>
-    {/each}
-  </div>
+      {/each}
+      {#each daysInMonth as day, index}
+        <div class="day">
+          <h3>{day.getDate()}</h3>
+          <MonthEventsContainer
+            {getEventsForDay}
+            {day}
+            {activeEvent}
+            {setActiveEvent}
+            {index}
+          />
+        </div>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -102,7 +112,7 @@
     grid-template-columns: repeat(7, minmax(100px, 1fr));
     gap: 0.5rem;
     padding: 1rem 1.5rem;
-    background-color: hsl(0, 0%, 97%);
+    background-color: var(--color-bg-0-L4);
     border-radius: var(--primary-border-radius);
 
     @media (max-width: 600px) {
@@ -117,7 +127,7 @@
   .day {
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    background-color: var(--color-bg-2);
     border-radius: var(--primary-border-radius);
     min-height: 3rem;
     max-height: 10rem;
@@ -130,7 +140,7 @@
       margin: 0;
       width: 100%;
       background-color: var(--color-theme-1-L1);
-      color: #333;
+      color: var(--color-text-light);
       text-align: center;
       border-radius: 4px 4px 0 0;
       padding: 0.25rem 0.5rem;
@@ -158,7 +168,7 @@
     justify-content: flex-end;
     align-items: flex-start;
     position: relative;
-    background-color: hsl(0, 0%, 90%);
+    background-color: var(--color-bg-0-L3);
     border-radius: var(--primary-border-radius);
     overflow: hidden;
     box-shadow: none;
@@ -174,7 +184,7 @@
     .slash {
       width: 150%;
       height: 0.75rem;
-      background-color: hsl(0, 0%, 97%);
+      background-color: var(--color-bg-0-L4);
       position: absolute;
       top: 50%;
       left: 50%;
@@ -183,7 +193,7 @@
 
     h3 {
       user-select: none;
-      color: hsl(0, 0%, 0%);
+      color: var(--color-text-dark);
       margin: 0;
       padding: 0.25rem;
       z-index: 1;
@@ -214,7 +224,7 @@
     border-radius: var(--primary-border-radius);
 
     button {
-      color: rgb(0, 0, 0);
+      color: var(--color-text-dark);
       border: none;
       padding: 0.5rem 1rem;
       background: none;
@@ -230,5 +240,14 @@
       font-size: 1.25rem;
       font-weight: bold;
     }
+  }
+
+  .no-events {
+    text-align: center;
+    width: 100%;
+    background-color: var(--color-bg-0-L4);
+    border-radius: var(--primary-border-radius);
+    padding: 2rem;
+    box-sizing: border-box;
   }
 </style>
