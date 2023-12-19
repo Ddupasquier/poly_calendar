@@ -1,15 +1,27 @@
 <script lang="ts">
   import { limitedEvents } from "$lib/stores";
+
+  const hasEventEnded = (
+    endDate: string | number | Date | undefined,
+  ): boolean => {
+    if (!endDate) return false;
+
+    return new Date(endDate) < new Date();
+  };
 </script>
 
 <div class="agenda-view">
   {#each $limitedEvents as event}
-    <div class="event">
+    <div
+      class="event {hasEventEnded(event.end.dateTime || event.end.date)
+        ? 'ended'
+        : ''}"
+    >
       <h2>{event.summary}</h2>
       <p>
-        <!-- {event.startDate.toLocaleDateString()} - {event.endDate.toLocaleDateString()} -->
+        {event.start.dateTime || event.start.date} - {event.end.dateTime ||
+          event.end.date}
       </p>
-      <!-- Display event details -->
     </div>
   {/each}
 </div>
@@ -31,17 +43,20 @@
       border-radius: 4px;
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
       transition: background-color 0.2s ease-in-out;
+      cursor: pointer;
 
       h2 {
         font-size: 0.85rem;
         color: #333;
         margin: 0;
+        user-select: none;
       }
 
       p {
         font-size: 0.75rem;
         color: #666;
         margin: 0;
+        user-select: none;
       }
 
       &:last-child {
@@ -54,19 +69,25 @@
     }
 
     @media (max-width: 600px) {
-      padding: 1rem; // Adjust padding for smaller screens
+      padding: 1rem;
 
       .event h2,
       .event p {
-        font-size: 0.75rem; // Adjust font size for smaller screens
+        font-size: 0.75rem;
       }
     }
 
     @media (max-width: 400px) {
       .event h2,
       .event p {
-        font-size: 0.7rem; // Adjust font size for very small screens
+        font-size: 0.7rem;
       }
     }
+  }
+
+  .event.ended {
+    background-color: var(--color-theme-1-L3);
+    color:  var(--color-text-light);
+    text-decoration: line-through;
   }
 </style>

@@ -15,7 +15,8 @@ import {
     startOfWeek,
     endOfMonth,
     endOfDay,
-    addMonths
+    addMonths,
+    subWeeks
 } from 'date-fns';
 import { browser } from '$app/environment';
 import { fetchGoogleCalendarEvents } from '$lib/services';
@@ -190,8 +191,9 @@ export const fetchEvents = async () => {
             break;
         case ViewTypesEnum.Agenda:
             const now = new Date();
+            const oneWeekAgo = subWeeks(now, 1); // Subtract 1 week from the current date
             const threeMonthsLater = addMonths(now, 3); // Add 3 months to the current date
-            timeMin = now.toISOString();
+            timeMin = oneWeekAgo.toISOString();
             timeMax = threeMonthsLater.toISOString();
             break;
     }
