@@ -1,176 +1,172 @@
-import { EventTypesEnum, ViewTypesEnum } from '$lib/enums';
-import type { EventTypesModel } from '$lib/models';
+// Svelte stores and helper imports
 import { writable, derived, get } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
-import type { GoogleCalendarEventModel } from '$lib/models';
 import {
-    endOfWeek,
-    format,
-    getMonth,
-    getYear,
-    isSameDay,
-    isWithinInterval,
-    parseISO,
-    startOfMonth,
-    startOfWeek,
-    endOfMonth,
-    endOfDay,
-    addMonths,
-    subWeeks
+    startOfMonth, endOfMonth, startOfWeek, endOfWeek, endOfDay,
+    addMonths, subWeeks, parseISO, format, isSameDay, getMonth, getYear
 } from 'date-fns';
-import { browser } from '$app/environment';
+import type { GoogleCalendarEventModel, EventTypesModel } from '$lib/models';
+import { EventTypesEnum, ViewTypesEnum } from '$lib/enums';
 import { fetchGoogleCalendarEvents } from '$lib/services';
+import { browser } from '$app/environment';
 
+// ============================================================
+// Helper functions
+// ============================================================
 
-const updateLocalStorage = (view: string) => {
-    localStorage.setItem('currentView', view);
+/**
+ * Converts event dates to JavaScript Date objects.
+ * Prefers `dateTime` over `date` if both are provided.
+ * @param {Object} event - An event object with dateTime and/or date properties.
+ * @returns {Date} - A JavaScript Date object for the event time.
+ * @throws {Error} - If both dateTime and date are missing.
+ */
+const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => {
+    if (event.dateTime) {
+        return new Date(event.dateTime);
+    } else if (event.date) {
+        return new Date(event.date);
+    }
+    throw new Error('Both dateTime and date are missing from the event');
 };
 
-export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(
-    ViewTypesEnum.Month
-);
-
-if (browser) {
-    const storedView = localStorage.getItem('currentView');
-    if (storedView) {
-        currentView.set(storedView as ViewTypesEnum);
+/** 
+ * Checks if an event has valid start and end times/dates.
+ * @param {Object} event - An event object with dateTime and/or date properties.
+ * @returns {boolean} - True if the event has valid start and end times/dates, false otherwise.
+*/
+const isEventValid = (event: GoogleCalendarEventModel): boolean => {
+    if (!event.start) {
+        throw new Error('Event start time is missing');
     }
 
-    currentView.subscribe((value) => {
-        updateLocalStorage(value);
-    });
-}
+    if (!event.end) {
+        throw new Error('Event end time is missing');
+    }
 
-export const setCurrentView = (view: ViewTypesEnum): void => {
-    currentView.set(view);
+    return !!(
+        (event.start && (event.start.dateTime || event.start.date)) &&
+        (event.end && (event.end.dateTime || event.end.date))
+    );
 };
 
+/**
+ * Sorts events by start time.
+ * @param {Object[]} events - An array of event objects.
+ * @returns {Object[]} - The sorted array of event objects.
+ */
+const sortEventsByStartTime = (events: GoogleCalendarEventModel[]): GoogleCalendarEventModel[] => {
+    if (!events.length) return events;
+
+    return events.sort((a, b) => getEventDateTime(a.start).getTime() - getEventDateTime(b.start).getTime());
+};
+
+/** 
+ * Updates a value in localStorage.
+ * @param {string} key - The key to update in localStorage.
+ * @param {any} value - The value to store in localStorage.
+ * @returns {void}
+*/
+const updateLocalStorage = (key: string, value: any): void => {
+    localStorage.setItem(key, JSON.stringify(value));
+};
+
+// ============================================================
+// Store Initialization with Local Storage Integration
+// ============================================================
+
+/**
+ * Attempts to retrieve the 'currentView' from localStorage.
+ * Defaults to 'Month' view if not in browser or no value is stored.
+ * @returns {ViewTypesEnum} - The current view type.
+ */
+const initialCurrentView = (): ViewTypesEnum => {
+    if (browser && localStorage.getItem('currentView')) {
+        const storedView = localStorage.getItem('currentView');
+        return storedView ? JSON.parse(storedView) : ViewTypesEnum.Month;
+    }
+    return ViewTypesEnum.Month;
+};
+
+// ============================================================
+// Svelte Writable Stores
+// ============================================================
+
+/**
+ * Writable stores that can be updated from anywhere in the app.
+ * They are used to store the current view, filter type, calendar events, and other values.
+ */
+export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(initialCurrentView());
 export const filterType: Writable<EventTypesModel> = writable<EventTypesModel>(EventTypesEnum.All);
-export const setFilterType = (type: EventTypesModel): void => {
-    filterType.set(type);
-};
+export const calendarEvents: Writable<GoogleCalendarEventModel[]> = writable([]);
+export const numberOfRecordsShown: Writable<number> = writable(15);
+export const selectedDate: Writable<string> = writable(format(new Date(), 'yyyy-MM-dd'));
+export const selectedWeekStart: Writable<Date> = writable(startOfWeek(new Date(), { weekStartsOn: 0 }));
+export const selectedMonth: Writable<number> = writable(getMonth(new Date()) + 1);
+export const selectedYear: Writable<number> = writable(getYear(new Date()));
 
-export const calendarEvents: Writable<GoogleCalendarEventModel[]> = writable<GoogleCalendarEventModel[]>([]);
-export const setCalendarEvents = (events: GoogleCalendarEventModel[]): void => {
-    calendarEvents.set(events);
-}
+// ============================================================
+// Svelte Derived Stores
+// ============================================================
 
+/**
+ * Derived stores that compute values based on the writable stores.
+ * They help in filtering events based on different criteria like dates and event types.
+ */
 export const filteredEvents: Readable<GoogleCalendarEventModel[]> = derived(
     [calendarEvents, filterType],
-    ([$calendarEvents, $filterType]): GoogleCalendarEventModel[] => {
-        let events = $calendarEvents;
-
-        if ($filterType !== EventTypesEnum.All) {
-            events = events.filter(event => event.eventType === $filterType);
-        }
-
-        events.sort((a, b) => {
-            const aStartTime = a.start.dateTime ? new Date(a.start.dateTime).getTime() : (a.start.date ? new Date(a.start.date).getTime() : 0);
-            const bStartTime = b.start.dateTime ? new Date(b.start.dateTime).getTime() : (b.start.date ? new Date(b.start.date).getTime() : 0);
-            return aStartTime - bStartTime;
-        });
-
-        return events;
-    }
+    ([$calendarEvents, $filterType]) => $filterType === EventTypesEnum.All ? $calendarEvents : $calendarEvents.filter(event => event.eventType === $filterType)
 );
-
-export const numberOfRecordsShown: Writable<number> = writable<number>(15);
-export const setNumberOfRecordsShown = (numRecords: number): void => {
-    numberOfRecordsShown.set(numRecords);
-}
 
 export const limitedEvents: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, numberOfRecordsShown],
-    ([$filteredEvents, $numberOfRecordsShown]) => {
-        return $filteredEvents.slice(0, $numberOfRecordsShown);
-    }
+    ([$filteredEvents, $numberOfRecordsShown]) => $filteredEvents.slice(0, $numberOfRecordsShown)
 );
 
-export const selectedDate: Writable<string> = writable<string>(format(new Date(), 'yyyy-MM-dd'));
-export const setSelectedDate = (date: string): void => {
-    selectedDate.set(date);
-}
-
-export const allFilteredEventsOccuringOnTheSelectedDate: Readable<GoogleCalendarEventModel[]> = derived(
+export const allFilteredEventsOccurringOnTheSelectedDate: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedDate],
-    ([$filteredEvents, $selectedDate]): GoogleCalendarEventModel[] => {
-        const selectedDateObject = parseISO($selectedDate); // Convert the selected date string to a Date object
-
+    ([$filteredEvents, $selectedDate]) => {
+        const selectedDateObject = parseISO($selectedDate);
         return $filteredEvents.filter(event => {
-            if (!event.start.dateTime || !event.end.dateTime) {
-                console.log(`Skipping event due to no start.dateTime: ${event.summary}`);
-                return false;
-            }
-
-            const startDateTime = parseISO(event.start.dateTime);
-            const endDateTime = parseISO(event.end.dateTime);
-
+            const startDateTime = getEventDateTime(event.start);
+            const endDateTime = getEventDateTime(event.end);
             return isSameDay(startDateTime, selectedDateObject) || isSameDay(endDateTime, selectedDateObject);
         });
     }
 );
 
-export const selectedWeekStart: Writable<Date> = writable(startOfWeek(new Date(), { weekStartsOn: 0 }));
-export const setSelectedWeekStart = (date: Date): void => {
-    selectedWeekStart.set(startOfWeek(date, { weekStartsOn: 0 }));
-};
-
 export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedWeekStart],
-    ([$filteredEvents, $selectedWeekStart]): GoogleCalendarEventModel[] => {
+    ([$filteredEvents, $selectedWeekStart]) => {
         const weekStart = $selectedWeekStart;
-        const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
-
+        const weekEnd = endOfWeek(weekStart);
         return $filteredEvents.filter(event => {
-            if (!event.start.dateTime || !event.end.dateTime) {
-                console.log(`Skipping event due to no start.dateTime: ${event.summary}`);
-                return false;
-            }
-
-            const startDate = new Date(event.start.dateTime);
-            const endDate = new Date(event.end.dateTime)
-            const startsBeforeWeekStarts = startDate <= weekStart && endDate >= weekStart;
-            const endsAfterWeekEnds = startDate <= weekEnd && endDate >= weekEnd;
-            const isWithinTheWeek = startDate >= weekStart && endDate <= weekEnd;
-
-            return startsBeforeWeekStarts || endsAfterWeekEnds || isWithinTheWeek;
+            const startDate = getEventDateTime(event.start);
+            const endDate = getEventDateTime(event.end);
+            return (startDate >= weekStart && startDate <= weekEnd) || (endDate >= weekStart && endDate <= weekEnd);
         });
     }
 );
-
-export const selectedMonth: Writable<number> = writable(getMonth(new Date()) + 1);
-export const setSelectedMonth = (month: number): void => {
-    selectedMonth.set(month);
-};
-
-export const selectedYear: Writable<number> = writable(getYear(new Date()));
-export const setSelectedYear = (year: number): void => {
-    selectedYear.set(year);
-};
 
 export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, selectedMonth, selectedYear],
     ([$filteredEvents, $selectedMonth, $selectedYear]) => {
-
-        const filteredEventsForSelectedMonthYear = $filteredEvents.filter(event => {
-            if (!event.start.dateTime) {
-                console.log(`Skipping event due to no start.dateTime: ${event.summary}`);
-                return false;
-            }
-
-            const eventDate = new Date(event.start.dateTime);
-            const eventYear = eventDate.getFullYear();
-            const eventMonth = eventDate.getMonth() + 1;
-            const matches = eventYear === $selectedYear && eventMonth === $selectedMonth;
-
-            return matches;
+        return $filteredEvents.filter(event => {
+            const eventStartDate = getEventDateTime(event.start);
+            return eventStartDate.getFullYear() === $selectedYear && eventStartDate.getMonth() + 1 === $selectedMonth;
         });
-
-        return filteredEventsForSelectedMonthYear;
     }
 );
 
-export const fetchEvents = async () => {
+// ============================================================
+// Event Fetching Logic
+// ============================================================
+
+/**
+ * Fetches events from Google Calendar based on the current view.
+ * It uses the currentView store to decide the time range for fetching events.
+ */
+export const fetchEvents = async (): Promise<void> => {
     let timeMin, timeMax;
 
     switch (get(currentView)) {
@@ -191,43 +187,57 @@ export const fetchEvents = async () => {
             break;
         case ViewTypesEnum.Agenda:
             const now = new Date();
-            const oneWeekAgo = subWeeks(now, 1); // Subtract 1 week from the current date
-            const threeMonthsLater = addMonths(now, 3); // Add 3 months to the current date
+            const oneWeekAgo = subWeeks(now, 1);
+            const threeMonthsLater = addMonths(now, 3);
             timeMin = oneWeekAgo.toISOString();
             timeMax = threeMonthsLater.toISOString();
             break;
     }
 
     try {
-        const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
-
-        const validEvents = eventsFromGoogle.filter((event: any) => {
-            const hasStartDateTime = event.start && (event.start.dateTime || event.start.date);
-            const hasEndDateTime = event.end && (event.end.dateTime || event.end.date);
-            return hasStartDateTime && hasEndDateTime;
-        });
-
-        setCalendarEvents(validEvents);
+        const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax) ?? [];
+        const validEvents = eventsFromGoogle.filter(isEventValid);
+        setCalendarEvents(sortEventsByStartTime(validEvents));
     } catch (error) {
         console.error("Error when fetching Google Calendar events:", error);
     }
+
 };
 
-currentView.subscribe(() => {
-    if (browser) fetchEvents();
+const triggerFetchEvents = derived(
+    [currentView, selectedMonth, selectedYear, selectedWeekStart, selectedDate],
+    () => {
+        if (browser) {
+            fetchEvents();
+        }
+    }
+);
+
+triggerFetchEvents.subscribe(() => {
+    // This is intentionally left blank. The subscription is just to ensure the derived store runs.
 });
-selectedMonth.subscribe(() => {
-    if (browser && get(currentView) === ViewTypesEnum.Month) fetchEvents();
+
+// ============================================================
+// Local Storage Persistence and Setters
+// ============================================================
+
+/**
+ * Subscribes to the currentView store and persists its value in local storage.
+ * This ensures the user's view preference is saved across sessions.
+ */
+currentView.subscribe(value => {
+
+    if (browser) {
+        localStorage.setItem('currentView', JSON.stringify(value));
+    }
 });
-selectedYear.subscribe(() => {
-    if (browser && get(currentView) === ViewTypesEnum.Month) fetchEvents();
-});
-selectedWeekStart.subscribe(() => {
-    if (browser && get(currentView) === ViewTypesEnum.Week) fetchEvents();
-});
-selectedDate.subscribe(() => {
-    if (browser && get(currentView) === ViewTypesEnum.Day) fetchEvents();
-});
-currentView.subscribe(() => {
-    if (browser) fetchEvents();
-});
+
+// Setters for updating the stores
+export const setCurrentView = (view: ViewTypesEnum): void => currentView.set(view);
+export const setFilterType = (type: EventTypesModel): void => filterType.set(type);
+export const setCalendarEvents = (events: GoogleCalendarEventModel[]): void => calendarEvents.set(sortEventsByStartTime(events));
+export const setNumberOfRecordsShown = (numRecords: number): void => numberOfRecordsShown.set(numRecords);
+export const setSelectedDate = (date: string): void => selectedDate.set(date);
+export const setSelectedWeekStart = (date: Date): void => selectedWeekStart.set(startOfWeek(date, { weekStartsOn: 0 }));
+export const setSelectedMonth = (month: number): void => selectedMonth.set(month);
+export const setSelectedYear = (year: number): void => selectedYear.set(year);

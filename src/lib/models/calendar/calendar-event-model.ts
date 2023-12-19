@@ -24,17 +24,6 @@ export interface GoogleCalendarEventModel extends BaseEventModel {
     // ... other properties specific to Google Calendar Event
 }
 
-// // Specific to your application's calendar event
-// export interface CalendarEventModel extends BaseEventModel {
-//     type: EventTypesModel;
-//     isAllDay?: boolean;
-//     isRecurring?: boolean;
-//     recurrence?: string;
-//     attendees?: Attendee[];
-//     // ... other properties specific to your app's CalendarEventModel
-// }
-
-// Define detailed properties for date and time
 export interface EventDateTime {
     date?: string;
     dateTime?: string;

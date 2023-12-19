@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    allFilteredEventsOccuringOnTheSelectedDate,
+    allFilteredEventsOccurringOnTheSelectedDate,
     setSelectedDate,
     selectedDate,
   } from "$lib/stores";
@@ -21,6 +21,12 @@
   };
 
   $: formattedDate = format(parseISO($selectedDate), "MMMM d, yyyy");
+
+  /*
+  
+  maybe Sara trip dec 5-7, 6 isn't showing up
+  
+  */
 </script>
 
 <div class="day-navigation">
@@ -33,7 +39,7 @@
   </button>
 </div>
 <div class="day-view">
-  {#each $allFilteredEventsOccuringOnTheSelectedDate as event}
+  {#each $allFilteredEventsOccurringOnTheSelectedDate as event}
     {#if event}
       <DayEvent {event} />
     {/if}

@@ -26,7 +26,7 @@ export {
     numberOfRecordsShown,
     setNumberOfRecordsShown,
     limitedEvents,
-    allFilteredEventsOccuringOnTheSelectedDate,
+    allFilteredEventsOccurringOnTheSelectedDate,
     allFilteredEventsOccurringInSelectedMonthYear,
     allFilteredEventsOccurringInSelectedWeek,
     selectedDate,

@@ -4,6 +4,7 @@ export { default as CalendarBody } from './components/CalendarBody.svelte';
 export { default as DayView } from './components/day/DayView.svelte';
 export { default as DayEvent } from './components/day/DayEvent.svelte';
 export { default as AgendaView } from './components/agenda/AgendaView.svelte';
+export { default as AgendaEvent } from './components/agenda/AgendaEvent.svelte';
 export { default as MonthView } from './components/month/MonthView.svelte';
 export { default as MonthEventsContainer } from './components/month/MonthEventsContainer.svelte';
 export { default as MonthEvent } from './components/month/MonthEvent.svelte';
