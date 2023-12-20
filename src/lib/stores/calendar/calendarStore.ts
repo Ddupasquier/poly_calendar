@@ -1,12 +1,35 @@
 // Svelte stores and helper imports
-import { writable, derived, get } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
 import {
-    startOfMonth, endOfMonth, startOfWeek, endOfWeek, endOfDay,
-    addMonths, subWeeks, parseISO, format, isSameDay, getMonth, getYear
+    writable,
+    derived,
+    get
+} from 'svelte/store';
+import type {
+    Writable,
+    Readable
+} from 'svelte/store';
+import {
+    startOfMonth,
+    endOfMonth,
+    startOfWeek,
+    endOfWeek,
+    endOfDay,
+    addMonths,
+    subWeeks,
+    parseISO,
+    format,
+    isSameDay,
+    getMonth,
+    getYear
 } from 'date-fns';
-import type { GoogleCalendarEventModel, EventTypesModel } from '$lib/models';
-import { EventTypesEnum, ViewTypesEnum } from '$lib/enums';
+import type {
+    GoogleCalendarEventModel,
+    EventTypesModel
+} from '$lib/models';
+import {
+    EventTypesEnum,
+    ViewTypesEnum
+} from '$lib/enums';
 import { fetchGoogleCalendarEvents } from '$lib/services';
 import { browser } from '$app/environment';
 
@@ -102,14 +125,14 @@ const initialCurrentView = (): ViewTypesEnum => {
  * Writable stores that can be updated from anywhere in the app.
  * They are used to store the current view, filter type, calendar events, and other values.
  */
-export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(initialCurrentView());
-export const filterType: Writable<EventTypesModel> = writable<EventTypesModel>(EventTypesEnum.All);
-export const calendarEvents: Writable<GoogleCalendarEventModel[]> = writable([]);
-export const numberOfRecordsShown: Writable<number> = writable(15);
 export const selectedDate: Writable<string> = writable(format(new Date(), 'yyyy-MM-dd'));
 export const selectedWeekStart: Writable<Date> = writable(startOfWeek(new Date(), { weekStartsOn: 0 }));
 export const selectedMonth: Writable<number> = writable(getMonth(new Date()) + 1);
 export const selectedYear: Writable<number> = writable(getYear(new Date()));
+export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(initialCurrentView());
+export const filterType: Writable<EventTypesModel> = writable<EventTypesModel>(EventTypesEnum.All);
+export const calendarEvents: Writable<GoogleCalendarEventModel[]> = writable([]);
+export const numberOfRecordsShown: Writable<number> = writable(15);
 export const isLoadingEvents: Writable<boolean> = writable(false);
 
 // ============================================================
@@ -235,9 +258,8 @@ triggerFetchEvents.subscribe(() => {
  * This ensures the user's view preference is saved across sessions.
  */
 currentView.subscribe(value => {
-
     if (browser) {
-        localStorage.setItem('currentView', JSON.stringify(value));
+        updateLocalStorage('currentView', value);
     }
 });
 
