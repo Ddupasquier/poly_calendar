@@ -20,7 +20,8 @@ import {
     format,
     isSameDay,
     getMonth,
-    getYear
+    getYear,
+    startOfDay
 } from 'date-fns';
 import type {
     GoogleCalendarEventModel,
@@ -55,7 +56,7 @@ const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => 
     if (event.dateTime) {
         return new Date(event.dateTime);
     } else if (event.date) {
-        return new Date(event.date);
+        return new Date(event.date + 'T00:00:00');
     }
     throw new Error('Both dateTime and date are missing from the event');
 };
@@ -117,25 +118,22 @@ const initialCurrentView = (): ViewTypesEnum => {
  * @returns {CombinedDateObject} - The combined date object.
 */
 const initialCombinedDateObject = (): CombinedDateObject => {
+    let storedObject = null;
+
     if (browser) {
-        const storedObject = localStorage.getItem('combinedDateObject');
-        if (storedObject) {
-            const parsedObject = JSON.parse(storedObject);
-            return {
-                selectedDate: parseISO(parsedObject.selectedDate).toISOString().slice(0, 10),
-                selectedWeekStart: parseISO(parsedObject.selectedWeekStart),
-                selectedMonth: getMonth(parseISO(parsedObject.selectedDate)) + 1,
-                selectedYear: getYear(parseISO(parsedObject.selectedDate))
-            };
+        const storedValue = localStorage.getItem('combinedDateObject');
+        if (storedValue) {
+            storedObject = JSON.parse(storedValue);
+            storedObject.selectedWeekStart = new Date(storedObject.selectedWeekStart);
         }
     }
 
     const today = new Date();
     return {
-        selectedDate: format(today, 'yyyy-MM-dd'),
-        selectedWeekStart: startOfWeek(today, { weekStartsOn: 0 }),
-        selectedMonth: getMonth(today) + 1,
-        selectedYear: getYear(today)
+        selectedDate: storedObject?.selectedDate ?? format(today, 'yyyy-MM-dd'),
+        selectedWeekStart: storedObject?.selectedWeekStart ?? startOfWeek(today, { weekStartsOn: 0 }),
+        selectedMonth: storedObject ? storedObject.selectedMonth : getMonth(today) + 1,
+        selectedYear: storedObject ? storedObject.selectedYear : getYear(today)
     };
 };
 
@@ -175,10 +173,13 @@ export const limitedEvents: Readable<GoogleCalendarEventModel[]> = derived(
 export const allFilteredEventsOccurringOnTheSelectedDate = derived(
     [filteredEvents, combinedDateObject],
     ([$filteredEvents, $combinedDateObject]) => {
-        const selectedDateObject = new Date($combinedDateObject.selectedDate);
+        const selectedDateLocal = new Date($combinedDateObject.selectedDate + 'T00:00:00');
+        const selectedDateObject = startOfDay(selectedDateLocal);
+
         return $filteredEvents.filter(event => {
             const startDateTime = getEventDateTime(event.start);
             const endDateTime = getEventDateTime(event.end);
+
             return isSameDay(startDateTime, selectedDateObject) || isSameDay(endDateTime, selectedDateObject);
         });
     }
@@ -233,7 +234,7 @@ export const fetchEvents = async (): Promise<void> => {
                 timeMax = weekEnd.toISOString();
                 break;
             case ViewTypesEnum.Day:
-                const selectedDay = new Date(combined.selectedDate);
+                const selectedDay = new Date(combined.selectedDate + 'T00:00:00');
                 timeMin = selectedDay.toISOString();
                 timeMax = endOfDay(selectedDay).toISOString();
                 break;
@@ -294,11 +295,36 @@ combinedDateObject.subscribe(value => {
 
 // Setters for updating the stores
 export const setCurrentView = (view: ViewTypesEnum): void => currentView.set(view);
+
 export const setFilterType = (type: EventTypesModel): void => filterType.set(type);
+
 export const setCalendarEvents = (events: GoogleCalendarEventModel[]): void => calendarEvents.set(sortEventsByStartTime(events));
+
 export const setNumberOfRecordsShown = (numRecords: number): void => numberOfRecordsShown.set(numRecords);
+
 export const setCombinedDate = (date: string, weekStart: Date, month: number, year: number): void => combinedDateObject.set({ selectedDate: date, selectedWeekStart: weekStart, selectedMonth: month, selectedYear: year });
+
 export const setSelectedDate = (date: string): void => combinedDateObject.update(obj => ({ ...obj, selectedDate: date }));
+
 export const setSelectedWeekStart = (weekStart: Date): void => combinedDateObject.update(obj => ({ ...obj, selectedWeekStart: weekStart }));
+
 export const setSelectedMonth = (month: number): void => combinedDateObject.update(obj => ({ ...obj, selectedMonth: month }));
+
 export const setSelectedYear = (year: number): void => combinedDateObject.update(obj => ({ ...obj, selectedYear: year }));
+
+export const setAllDatePartsToCurrent = (): void => {
+    const today = new Date();
+    const updatedObject = {
+        selectedDate: format(today, 'yyyy-MM-dd'),
+        selectedWeekStart: startOfWeek(today, { weekStartsOn: 0 }),
+        selectedMonth: getMonth(today) + 1,
+        selectedYear: getYear(today)
+    };
+
+    combinedDateObject.set(updatedObject);
+
+    // Update local storage if running in a browser environment
+    // if (browser) {
+    //     updateLocalStorage('combinedDateObject', updatedObject);
+    // }
+};

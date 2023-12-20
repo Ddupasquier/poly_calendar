@@ -64,7 +64,7 @@
     }
 </script>
 
-<div class="event" style={eventStyle}>
+<div class="event" style={eventStyle} title={event.start.dateTime}>
     <div class="event-header">
         <div>
             {#if event.summary}

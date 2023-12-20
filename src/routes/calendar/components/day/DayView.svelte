@@ -5,6 +5,7 @@
     combinedDateObject,
     isLoadingEvents,
     isCurrentViewLoading,
+    // setAllDatePartsToCurrent,
   } from "$lib/stores";
   import { format, addDays, parseISO } from "date-fns";
   import DayEvent from "./DayEvent.svelte";
@@ -15,6 +16,7 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { Common } from "$lib/components";
   import { fade } from "svelte/transition";
+  import { Button } from "mysvelte-ui";
 
   const goToNextDay = () => {
     setSelectedDate(
@@ -51,6 +53,13 @@
 </div>
 
 <div class="day-view">
+  <!-- <Button
+    background={"var(--color-theme-1)"}
+    size="xsmall"
+    on:click={setAllDatePartsToCurrent}
+  >
+    Today
+  </Button> -->
   {#if $isLoadingEvents}
     <Common.Loader size="small" color="var(--color-theme-2)" />
   {:else if (!$isLoadingEvents && $allFilteredEventsOccurringOnTheSelectedDate.length === 0) || !$isCurrentViewLoading}
