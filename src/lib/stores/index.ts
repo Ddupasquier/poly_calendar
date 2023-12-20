@@ -35,7 +35,7 @@ export {
     setSelectedWeekStart,
     setSelectedMonth,
     setSelectedYear,
-    // setAllDatePartsToCurrent,
+    setAllDatePartsToCurrent,
     combinedDateObject,
     fetchEvents
 } from "./calendar/calendarStore";

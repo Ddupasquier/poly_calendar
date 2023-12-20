@@ -3,15 +3,19 @@
     import type { GoogleCalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
 
-    export let getEventsForDay: (day: Date) => GoogleCalendarEventModel[] = () => [];
+    export let getEventsForDay: (
+        day: Date,
+    ) => GoogleCalendarEventModel[] = () => [];
     export let day: Date;
     export let activeEvent: GoogleCalendarEventModel | null;
     export let setActiveEvent: (event: GoogleCalendarEventModel | null) => void;
     export let index: number;
+
+    let eventsForTheDay = getEventsForDay(day);
 </script>
 
 <div class="events-container" bind:this={$eventContainers[index]}>
-    {#each getEventsForDay(day) as event}
+    {#each eventsForTheDay as event}
         <WeekEvent {event} {day} {activeEvent} {setActiveEvent} />
     {/each}
 </div>

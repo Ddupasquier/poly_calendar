@@ -47,16 +47,16 @@ interface CombinedDateObject {
 // ============================================================
 
 /**
- * Gets the start date/time of an event.
- * @param {Object} event - An event object with dateTime and/or date properties.
- * @returns {Date} - The start date/time of the event.
- * @throws {Error} - If both dateTime and date are missing from the event.
+ * Gets the date time of an event.
+ * @param {Object} event - An event object.
+ * @returns {Date} - The date time of the event.
+ * @throws {Error} - If the event has no start or end time.
 */
 const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => {
     if (event.dateTime) {
         return new Date(event.dateTime);
     } else if (event.date) {
-        return new Date(event.date + 'T00:00:00');
+        return startOfDay(parseISO(event.date));
     }
     throw new Error('Both dateTime and date are missing from the event');
 };
@@ -124,7 +124,8 @@ const initialCombinedDateObject = (): CombinedDateObject => {
         const storedValue = localStorage.getItem('combinedDateObject');
         if (storedValue) {
             storedObject = JSON.parse(storedValue);
-            storedObject.selectedWeekStart = new Date(storedObject.selectedWeekStart);
+            storedObject.selectedWeekStart = parseISO(storedObject.selectedWeekStart);
+            storedObject.selectedDate = parseISO(storedObject.selectedDate).toISOString().slice(0, 10);
         }
     }
 
@@ -314,17 +315,10 @@ export const setSelectedYear = (year: number): void => combinedDateObject.update
 
 export const setAllDatePartsToCurrent = (): void => {
     const today = new Date();
-    const updatedObject = {
+    combinedDateObject.set({
         selectedDate: format(today, 'yyyy-MM-dd'),
         selectedWeekStart: startOfWeek(today, { weekStartsOn: 0 }),
         selectedMonth: getMonth(today) + 1,
         selectedYear: getYear(today)
-    };
-
-    combinedDateObject.set(updatedObject);
-
-    // Update local storage if running in a browser environment
-    // if (browser) {
-    //     updateLocalStorage('combinedDateObject', updatedObject);
-    // }
+    });
 };

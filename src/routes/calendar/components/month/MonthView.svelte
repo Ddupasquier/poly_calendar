@@ -18,17 +18,22 @@
     setSelectedYear,
     allFilteredEventsOccurringInSelectedMonthYear,
     isLoadingEvents,
-    isCurrentViewLoading,
     combinedDateObject,
+    isCurrentViewLoading,
   } from "$lib/stores";
   import { MonthEventsContainer, WeekdayBar } from "../..";
   import { eventFallsOnDay } from "$lib/utils";
   import { Common } from "$lib/components";
   import { fade } from "svelte/transition";
 
+  type DayWithEvents = {
+    date: Date;
+    events: GoogleCalendarEventModel[];
+  };
+
   const changeMonth = (increment: number) => {
     const newMonth = $combinedDateObject.selectedMonth + increment;
-    setSelectedMonth(newMonth === 13 ? 1 : newMonth === 0 ? 12 : newMonth);
+    setSelectedMonth(newMonth > 12 ? 1 : newMonth < 1 ? 12 : newMonth);
     if (newMonth > 12) setSelectedYear($combinedDateObject.selectedYear + 1);
     if (newMonth < 1) setSelectedYear($combinedDateObject.selectedYear - 1);
   };
@@ -37,44 +42,36 @@
   const setActiveEvent = (event: GoogleCalendarEventModel | null) =>
     (activeEvent = event);
 
-  $: start = startOfMonth(
-    new Date(
-      $combinedDateObject.selectedYear,
-      $combinedDateObject.selectedMonth - 1,
-      1,
-    ),
-  );
-  $: end = endOfMonth(
-    new Date(
-      $combinedDateObject.selectedYear,
-      $combinedDateObject.selectedMonth - 1,
-      1,
-    ),
-  );
-  $: firstDayOfMonth = getDay(start);
-  $: daysInMonth = eachDayOfInterval({ start, end });
-  $: daysBeforeStartOfMonth =
-    firstDayOfMonth !== 0
-      ? Array.from({ length: firstDayOfMonth }, (_, i) =>
-          addDays(start, -i - 1),
-        ).reverse()
-      : [];
+  let start: number | Date,
+    end,
+    firstDayOfMonth,
+    daysInMonth: Date[],
+    daysBeforeStartOfMonth: Date[];
+  let formattedMonthYear = "";
 
-  $: getEventsForDay = (day: Date) => {
-    const eventsForDay = $allFilteredEventsOccurringInSelectedMonthYear.filter(
-      (event) => eventFallsOnDay(event, day),
+  const getEventsForDay = (day: Date): GoogleCalendarEventModel[] => {
+    return $allFilteredEventsOccurringInSelectedMonthYear.filter((event) =>
+      eventFallsOnDay(event, day),
     );
-
-    return eventsForDay;
   };
 
-  $: formattedMonthYear = `${format(
-    new Date(
+  $: {
+    const date = new Date(
       $combinedDateObject.selectedYear,
       $combinedDateObject.selectedMonth - 1,
-    ),
-    "MMMM",
-  )}, ${$combinedDateObject.selectedYear}`;
+    );
+    start = startOfMonth(date);
+    end = endOfMonth(date);
+    firstDayOfMonth = getDay(start);
+    daysInMonth = eachDayOfInterval({ start, end });
+    daysBeforeStartOfMonth =
+      firstDayOfMonth !== 0
+        ? Array.from({ length: firstDayOfMonth }, (_, i) =>
+            addDays(start, -i - 1),
+          ).reverse()
+        : [];
+    formattedMonthYear = format(date, "MMMM yyyy");
+  }
 </script>
 
 <div class="month-view">
@@ -109,11 +106,11 @@
         <div class="day">
           <h3>{day.getDate()}</h3>
           <MonthEventsContainer
-            {getEventsForDay}
+            {index}
             {day}
+            {getEventsForDay}
             {activeEvent}
             {setActiveEvent}
-            {index}
           />
         </div>
       {/each}

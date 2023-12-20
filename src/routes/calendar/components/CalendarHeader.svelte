@@ -7,6 +7,7 @@
     setFilterType,
     numberOfRecordsShown,
     setNumberOfRecordsShown,
+    setAllDatePartsToCurrent,
   } from "$lib/stores";
   import { ViewTypesEnum, EventTypesEnum } from "$lib/enums";
   import { Button } from "mysvelte-ui";
@@ -62,6 +63,13 @@
         {capitalizeFirstLetter(viewType)}
       </Button>
     {/each}
+    <Button
+      background={"var(--color-theme-1)"}
+      size="small"
+      on:click={setAllDatePartsToCurrent}
+    >
+      Now
+    </Button>
   </div>
 </div>
 

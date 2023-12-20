@@ -6,65 +6,52 @@
     import { uppercaseFirstLetter } from "$lib/utils";
 
     export let event: GoogleCalendarEventModel;
+    
     let showAttendees = false;
-    let currentUserAttendeeResponseStatus: string | undefined = "";
-
-    $: startTime = event.start.dateTime
+    let startTime = event.start.dateTime
         ? format(parseISO(event.start.dateTime), "h:mm a")
         : "";
-    $: endTime = event.end.dateTime
+    let endTime = event.end.dateTime
         ? format(parseISO(event.end.dateTime), "h:mm a")
         : "";
+    let eventStyle = "";
+    let currentUserAttendeeResponseStatus: string | undefined = "";
+    let currentUserEmail: string | undefined = "";
 
-    const getUserEmailFromLocalStorage = () => {
+    (() => {
         const user = localStorage.getItem("authUser");
         if (user) {
-            const { email } = JSON.parse(user);
-            return email;
+            currentUserEmail = JSON.parse(user).email;
         }
-        return "";
-    };
+    })();
 
-    $: eventStyle = "";
-
-    $: {
-        if (event.attendees && event.attendees.length > 0) {
-            const currentUserEmail = getUserEmailFromLocalStorage();
-            const currentUserAttendee = event.attendees.find(
-                (attendee) => attendee.email === currentUserEmail,
-            );
-
-            if (currentUserAttendee)
-                currentUserAttendeeResponseStatus =
-                    currentUserAttendee.responseStatus;
-
-            if (currentUserAttendee) {
-                switch (currentUserAttendee.responseStatus) {
-                    case AttendeeActionTypesEnum.Accepted:
-                        eventStyle = `background-color: ${"var(--color-bg-2)"};`;
-                        break;
-                    case AttendeeActionTypesEnum.Declined:
-                        eventStyle = `
-                            background-color: ${"var(--color-bg-0-L3)"}; 
-                            box-shadow: inset 15px 0 0 -10px ${"var(--color-theme-1)"};
-                        `;
-                        break;
-                    case AttendeeActionTypesEnum.Tentative:
-                        eventStyle = `background-color: ${"var(--color-bg-0-L3)"};`;
-                        break;
-                    case AttendeeActionTypesEnum.NeedsAction:
-                        eventStyle = `background-color: ${"var(--color-bg-0-L3)"};`;
-                        break;
-                    default:
-                        eventStyle = "";
-                        break;
-                }
-            }
-        }
+    $: if (event.attendees && event.attendees.length > 0 && currentUserEmail) {
+        const currentUserAttendee = event.attendees.find(
+            (attendee) => attendee.email === currentUserEmail,
+        );
+        currentUserAttendeeResponseStatus = currentUserAttendee?.responseStatus;
+        eventStyle = getEventStyle(currentUserAttendeeResponseStatus);
     }
+
+    const getEventStyle = (responseStatus: string | undefined): string => {
+        switch (responseStatus) {
+            case AttendeeActionTypesEnum.Accepted:
+                return `background-color: var(--color-bg-2);`;
+            case AttendeeActionTypesEnum.Declined:
+                return `
+                    background-color: var(--color-bg-0-L3);
+                    box-shadow: inset 15px 0 0 -10px var(--color-theme-1);
+                `;
+            case AttendeeActionTypesEnum.Tentative:
+            case AttendeeActionTypesEnum.NeedsAction:
+                return `background-color: var(--color-bg-0-L3);`;
+            default:
+                return "";
+        }
+    };
 </script>
 
-<div class="event" style={eventStyle} title={event.start.dateTime}>
+<div class="event" style={eventStyle}>
     <div class="event-header">
         <div>
             {#if event.summary}

@@ -5,7 +5,6 @@
     combinedDateObject,
     isLoadingEvents,
     isCurrentViewLoading,
-    // setAllDatePartsToCurrent,
   } from "$lib/stores";
   import { format, addDays, parseISO } from "date-fns";
   import DayEvent from "./DayEvent.svelte";
@@ -16,24 +15,18 @@
   } from "@fortawesome/free-solid-svg-icons";
   import { Common } from "$lib/components";
   import { fade } from "svelte/transition";
-  import { Button } from "mysvelte-ui";
+
+  const changeDayBy = (delta: number) => {
+    const newDate = addDays(parseISO($combinedDateObject.selectedDate), delta);
+    setSelectedDate(format(newDate, "yyyy-MM-dd"));
+  };
 
   const goToNextDay = () => {
-    setSelectedDate(
-      format(
-        addDays(parseISO($combinedDateObject.selectedDate), 1),
-        "yyyy-MM-dd",
-      ),
-    );
+    changeDayBy(1);
   };
 
   const goToPreviousDay = () => {
-    setSelectedDate(
-      format(
-        addDays(parseISO($combinedDateObject.selectedDate), -1),
-        "yyyy-MM-dd",
-      ),
-    );
+    changeDayBy(-1);
   };
 
   $: formattedDate = format(
@@ -53,22 +46,13 @@
 </div>
 
 <div class="day-view">
-  <!-- <Button
-    background={"var(--color-theme-1)"}
-    size="xsmall"
-    on:click={setAllDatePartsToCurrent}
-  >
-    Today
-  </Button> -->
   {#if $isLoadingEvents}
     <Common.Loader size="small" color="var(--color-theme-2)" />
   {:else if (!$isLoadingEvents && $allFilteredEventsOccurringOnTheSelectedDate.length === 0) || !$isCurrentViewLoading}
     <p class="no-events" in:fade>No events found for this day.</p>
   {:else}
     {#each $allFilteredEventsOccurringOnTheSelectedDate as event}
-      {#if event}
-        <DayEvent {event} />
-      {/if}
+      <DayEvent {event} />
     {/each}
   {/if}
 </div>

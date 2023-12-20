@@ -26,38 +26,32 @@
   import { fade } from "svelte/transition";
 
   let activeEvent: GoogleCalendarEventModel | null = null;
+  const setActiveEvent = (event: GoogleCalendarEventModel | null) =>
+    (activeEvent = event);
 
-  const setActiveEvent = (event: GoogleCalendarEventModel | null) => {
-    activeEvent = event;
-  };
-
-  $: start = startOfWeek($combinedDateObject.selectedWeekStart, {
-    weekStartsOn: 0,
-  });
-  $: end = endOfWeek($combinedDateObject.selectedWeekStart, {
-    weekStartsOn: 0,
-  });
-  $: weekDays = eachDayOfInterval({ start, end });
-  $: getEventsForDay = (day: Date) => {
-    const eventsForDay = $allFilteredEventsOccurringInSelectedWeek.filter(
-      (event) => eventFallsOnDay(event, day),
-    );
-
-    return eventsForDay;
-  };
-
-  const goToPreviousWeek = () => {
+  const goToPreviousWeek = () =>
     setSelectedWeekStart(subWeeks($combinedDateObject.selectedWeekStart, 1));
-  };
-
-  const goToNextWeek = () => {
+  const goToNextWeek = () =>
     setSelectedWeekStart(addWeeks($combinedDateObject.selectedWeekStart, 1));
-  };
 
-  $: formattedWeekStart = `Week starting with ${format(
-    $combinedDateObject.selectedWeekStart,
-    "MMM d",
-  )}`;
+  let weekInterval, weekDays: Date[], formattedWeekStart: string;
+
+  $: (weekInterval = {
+    start: startOfWeek($combinedDateObject.selectedWeekStart, {
+      weekStartsOn: 0,
+    }),
+    end: endOfWeek($combinedDateObject.selectedWeekStart, { weekStartsOn: 0 }),
+  }),
+    (weekDays = eachDayOfInterval(weekInterval)),
+    (formattedWeekStart = `Week starting with ${format(
+      weekInterval.start,
+      "MMM d",
+    )}`);
+
+  const getEventsForDay = (day: Date) =>
+    $allFilteredEventsOccurringInSelectedWeek.filter((event) =>
+      eventFallsOnDay(event, day),
+    );
 </script>
 
 <div class="week-navigation">
