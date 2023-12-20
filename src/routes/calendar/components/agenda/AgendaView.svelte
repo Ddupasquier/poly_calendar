@@ -1,14 +1,18 @@
 <script lang="ts">
   import { Common } from "$lib/components";
-  import { isLoadingEvents, limitedEvents } from "$lib/stores";
+  import {
+    isCurrentViewLoading,
+    isLoadingEvents,
+    limitedEvents,
+  } from "$lib/stores";
   import { fade } from "svelte/transition";
   import AgendaEvent from "./AgendaEvent.svelte";
 </script>
 
 <div class="agenda-view">
   {#if $isLoadingEvents}
-    <Common.Loader />
-  {:else if $limitedEvents.length === 0}
+    <Common.Loader size="small" color="var(--color-theme-2)" />
+  {:else if (!$isLoadingEvents && $limitedEvents.length === 0) || !$isCurrentViewLoading}
     <p class="no-events" in:fade>No events under your specifications.</p>
   {:else}
     {#each $limitedEvents as event}

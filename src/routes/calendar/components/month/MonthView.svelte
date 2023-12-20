@@ -20,6 +20,7 @@
     setSelectedYear,
     allFilteredEventsOccurringInSelectedMonthYear,
     isLoadingEvents,
+    isCurrentViewLoading,
   } from "$lib/stores";
   import { MonthEventsContainer, WeekdayBar } from "../..";
   import { eventFallsOnDay } from "$lib/utils";
@@ -75,9 +76,9 @@
 
   {#if $isLoadingEvents}
     <div class="no-events">
-      <Common.Loader />
+      <Common.Loader size="small" color="var(--color-theme-2)" />
     </div>
-  {:else if $allFilteredEventsOccurringInSelectedMonthYear.length === 0}
+  {:else if (!$isLoadingEvents && $allFilteredEventsOccurringInSelectedMonthYear.length === 0) || !$isCurrentViewLoading}
     <p class="no-events" in:fade>No events scheduled for this month.</p>
   {:else}
     <WeekdayBar />

@@ -75,16 +75,22 @@ const updateLocalStorage = (key: string, value: any): void => {
 // Store Initialization with Local Storage Integration
 // ============================================================
 
+export const isCurrentViewLoading: Writable<boolean> = writable(false);
+
 /**
  * Attempts to retrieve the 'currentView' from localStorage.
  * Defaults to 'Month' view if not in browser or no value is stored.
  * @returns {ViewTypesEnum} - The current view type.
  */
 const initialCurrentView = (): ViewTypesEnum => {
-    if (browser && localStorage.getItem('currentView')) {
+    isCurrentViewLoading.set(true);
+
+    if (browser) {
         const storedView = localStorage.getItem('currentView');
         return storedView ? JSON.parse(storedView) : ViewTypesEnum.Month;
     }
+
+    isCurrentViewLoading.set(false);
     return ViewTypesEnum.Month;
 };
 

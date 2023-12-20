@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { CalendarHeader, CalendarBody } from "..";
+  import { CalendarHeader, CalendarBody } from "..";
 </script>
 
 <div class="calendar">
-    <CalendarHeader />
-    <CalendarBody />
+  <CalendarHeader />
+  <CalendarBody />
 </div>
 
 <style lang="scss">

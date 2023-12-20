@@ -17,6 +17,7 @@ export {
 
 export {
     isLoadingEvents,
+    isCurrentViewLoading,
     calendarEvents,
     setCalendarEvents,
     currentView,

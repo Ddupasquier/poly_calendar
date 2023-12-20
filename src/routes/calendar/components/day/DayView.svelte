@@ -4,6 +4,7 @@
     setSelectedDate,
     selectedDate,
     isLoadingEvents,
+    isCurrentViewLoading,
   } from "$lib/stores";
   import { format, addDays, parseISO } from "date-fns";
   import DayEvent from "./DayEvent.svelte";
@@ -38,8 +39,8 @@
 
 <div class="day-view">
   {#if $isLoadingEvents}
-    <Common.Loader />
-  {:else if $allFilteredEventsOccurringOnTheSelectedDate.length === 0}
+    <Common.Loader size="small" color="var(--color-theme-2)" />
+  {:else if (!$isLoadingEvents && $allFilteredEventsOccurringOnTheSelectedDate.length === 0) || !$isCurrentViewLoading}
     <p class="no-events" in:fade>No events found for this day.</p>
   {:else}
     {#each $allFilteredEventsOccurringOnTheSelectedDate as event}

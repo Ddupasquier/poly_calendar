@@ -11,6 +11,7 @@
   import { WeekEventsContainer } from "../..";
   import {
     allFilteredEventsOccurringInSelectedWeek,
+    isCurrentViewLoading,
     isLoadingEvents,
     selectedWeekStart,
     setSelectedWeekStart,
@@ -67,9 +68,9 @@
 
 {#if $isLoadingEvents}
   <div class="no-events">
-    <Common.Loader />
+    <Common.Loader size="small" color="var(--color-theme-2)" />
   </div>
-{:else if $allFilteredEventsOccurringInSelectedWeek.length === 0}
+{:else if (!$isLoadingEvents && $allFilteredEventsOccurringInSelectedWeek.length === 0) || !$isCurrentViewLoading}
   <p class="no-events" in:fade>No events found for this week.</p>
 {:else}
   <div class="week-view">
