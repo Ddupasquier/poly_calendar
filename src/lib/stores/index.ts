@@ -31,14 +31,15 @@ export {
     allFilteredEventsOccurringOnTheSelectedDate,
     allFilteredEventsOccurringInSelectedMonthYear,
     allFilteredEventsOccurringInSelectedWeek,
-    selectedDate,
+    // selectedDate,
     setSelectedDate,
-    selectedWeekStart,
+    // selectedWeekStart,
     setSelectedWeekStart,
-    selectedMonth,
+    // selectedMonth,
     setSelectedMonth,
-    selectedYear,
+    // selectedYear,
     setSelectedYear,
+    combinedDateObject,
     fetchEvents
 } from "./calendar/calendarStore";
 

@@ -2,7 +2,7 @@
   import {
     allFilteredEventsOccurringOnTheSelectedDate,
     setSelectedDate,
-    selectedDate,
+    combinedDateObject,
     isLoadingEvents,
     isCurrentViewLoading,
   } from "$lib/stores";
@@ -17,14 +17,27 @@
   import { fade } from "svelte/transition";
 
   const goToNextDay = () => {
-    setSelectedDate(format(addDays(parseISO($selectedDate), 1), "yyyy-MM-dd"));
+    setSelectedDate(
+      format(
+        addDays(parseISO($combinedDateObject.selectedDate), 1),
+        "yyyy-MM-dd",
+      ),
+    );
   };
 
   const goToPreviousDay = () => {
-    setSelectedDate(format(addDays(parseISO($selectedDate), -1), "yyyy-MM-dd"));
+    setSelectedDate(
+      format(
+        addDays(parseISO($combinedDateObject.selectedDate), -1),
+        "yyyy-MM-dd",
+      ),
+    );
   };
 
-  $: formattedDate = format(parseISO($selectedDate), "MMMM d, yyyy");
+  $: formattedDate = format(
+    parseISO($combinedDateObject.selectedDate),
+    "MMMM d, yyyy",
+  );
 </script>
 
 <div class="day-navigation">

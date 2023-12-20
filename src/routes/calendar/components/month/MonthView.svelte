@@ -14,13 +14,12 @@
     faChevronRight,
   } from "@fortawesome/free-solid-svg-icons";
   import {
-    selectedMonth,
     setSelectedMonth,
-    selectedYear,
     setSelectedYear,
     allFilteredEventsOccurringInSelectedMonthYear,
     isLoadingEvents,
     isCurrentViewLoading,
+    combinedDateObject,
   } from "$lib/stores";
   import { MonthEventsContainer, WeekdayBar } from "../..";
   import { eventFallsOnDay } from "$lib/utils";
@@ -28,18 +27,30 @@
   import { fade } from "svelte/transition";
 
   const changeMonth = (increment: number) => {
-    const newMonth = $selectedMonth + increment;
+    const newMonth = $combinedDateObject.selectedMonth + increment;
     setSelectedMonth(newMonth === 13 ? 1 : newMonth === 0 ? 12 : newMonth);
-    if (newMonth > 12) setSelectedYear($selectedYear + 1);
-    if (newMonth < 1) setSelectedYear($selectedYear - 1);
+    if (newMonth > 12) setSelectedYear($combinedDateObject.selectedYear + 1);
+    if (newMonth < 1) setSelectedYear($combinedDateObject.selectedYear - 1);
   };
 
   let activeEvent: GoogleCalendarEventModel | null = null;
   const setActiveEvent = (event: GoogleCalendarEventModel | null) =>
     (activeEvent = event);
 
-  $: start = startOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
-  $: end = endOfMonth(new Date($selectedYear, $selectedMonth - 1, 1));
+  $: start = startOfMonth(
+    new Date(
+      $combinedDateObject.selectedYear,
+      $combinedDateObject.selectedMonth - 1,
+      1,
+    ),
+  );
+  $: end = endOfMonth(
+    new Date(
+      $combinedDateObject.selectedYear,
+      $combinedDateObject.selectedMonth - 1,
+      1,
+    ),
+  );
   $: firstDayOfMonth = getDay(start);
   $: daysInMonth = eachDayOfInterval({ start, end });
   $: daysBeforeStartOfMonth =
@@ -58,9 +69,12 @@
   };
 
   $: formattedMonthYear = `${format(
-    new Date($selectedYear, $selectedMonth - 1),
+    new Date(
+      $combinedDateObject.selectedYear,
+      $combinedDateObject.selectedMonth - 1,
+    ),
     "MMMM",
-  )}, ${$selectedYear}`;
+  )}, ${$combinedDateObject.selectedYear}`;
 </script>
 
 <div class="month-view">

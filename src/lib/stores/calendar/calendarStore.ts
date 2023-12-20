@@ -33,17 +33,24 @@ import {
 import { fetchGoogleCalendarEvents } from '$lib/services';
 import { browser } from '$app/environment';
 
+// Interfaces
+interface CombinedDateObject {
+    selectedDate: string;
+    selectedWeekStart: Date;
+    selectedMonth: number;
+    selectedYear: number;
+}
+
 // ============================================================
 // Helper functions
 // ============================================================
 
 /**
- * Converts event dates to JavaScript Date objects.
- * Prefers `dateTime` over `date` if both are provided.
+ * Gets the start date/time of an event.
  * @param {Object} event - An event object with dateTime and/or date properties.
- * @returns {Date} - A JavaScript Date object for the event time.
- * @throws {Error} - If both dateTime and date are missing.
- */
+ * @returns {Date} - The start date/time of the event.
+ * @throws {Error} - If both dateTime and date are missing from the event.
+*/
 const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => {
     if (event.dateTime) {
         return new Date(event.dateTime);
@@ -53,42 +60,30 @@ const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => 
     throw new Error('Both dateTime and date are missing from the event');
 };
 
-/** 
- * Checks if an event has valid start and end times/dates.
- * @param {Object} event - An event object with dateTime and/or date properties.
- * @returns {boolean} - True if the event has valid start and end times/dates, false otherwise.
+/**
+ * Checks if an event object has a valid start and end time.
+ * @param {Object} event - An event object.
+ * @returns {boolean} - True if the event has a valid start and end time.
+ * @throws {Error} - If the event has no start or end time.
 */
 const isEventValid = (event: GoogleCalendarEventModel): boolean => {
-    if (!event.start) {
-        throw new Error('Event start time is missing');
-    }
-
-    if (!event.end) {
-        throw new Error('Event end time is missing');
-    }
-
-    return !!(
-        (event.start && (event.start.dateTime || event.start.date)) &&
-        (event.end && (event.end.dateTime || event.end.date))
-    );
+    if (!event.start || !event.end) throw new Error('Event start or end time is missing');
+    return !!(event.start && (event.start.dateTime || event.start.date) && event.end && (event.end.dateTime || event.end.date));
 };
 
 /**
  * Sorts events by start time.
  * @param {Object[]} events - An array of event objects.
  * @returns {Object[]} - The sorted array of event objects.
- */
+*/
 const sortEventsByStartTime = (events: GoogleCalendarEventModel[]): GoogleCalendarEventModel[] => {
-    if (!events.length) return events;
-
-    return events.sort((a, b) => getEventDateTime(a.start).getTime() - getEventDateTime(b.start).getTime());
+    return events.length ? events.sort((a, b) => getEventDateTime(a.start).getTime() - getEventDateTime(b.start).getTime()) : events;
 };
 
-/** 
- * Updates a value in localStorage.
- * @param {string} key - The key to update in localStorage.
- * @param {any} value - The value to store in localStorage.
- * @returns {void}
+/**
+ * Updates a value in local storage.
+ * @param {string} key - The key to update.
+ * @param {any} value - The value to update.
 */
 const updateLocalStorage = (key: string, value: any): void => {
     localStorage.setItem(key, JSON.stringify(value));
@@ -98,13 +93,12 @@ const updateLocalStorage = (key: string, value: any): void => {
 // Store Initialization with Local Storage Integration
 // ============================================================
 
-export const isCurrentViewLoading: Writable<boolean> = writable(false);
-
 /**
  * Attempts to retrieve the 'currentView' from localStorage.
- * Defaults to 'Month' view if not in browser or no value is stored.
- * @returns {ViewTypesEnum} - The current view type.
- */
+ * Defaults to ViewTypesEnum.Month if not in browser or no value is stored.
+ * @returns {ViewTypesEnum} - The current view.
+*/
+export const isCurrentViewLoading: Writable<boolean> = writable(false);
 const initialCurrentView = (): ViewTypesEnum => {
     isCurrentViewLoading.set(true);
 
@@ -117,6 +111,34 @@ const initialCurrentView = (): ViewTypesEnum => {
     return ViewTypesEnum.Month;
 };
 
+/**
+ * Attempts to retrieve the 'combinedDateObject' from localStorage.
+ * Defaults to today's date if not in browser or no value is stored.
+ * @returns {CombinedDateObject} - The combined date object.
+*/
+const initialCombinedDateObject = (): CombinedDateObject => {
+    if (browser) {
+        const storedObject = localStorage.getItem('combinedDateObject');
+        if (storedObject) {
+            const parsedObject = JSON.parse(storedObject);
+            return {
+                selectedDate: parseISO(parsedObject.selectedDate).toISOString().slice(0, 10),
+                selectedWeekStart: parseISO(parsedObject.selectedWeekStart),
+                selectedMonth: getMonth(parseISO(parsedObject.selectedDate)) + 1,
+                selectedYear: getYear(parseISO(parsedObject.selectedDate))
+            };
+        }
+    }
+
+    const today = new Date();
+    return {
+        selectedDate: format(today, 'yyyy-MM-dd'),
+        selectedWeekStart: startOfWeek(today, { weekStartsOn: 0 }),
+        selectedMonth: getMonth(today) + 1,
+        selectedYear: getYear(today)
+    };
+};
+
 // ============================================================
 // Svelte Writable Stores
 // ============================================================
@@ -124,11 +146,8 @@ const initialCurrentView = (): ViewTypesEnum => {
 /**
  * Writable stores that can be updated from anywhere in the app.
  * They are used to store the current view, filter type, calendar events, and other values.
- */
-export const selectedDate: Writable<string> = writable(format(new Date(), 'yyyy-MM-dd'));
-export const selectedWeekStart: Writable<Date> = writable(startOfWeek(new Date(), { weekStartsOn: 0 }));
-export const selectedMonth: Writable<number> = writable(getMonth(new Date()) + 1);
-export const selectedYear: Writable<number> = writable(getYear(new Date()));
+*/
+export const combinedDateObject: Writable<CombinedDateObject> = writable(initialCombinedDateObject());
 export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(initialCurrentView());
 export const filterType: Writable<EventTypesModel> = writable<EventTypesModel>(EventTypesEnum.All);
 export const calendarEvents: Writable<GoogleCalendarEventModel[]> = writable([]);
@@ -153,10 +172,10 @@ export const limitedEvents: Readable<GoogleCalendarEventModel[]> = derived(
     ([$filteredEvents, $numberOfRecordsShown]) => $filteredEvents.slice(0, $numberOfRecordsShown)
 );
 
-export const allFilteredEventsOccurringOnTheSelectedDate: Readable<GoogleCalendarEventModel[]> = derived(
-    [filteredEvents, selectedDate],
-    ([$filteredEvents, $selectedDate]) => {
-        const selectedDateObject = parseISO($selectedDate);
+export const allFilteredEventsOccurringOnTheSelectedDate = derived(
+    [filteredEvents, combinedDateObject],
+    ([$filteredEvents, $combinedDateObject]) => {
+        const selectedDateObject = new Date($combinedDateObject.selectedDate);
         return $filteredEvents.filter(event => {
             const startDateTime = getEventDateTime(event.start);
             const endDateTime = getEventDateTime(event.end);
@@ -166,9 +185,9 @@ export const allFilteredEventsOccurringOnTheSelectedDate: Readable<GoogleCalenda
 );
 
 export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEventModel[]> = derived(
-    [filteredEvents, selectedWeekStart],
-    ([$filteredEvents, $selectedWeekStart]) => {
-        const weekStart = $selectedWeekStart;
+    [filteredEvents, combinedDateObject],
+    ([$filteredEvents, $combinedDateObject]) => {
+        const weekStart = $combinedDateObject.selectedWeekStart;
         const weekEnd = endOfWeek(weekStart);
         return $filteredEvents.filter(event => {
             const startDate = getEventDateTime(event.start);
@@ -179,11 +198,11 @@ export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEv
 );
 
 export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalendarEventModel[]> = derived(
-    [filteredEvents, selectedMonth, selectedYear],
-    ([$filteredEvents, $selectedMonth, $selectedYear]) => {
+    [filteredEvents, combinedDateObject],
+    ([$filteredEvents, $combinedDateObject]) => {
         return $filteredEvents.filter(event => {
             const eventStartDate = getEventDateTime(event.start);
-            return eventStartDate.getFullYear() === $selectedYear && eventStartDate.getMonth() + 1 === $selectedMonth;
+            return eventStartDate.getFullYear() === $combinedDateObject.selectedYear && eventStartDate.getMonth() + 1 === $combinedDateObject.selectedMonth;
         });
     }
 );
@@ -197,47 +216,47 @@ export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalen
  * It uses the currentView store to decide the time range for fetching events.
  */
 export const fetchEvents = async (): Promise<void> => {
-    isLoadingEvents.set(true);
-    let timeMin, timeMax;
-
-    switch (get(currentView)) {
-        case ViewTypesEnum.Month:
-            timeMin = startOfMonth(new Date(get(selectedYear), get(selectedMonth) - 1)).toISOString();
-            timeMax = endOfMonth(new Date(get(selectedYear), get(selectedMonth) - 1)).toISOString();
-            break;
-        case ViewTypesEnum.Week:
-            const weekStart = get(selectedWeekStart);
-            const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
-            timeMin = weekStart.toISOString();
-            timeMax = weekEnd.toISOString();
-            break;
-        case ViewTypesEnum.Day:
-            const selectedDay = parseISO(get(selectedDate));
-            timeMin = selectedDay.toISOString();
-            timeMax = endOfDay(selectedDay).toISOString();
-            break;
-        case ViewTypesEnum.Agenda:
-            const now = new Date();
-            const oneWeekAgo = subWeeks(now, 1);
-            const threeMonthsLater = addMonths(now, 3);
-            timeMin = oneWeekAgo.toISOString();
-            timeMax = threeMonthsLater.toISOString();
-            break;
-    }
-
     try {
-        const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax) ?? [];
-        const validEvents = eventsFromGoogle.filter(isEventValid);
-        setCalendarEvents(sortEventsByStartTime(validEvents));
+        isLoadingEvents.set(true);
+        let timeMin, timeMax;
+        const combined = get(combinedDateObject);
+
+        switch (get(currentView)) {
+            case ViewTypesEnum.Month:
+                timeMin = startOfMonth(new Date(combined.selectedYear, combined.selectedMonth - 1)).toISOString();
+                timeMax = endOfMonth(new Date(combined.selectedYear, combined.selectedMonth - 1)).toISOString();
+                break;
+            case ViewTypesEnum.Week:
+                const weekStart = new Date(combined.selectedWeekStart);
+                const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
+                timeMin = weekStart.toISOString();
+                timeMax = weekEnd.toISOString();
+                break;
+            case ViewTypesEnum.Day:
+                const selectedDay = new Date(combined.selectedDate);
+                timeMin = selectedDay.toISOString();
+                timeMax = endOfDay(selectedDay).toISOString();
+                break;
+            case ViewTypesEnum.Agenda:
+                const now = new Date();
+                const oneWeekAgo = subWeeks(now, 1);
+                const threeMonthsLater = addMonths(now, 3);
+                timeMin = oneWeekAgo.toISOString();
+                timeMax = threeMonthsLater.toISOString();
+                break;
+        }
+
+        const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
+        calendarEvents.set(sortEventsByStartTime(eventsFromGoogle.filter(isEventValid)));
     } catch (error) {
-        console.error("Error when fetching Google Calendar events:", error);
+        console.error("Error fetching Google Calendar events:", error);
     } finally {
         isLoadingEvents.set(false);
     }
 };
 
 const triggerFetchEvents = derived(
-    [currentView, selectedMonth, selectedYear, selectedWeekStart, selectedDate],
+    [currentView, combinedDateObject],
     () => {
         if (browser) {
             fetchEvents();
@@ -263,12 +282,23 @@ currentView.subscribe(value => {
     }
 });
 
+/**
+ * Subscribes to the combinedDateObject store and persists its value in local storage.
+ * This ensures the user's date preference is saved across sessions.
+ */
+combinedDateObject.subscribe(value => {
+    if (browser) {
+        updateLocalStorage('combinedDateObject', value);
+    }
+});
+
 // Setters for updating the stores
 export const setCurrentView = (view: ViewTypesEnum): void => currentView.set(view);
 export const setFilterType = (type: EventTypesModel): void => filterType.set(type);
 export const setCalendarEvents = (events: GoogleCalendarEventModel[]): void => calendarEvents.set(sortEventsByStartTime(events));
 export const setNumberOfRecordsShown = (numRecords: number): void => numberOfRecordsShown.set(numRecords);
-export const setSelectedDate = (date: string): void => selectedDate.set(date);
-export const setSelectedWeekStart = (date: Date): void => selectedWeekStart.set(startOfWeek(date, { weekStartsOn: 0 }));
-export const setSelectedMonth = (month: number): void => selectedMonth.set(month);
-export const setSelectedYear = (year: number): void => selectedYear.set(year);
+export const setCombinedDate = (date: string, weekStart: Date, month: number, year: number): void => combinedDateObject.set({ selectedDate: date, selectedWeekStart: weekStart, selectedMonth: month, selectedYear: year });
+export const setSelectedDate = (date: string): void => combinedDateObject.update(obj => ({ ...obj, selectedDate: date }));
+export const setSelectedWeekStart = (weekStart: Date): void => combinedDateObject.update(obj => ({ ...obj, selectedWeekStart: weekStart }));
+export const setSelectedMonth = (month: number): void => combinedDateObject.update(obj => ({ ...obj, selectedMonth: month }));
+export const setSelectedYear = (year: number): void => combinedDateObject.update(obj => ({ ...obj, selectedYear: year }));

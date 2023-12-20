@@ -11,9 +11,9 @@
   import { WeekEventsContainer } from "../..";
   import {
     allFilteredEventsOccurringInSelectedWeek,
+    combinedDateObject,
     isCurrentViewLoading,
     isLoadingEvents,
-    selectedWeekStart,
     setSelectedWeekStart,
   } from "$lib/stores";
   import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
@@ -31,8 +31,12 @@
     activeEvent = event;
   };
 
-  $: start = startOfWeek($selectedWeekStart, { weekStartsOn: 0 });
-  $: end = endOfWeek($selectedWeekStart, { weekStartsOn: 0 });
+  $: start = startOfWeek($combinedDateObject.selectedWeekStart, {
+    weekStartsOn: 0,
+  });
+  $: end = endOfWeek($combinedDateObject.selectedWeekStart, {
+    weekStartsOn: 0,
+  });
   $: weekDays = eachDayOfInterval({ start, end });
   $: getEventsForDay = (day: Date) => {
     const eventsForDay = $allFilteredEventsOccurringInSelectedWeek.filter(
@@ -43,15 +47,15 @@
   };
 
   const goToPreviousWeek = () => {
-    setSelectedWeekStart(subWeeks($selectedWeekStart, 1));
+    setSelectedWeekStart(subWeeks($combinedDateObject.selectedWeekStart, 1));
   };
 
   const goToNextWeek = () => {
-    setSelectedWeekStart(addWeeks($selectedWeekStart, 1));
+    setSelectedWeekStart(addWeeks($combinedDateObject.selectedWeekStart, 1));
   };
 
   $: formattedWeekStart = `Week starting with ${format(
-    $selectedWeekStart,
+    $combinedDateObject.selectedWeekStart,
     "MMM d",
   )}`;
 </script>
