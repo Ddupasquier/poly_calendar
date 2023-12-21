@@ -45,8 +45,14 @@ export const saveAuthUserAndSession = (user: User, session: Session) => {
         localStorage.setItem('authSession', JSON.stringify(session));
 
         if (user.app_metadata.provider === 'google') {
-            if (session.provider_token)
-                localStorage.setItem('google_provider_token', session.provider_token);
+            const storedProviderTokenAndRefreshData = {
+                google_provider_token: session.provider_token,
+                google_provider_refresh_token: session.refresh_token,
+                google_provider_expires_at: session.expires_at,
+                google_provider_expires_in: session.expires_in
+            }
+
+            localStorage.setItem('auth_provider_refresh_token_and_timeouts', JSON.stringify(storedProviderTokenAndRefreshData));
         }
     }
 

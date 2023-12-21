@@ -29,11 +29,6 @@
           ? format(parseISO(event.end.date), "MMM d, yyyy")
           : "";
 
-    $: if (event.id === "0bbe6allssrfr46gcodevs7246_20231218T021500Z") {
-        console.log("event", event);
-        console.log(currentUserEmail);
-    }
-
     (() => {
         const user = localStorage.getItem("authUser");
         if (user) {
@@ -42,8 +37,6 @@
     })();
 
     $: if (event.attendees && event.attendees.length > 0 && currentUserEmail) {
-        console.log("attendee");
-
         const currentUserAttendee = event.attendees.find(
             (attendee) => attendee.email === currentUserEmail,
         );
@@ -52,12 +45,8 @@
             currentUserAttendeeResponseStatus,
         );
     } else if (event.colorId) {
-        console.log("color");
-
         eventStyle = getEventColor(event);
     } else {
-        console.log("else");
-
         eventStyle = `
             --primary: var(--color-theme-2-L1);
             --secondary: var(--color-theme-2-L3);

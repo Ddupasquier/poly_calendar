@@ -6,14 +6,27 @@ export const fetchGoogleCalendarEvents = async (timeMin: string | undefined, tim
             throw new Error('fetchGoogleCalendarEvents must be called from the browser');
         }
 
-        const providerToken = localStorage.getItem('google_provider_token');
+        const storedProviderTokenAndRefreshData = localStorage.getItem('auth_provider_refresh_token_and_timeouts');
+
+        if (!storedProviderTokenAndRefreshData) {
+            throw new Error('No stored provider token and refresh data found.');
+        }
+
+        const parsedStoredProviderTokenAndRefreshData = JSON.parse(storedProviderTokenAndRefreshData);
+
+        const {
+            google_provider_token,
+            google_provider_refresh_token,
+            google_provider_expires_at,
+            google_provider_expires_in
+        } = parsedStoredProviderTokenAndRefreshData;
 
         const eventsEndpoint = `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}`;
 
-        if (providerToken) {
+        if (storedProviderTokenAndRefreshData) {
             const response = await fetch(eventsEndpoint, {
                 headers: {
-                    'Authorization': `Bearer ${providerToken}`
+                    'Authorization': `Bearer ${google_provider_token}`
                 }
             });
 
@@ -32,4 +45,3 @@ export const fetchGoogleCalendarEvents = async (timeMin: string | undefined, tim
         throw error;
     }
 };
-
