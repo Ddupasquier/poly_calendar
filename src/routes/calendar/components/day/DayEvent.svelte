@@ -17,9 +17,9 @@
     let endTime = event.end.dateTime
         ? format(parseISO(event.end.dateTime), "h:mm a")
         : "";
-    let eventStyle = "";
     let currentUserAttendeeResponseStatus: string | undefined = "";
     let currentUserEmail: string | undefined = "";
+    let eventStyle = "";
 
     (() => {
         const user = localStorage.getItem("authUser");
@@ -132,14 +132,14 @@
 <style lang="scss">
     .event {
         padding: 0.5rem;
-        background-color: var(--secondary, var(--color-bg-2));
+        background-color: var(--secondary);
         border-radius: 4px;
-        box-shadow: inset 10px 0 0 -10px var(--primary, var(--color-bg-2-L3));
+        box-shadow: inset 10px 0 0 -10px var(--primary);
         transition: box-shadow 1s ease-in;
         cursor: pointer;
 
         &:hover {
-            box-shadow: inset 15px 0 0 -10px var(--primary, var(--color-bg-2-L3));
+            box-shadow: inset 15px 0 0 -10px var(--primary);
         }
 
         .event-header {

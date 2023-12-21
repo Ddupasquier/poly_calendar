@@ -1,8 +1,13 @@
 <script lang="ts">
     import type { GoogleCalendarEventModel } from "$lib/models";
+    import { attendeeActionEventStyle, getEventColor } from "$lib/utils";
     import { format, parseISO } from "date-fns";
 
     export let event: GoogleCalendarEventModel;
+
+    let currentUserAttendeeResponseStatus: string | undefined = "";
+    let currentUserEmail: string | undefined = "";
+    let eventStyle = "";
 
     const hasEventEnded = (
         endDate: string | number | Date | undefined,
@@ -23,12 +28,48 @@
         : event.end.date
           ? format(parseISO(event.end.date), "MMM d, yyyy")
           : "";
+
+    $: if (event.id === "0bbe6allssrfr46gcodevs7246_20231218T021500Z") {
+        console.log("event", event);
+        console.log(currentUserEmail);
+    }
+
+    (() => {
+        const user = localStorage.getItem("authUser");
+        if (user) {
+            currentUserEmail = JSON.parse(user).email;
+        }
+    })();
+
+    $: if (event.attendees && event.attendees.length > 0 && currentUserEmail) {
+        console.log("attendee");
+
+        const currentUserAttendee = event.attendees.find(
+            (attendee) => attendee.email === currentUserEmail,
+        );
+        currentUserAttendeeResponseStatus = currentUserAttendee?.responseStatus;
+        eventStyle = attendeeActionEventStyle(
+            currentUserAttendeeResponseStatus,
+        );
+    } else if (event.colorId) {
+        console.log("color");
+
+        eventStyle = getEventColor(event);
+    } else {
+        console.log("else");
+
+        eventStyle = `
+            --primary: var(--color-theme-2-L1);
+            --secondary: var(--color-theme-2-L3);
+        `;
+    }
 </script>
 
 <div
     class="event {hasEventEnded(event.end.dateTime || event.end.date)
         ? 'ended'
         : ''}"
+    style={eventStyle}
 >
     <h2>{event.summary}</h2>
     <p>
@@ -42,11 +83,11 @@
     .event {
         padding: 0.5rem;
         margin: 0.5rem 0;
-        background-color: var(--color-theme-2-L3);
-        border: 1px solid var(--color-theme-2-L2);
+        background-color: var(--secondary);
+        border: 1px solid var(--primary);
         border-radius: 4px;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-        transition: background-color 0.2s ease-in-out;
+        transition: background-color 0.5s ease-in-out;
         cursor: pointer;
 
         h2 {
@@ -68,7 +109,7 @@
         }
 
         &:hover {
-            background-color: var(--color-theme-2-L2);
+            background-color: var(--color-bg-2);
         }
 
         @media (max-width: 600px) {
@@ -89,12 +130,9 @@
     }
 
     .event.ended {
-        background-color: var(--color-theme-1-L3);
+        background-color: var(--color-bg-2);
+        border-color: var(--secondary);
         color: var(--color-text-light);
         text-decoration: line-through;
-
-        &:hover {
-            background-color: var(--color-theme-2-L2);
-        }
     }
 </style>
