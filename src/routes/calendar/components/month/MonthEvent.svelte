@@ -1,12 +1,14 @@
 <script lang="ts">
     import type { GoogleCalendarEventModel } from "$lib/models";
     import { eventContainers } from "$lib/stores";
-    import { eventDayIndicator } from "$lib/utils";
+    import { eventDayIndicator, getEventColor } from "$lib/utils";
 
     export let day: Date;
     export let activeEvent: GoogleCalendarEventModel | null;
     export let setActiveEvent: (event: GoogleCalendarEventModel | null) => void;
     export let event: GoogleCalendarEventModel;
+
+    $: eventBg = getEventColor(event);
 
     const scrollToEvent = (eventId: string, clickedContainer: HTMLElement) => {
         $eventContainers.forEach((container) => {
@@ -29,6 +31,7 @@
 
 <div
     class="event"
+    style={eventBg}
     data-event-id={event.id}
     on:click={(e) => scrollToEvent(event.id, e.currentTarget)}
     on:keydown={(e) => {
@@ -44,7 +47,7 @@
     tabindex="0"
     class:active={event === activeEvent}
 >
-    <h2>{event?.summary}</h2>
+    <span class="event-summary">{event?.summary}</span>
     <span class="event-day-indicator">
         {eventDayIndicator(event, day)}
     </span>
@@ -56,8 +59,8 @@
         flex-direction: column;
         gap: 0.25rem;
         padding: 0.5rem;
-        background-color: var(--color-theme-2-L3);
-        border: 1px solid var(--color-theme-2-L2);
+        background-color: var(--primary, var(--color-theme-2-L3));
+        border: 1px solid var(--primary, var(--color-theme-2-L2));
         border-radius: 4px;
         box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
         transition:
@@ -66,6 +69,7 @@
             transform 0.2s ease-in-out;
         cursor: pointer;
         position: relative;
+        word-wrap: break-word;
         z-index: 1;
 
         &:first-child {
@@ -73,33 +77,34 @@
         }
 
         &:hover {
-            background-color: var(--color-theme-2-L1);
+            background-color: var(--secondary, var(--color-theme-2-L4));
             z-index: 2;
         }
 
         &.active {
-            background-color: var(--color-theme-2-L1);
+            background-color: var(--secondary, var(--color-theme-2-L4));
             transform: scale(1.1);
             z-index: 2;
         }
 
-        h2 {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            margin: 0;
+        .event-summary {
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: break-spaces;
+            vertical-align: top;
+            max-width: 100%;
         }
 
         .event-day-indicator {
             width: 100%;
             text-align: right;
-            font-size: 0.75rem;
+            font-size: 0.6rem;
         }
 
         @media (max-width: 600px) {
-            h2 {
-                font-size: 0.75rem;
+            .event-summary {
+                font-size: clamp(0.75rem, 1vw, 1rem);
             }
         }
     }

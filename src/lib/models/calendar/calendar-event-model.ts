@@ -8,7 +8,6 @@ export interface BaseEventModel {
     location?: string;
     start: EventDateTime;
     end: EventDateTime;
-    eventType?: EventTypesModel;
 }
 
 // Specific to Google Calendar Event
@@ -21,6 +20,7 @@ export interface GoogleCalendarEventModel extends BaseEventModel {
     creator: EventCreator;
     organizer: EventOrganizer;
     attendees?: Attendee[];
+    eventType?: EventTypesModel;
     // ... other properties specific to Google Calendar Event
 }
 

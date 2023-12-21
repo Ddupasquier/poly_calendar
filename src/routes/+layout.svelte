@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "./styles.scss";
+	import "$lib/styles/index-styles.scss";
 	import { Layout } from "$lib/components";
 	import { onMount } from "svelte";
 	import { siteName } from "../lib/constants";

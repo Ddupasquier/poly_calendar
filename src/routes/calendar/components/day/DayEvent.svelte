@@ -1,12 +1,15 @@
 <script lang="ts">
     import type { GoogleCalendarEventModel } from "$lib/models";
-    import { AttendeeActionTypesEnum } from "$lib/enums";
     import { format, parseISO } from "date-fns";
     import { Button } from "mysvelte-ui";
-    import { uppercaseFirstLetter } from "$lib/utils";
+    import {
+        uppercaseFirstLetter,
+        getEventColor,
+        attendeeActionEventStyle,
+    } from "$lib/utils";
 
     export let event: GoogleCalendarEventModel;
-    
+
     let showAttendees = false;
     let startTime = event.start.dateTime
         ? format(parseISO(event.start.dateTime), "h:mm a")
@@ -30,25 +33,17 @@
             (attendee) => attendee.email === currentUserEmail,
         );
         currentUserAttendeeResponseStatus = currentUserAttendee?.responseStatus;
-        eventStyle = getEventStyle(currentUserAttendeeResponseStatus);
+        eventStyle = attendeeActionEventStyle(
+            currentUserAttendeeResponseStatus,
+        );
+    } else if (event.colorId) {
+        eventStyle = getEventColor(event);
+    } else {
+        eventStyle = `
+            --primary: var(--color-theme-2-L3);
+            --secondary: var(--color-bg-2);
+        `;
     }
-
-    const getEventStyle = (responseStatus: string | undefined): string => {
-        switch (responseStatus) {
-            case AttendeeActionTypesEnum.Accepted:
-                return `background-color: var(--color-bg-2);`;
-            case AttendeeActionTypesEnum.Declined:
-                return `
-                    background-color: var(--color-bg-0-L3);
-                    box-shadow: inset 15px 0 0 -10px var(--color-theme-1);
-                `;
-            case AttendeeActionTypesEnum.Tentative:
-            case AttendeeActionTypesEnum.NeedsAction:
-                return `background-color: var(--color-bg-0-L3);`;
-            default:
-                return "";
-        }
-    };
 </script>
 
 <div class="event" style={eventStyle}>
@@ -137,14 +132,14 @@
 <style lang="scss">
     .event {
         padding: 0.5rem;
-        background-color: var(--background);
+        background-color: var(--secondary, var(--color-bg-2));
         border-radius: 4px;
-        box-shadow: inset 10px 0 0 -10px var(--color-theme-2-L3);
+        box-shadow: inset 10px 0 0 -10px var(--primary, var(--color-bg-2-L3));
         transition: box-shadow 1s ease-in;
         cursor: pointer;
 
         &:hover {
-            box-shadow: inset 15px 0 0 -10px var(--color-theme-2-L3);
+            box-shadow: inset 15px 0 0 -10px var(--primary, var(--color-bg-2-L3));
         }
 
         .event-header {

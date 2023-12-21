@@ -1,0 +1,76 @@
+:root {
+    // EVENT BG COLORS
+    $base-lavender: #E6E6FA;
+    --lavender: #{$base-lavender};
+    --lavender-light: #{lighten($base-lavender, 10%)};
+
+    $base-sage: #87A96B;
+    --sage: #{$base-sage};
+    --sage-light: #{lighten($base-sage, 10%)};
+
+    $base-grape: #a695b6;
+    --grape: #{$base-grape};
+    --grape-light: #{lighten($base-grape, 10%)};
+
+    $base-flamingo: #FC8EAC;
+    --flamingo: #{$base-flamingo};
+    --flamingo-light: #{lighten($base-flamingo, 10%)};
+
+    $base-banana: #FFE135;
+    --banana: #{$base-banana};
+    --banana-light: #{lighten($base-banana, 10%)};
+
+    $base-tangerine: #F28500;
+    --tangerine: #{$base-tangerine};
+    --tangerine-light: #{lighten($base-tangerine, 10%)};
+
+    $base-peacock: #333399;
+    --peacock: #{$base-peacock};
+    --peacock-light: #{lighten($base-peacock, 10%)};
+
+    $base-graphite: #474A51;
+    --graphite: #{$base-graphite};
+    --graphite-light: #{lighten($base-graphite, 10%)};
+
+    $base-blueberry: #4F86F7;
+    --blueberry: #{$base-blueberry};
+    --blueberry-light: #{lighten($base-blueberry, 10%)};
+
+    $base-basil: #719f91;
+    --basil: #{$base-basil};
+    --basil-light: #{lighten($base-basil, 10%)};
+
+    $base-tomato: #FF6347;
+    --tomato: #{$base-tomato};
+    --tomato-light: #{lighten($base-tomato, 10%)};
+
+    $base-mandarin: #F37A48;
+    --mandarin: #{$base-mandarin};
+    --mandarin-light: #{lighten($base-mandarin, 10%)};
+
+    $base-blueberry2: #536895;
+    --blueberry2: #{$base-blueberry2};
+    --blueberry2-light: #{lighten($base-blueberry2, 10%)};
+
+    $base-sage2: #688f63;
+    --sage2: #{$base-sage2};
+    --sage2-light: #{lighten($base-sage2, 10%)};
+
+
+    // ATTENDEE ACTION TYPE COLORS
+    $base-accepted: #8aa476;
+    --accepted: #{$base-accepted};
+    --accepted-light: #{lighten($base-accepted, 10%)};
+
+    $base-declined: #ff836d;
+    --declined: #{$base-declined};
+    --declined-light: #{lighten($base-declined, 10%)};
+
+    $base-tentative: #ffb963;
+    --tentative: #{$base-tentative};
+    --tentative-light: #{lighten($base-tentative, 10%)};
+
+    $base-needs-action: #808389;
+    --needs-action: #{$base-needs-action};
+    --needs-action-light: #{lighten($base-needs-action, 10%)};
+}
