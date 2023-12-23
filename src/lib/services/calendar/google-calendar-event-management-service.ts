@@ -1,4 +1,4 @@
-import { addToast } from '$lib/stores';
+import { addToast, clearAuthUserAndSession } from '$lib/stores';
 
 export const fetchGoogleCalendarEvents = async (timeMin: string | undefined, timeMax: string | undefined) => {
 
@@ -48,9 +48,10 @@ export const fetchGoogleCalendarEvents = async (timeMin: string | undefined, tim
             return eventsData.items;
         }
     } catch (error) {
-        const message = (error as Error).message || 'An unknown error occurred';
+        const message = error || 'An unknown error occurred';
         console.error('Error in fetchGoogleCalendarEvents:', message);
         addToast(`Error: ${message}`, { duration: 5000, closable: true });
+        clearAuthUserAndSession();
 
         throw error;
     }
