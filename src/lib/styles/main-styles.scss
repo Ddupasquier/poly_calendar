@@ -282,3 +282,8 @@ button:focus:not(:focus-visible) {
 	height: fit-content;
 	padding: 3rem;
 }
+
+.loader {
+	padding: 1rem;
+	box-sizing: border-box;
+}

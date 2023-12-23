@@ -92,7 +92,9 @@
             </ProfileSection>
         {/each}
     {:else}
-        <Common.Loader size={"small"} color="var(--color-theme-2-D1" />
+        <div class="loader">
+            <Common.Loader size="medium" color="var(--color-theme-2)" />
+        </div>
     {/if}
 </div>
 

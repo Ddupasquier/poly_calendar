@@ -141,11 +141,11 @@ const initialCombinedDateObject = (): CombinedDateObject => {
 // ============================================================
 // Svelte Writable Stores
 // ============================================================
-
 /**
  * Writable stores that can be updated from anywhere in the app.
  * They are used to store the current view, filter type, calendar events, and other values.
 */
+
 export const combinedDateObject: Writable<CombinedDateObject> = writable(initialCombinedDateObject());
 export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(initialCurrentView());
 export const filterType: Writable<EventTypesModel> = writable<EventTypesModel>(EventTypesEnum.All);
@@ -156,11 +156,11 @@ export const isLoadingEvents: Writable<boolean> = writable(false);
 // ============================================================
 // Svelte Derived Stores
 // ============================================================
-
 /**
  * Derived stores that compute values based on the writable stores.
  * They help in filtering events based on different criteria like dates and event types.
  */
+
 export const filteredEvents: Readable<GoogleCalendarEventModel[]> = derived(
     [calendarEvents, filterType],
     ([$calendarEvents, $filterType]) => $filterType === EventTypesEnum.All ? $calendarEvents : $calendarEvents.filter(event => event.eventType === $filterType)
@@ -214,9 +214,9 @@ export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalen
 // ============================================================
 
 /**
- * Fetches events from Google Calendar based on the current view.
- * It uses the currentView store to decide the time range for fetching events.
- */
+ * Fetches events from Google Calendar and updates the calendarEvents store.
+ * @throws {Error} - If the fetch fails.
+*/
 export const fetchEvents = async (): Promise<void> => {
     try {
         isLoadingEvents.set(true);
@@ -249,7 +249,12 @@ export const fetchEvents = async (): Promise<void> => {
         }
 
         const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
-        calendarEvents.set(sortEventsByStartTime(eventsFromGoogle.filter(isEventValid)));
+
+        if (Array.isArray(eventsFromGoogle)) {
+            calendarEvents.set(sortEventsByStartTime(eventsFromGoogle.filter(isEventValid)));
+        } else {
+            calendarEvents.set([]);
+        }
     } catch (error) {
         console.error("Error fetching Google Calendar events:", error);
     } finally {
@@ -257,6 +262,10 @@ export const fetchEvents = async (): Promise<void> => {
     }
 };
 
+/**
+ * A derived store that triggers the fetchEvents function when its dependencies change.
+ * This ensures that the calendarEvents store is updated whenever the view or date changes.
+*/
 const triggerFetchEvents = derived(
     [currentView, combinedDateObject],
     () => {
@@ -266,6 +275,10 @@ const triggerFetchEvents = derived(
     }
 );
 
+/**
+ * A subscription to the triggerFetchEvents store.
+ * This ensures that the derived store runs when the app is loaded.
+*/
 triggerFetchEvents.subscribe(() => {
     // This is intentionally left blank. The subscription is just to ensure the derived store runs.
 });

@@ -61,7 +61,7 @@
 {#if !authUserPresent}
     {#if isLoading}
         <div class="loader-container">
-            <Common.Loader />
+            <Common.Loader size="large" color="var(--color-theme-2)" />
         </div>
     {:else}
         <div class="container">
