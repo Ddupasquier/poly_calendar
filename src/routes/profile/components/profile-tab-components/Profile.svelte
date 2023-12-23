@@ -15,7 +15,7 @@
     export let profileData: UserProfileModel | undefined = undefined;
 
     const getValue = (item: {
-        column: keyof UserProfileModel | keyof AuthUser;
+        column: keyof UserProfileModel | keyof AuthUser | string;
         type?: string;
         label?: string;
     }): string | number | boolean | undefined => {
@@ -59,7 +59,7 @@
     };
 
     const getAdditional = (item: {
-        column: keyof UserProfileModel | keyof AuthUser;
+        column: keyof UserProfileModel | keyof AuthUser | string;
     }): string | undefined => {
         if (item.column === "email") {
             return `${
@@ -81,7 +81,7 @@
                     <ProfileInfoItem
                         label={item.label}
                         column={item.column}
-                        value={getValue(item)}
+                        value={String(getValue(item))}
                         additional={getAdditional(item)}
                         icon={item.icon}
                         color={item.color}

@@ -9,18 +9,20 @@
         faTimes,
     } from "@fortawesome/free-solid-svg-icons";
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+    import type { AuthUser } from "@supabase/supabase-js";
+    import type { UserProfileModel } from "$lib/models";
 
     export let icon: IconDefinition;
     export let label: string;
-    export let column: string | null = null;
-    export let value: string | number | boolean | undefined;
+    export let column: keyof UserProfileModel | keyof AuthUser | string;
+    export let value: string | undefined;
     export let additional: string | undefined = "";
     export let color: string;
     export let type: "text" | "date" | "tel" | undefined = "text";
     export let editable: boolean = false;
 
     let isEditing = false;
-    let editedValue: string | number | boolean | undefined = value;
+    let editedValue: string | undefined = value;
 
     $: {
         if (value) {
