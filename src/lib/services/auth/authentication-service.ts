@@ -2,6 +2,7 @@ import { supabase } from "$lib/supabase";
 import {
     addToast,
     clearAuthUserAndSession,
+    currentUserPresent,
     saveAuthUserAndSession,
     setHelperText,
 } from "$lib/stores";
@@ -90,42 +91,16 @@ export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
 };
 
 export const checkAndRefreshSession = async () => {
-    // try {
-    //     let { data: session, error: getSessionError } = await supabase.auth.getSession();
 
-    //     if (getSessionError || !session) {
-    //         let { data: refreshedSession, error: refreshSessionError } = await supabase.auth.refreshSession();
-    //         if (refreshSessionError) {
-    //             console.error('Error refreshing session:', refreshSessionError.message);
-    //             addToast(refreshSessionError.message, { duration: 5000, closable: true });
-    //             clearAuthUserAndSession();
-    //             return null;
-    //         }
-    //         session = refreshedSession;
-    //     }
-
-    //     // If the session exists and has a user object, proceed to save it.
-    //     if (session && 'user' in session) {
-    //         saveAuthUserAndSession(session.user, session);
-    //         return session;
-    //     } else {
-    //         throw new Error('Failed to retrieve or refresh session.');
-    //     }
-    // } catch (error) {
-    //     console.error('Unexpected error when handling session:', error);
-    //     addToast(error.message || 'Unexpected error when handling session', { duration: 5000, closable: true });
-    //     clearAuthUserAndSession();
-    //     return null;
-    // }
 };
 
-export const checkCurrentUser = async (): Promise<boolean> => {
+export const fetchCurrentUser = async (): Promise<User | null> => {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
-        return true;
+        return user;
     } else {
-        return false;
+        return null;
     }
 }
 

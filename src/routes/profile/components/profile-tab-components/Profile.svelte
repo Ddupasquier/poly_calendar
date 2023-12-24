@@ -1,15 +1,16 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import type { AuthUser } from "@supabase/supabase-js";
-
     import { Common } from "$lib/components";
     import { ProfileSection, ProfileInfoItem, profileStructure } from "../..";
-
     import type { UserProfileModel } from "$lib/models";
     import {
         authUser,
-        checkLocalStorageForVerificationStatus,
-    } from "$lib/stores";
+        currentUserPresent,
 
+        currentUserPresentAndVerified
+
+    } from "$lib/stores";
     import { checkDate, formatDate } from "$lib/utils";
 
     export let profileData: UserProfileModel | null;
@@ -24,7 +25,10 @@
                 profileData[item.column as keyof UserProfileModel];
             if (item.type === "date") {
                 const dateString = profileValue as string;
-                return checkDate(dateString) ? formatDate(dateString) : "";
+                const formattedDate = checkDate(dateString)
+                    ? formatDate(dateString)
+                    : "";
+                return formattedDate;
             } else if (
                 typeof profileValue === "string" ||
                 typeof profileValue === "number" ||
@@ -34,18 +38,19 @@
             }
         }
 
-        if ($authUser && item.column in $authUser) {
+        if ($currentUserPresent && item.column in $authUser) {
             const authUserValue = $authUser[item.column as keyof AuthUser];
-
             if (item.type === "date") {
                 const dateString = authUserValue as string;
-                return checkDate(dateString) ? formatDate(dateString) : "";
+                const formattedDate = checkDate(dateString)
+                    ? formatDate(dateString)
+                    : "";
+                return formattedDate;
             } else if (item.label === "Account Status") {
-                return `${
-                    checkLocalStorageForVerificationStatus()
-                        ? "Secure"
-                        : "Not Secure"
+                const accountStatus = `${
+                    $currentUserPresentAndVerified ? "Secure" : "Not Secure"
                 }`;
+                return accountStatus;
             } else if (
                 typeof authUserValue === "string" ||
                 typeof authUserValue === "number" ||
@@ -62,11 +67,10 @@
         column: keyof UserProfileModel | keyof AuthUser | string;
     }): string | undefined => {
         if (item.column === "email") {
-            return `${
-                checkLocalStorageForVerificationStatus()
-                    ? "(Verified)"
-                    : "(Unverified)"
+            const emailStatus = `${
+                $currentUserPresentAndVerified ? "(Verified)" : "(Unverified)"
             }`;
+            return emailStatus;
         } else {
             return undefined;
         }

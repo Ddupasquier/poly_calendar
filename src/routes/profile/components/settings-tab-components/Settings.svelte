@@ -12,7 +12,7 @@
 
     const getValue = (item: {
         column: keyof UserSettingsModel;
-    }): string | number | boolean | null=> {
+    }): string | number | boolean | null => {
         if (!settingsData) return false;
         return settingsData[item.column];
     };

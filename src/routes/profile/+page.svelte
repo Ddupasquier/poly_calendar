@@ -1,14 +1,16 @@
 <script lang="ts">
-    import { beforeUpdate, onMount } from "svelte";
-    import { goto } from "$app/navigation";
+    import { onMount } from "svelte";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
     import { Button } from "mysvelte-ui";
     import { Profile, Settings } from ".";
     import { Common, Auth } from "$lib/components";
-    import { logout, checkCurrentUser } from "$lib/services";
+    import { logout } from "$lib/services";
     import { navigationButtons, colors } from "$lib/constants";
-    import { checkLocalStorageForVerificationStatus } from "$lib/stores";
+    import {
+        currentUserPresent,
+        currentUserPresentAndVerified,
+    } from "$lib/stores";
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";
     import type { UserProfileModel, UserSettingsModel } from "$lib/models";
 
@@ -19,16 +21,11 @@
 
     export let data: ProfilePageData;
 
-    $: userProfile = data.userProfile || null;
-    $: userSettings = data.userSettings || null;
+    $: userProfile = data.userProfile;
+    $: userSettings = data.userSettings;
 
-    let userPresent: boolean = false;
     let isLoading: boolean = true;
-    let selectedOption = "login";
-
-    $: if (!userProfile) {
-        isLoading = true;
-    }
+    let selectedOption = "profile";
 
     const buttonStyles: string = `
         background: ${colors["--color-theme-1"]};
@@ -36,22 +33,16 @@
         width: 100%;
     `;
 
-    beforeUpdate(() => {
-        goto(`/profile`);
-    });
-
     onMount(async () => {
         if (userProfile) {
             selectedOption = "profile";
         }
 
-        userPresent = await checkCurrentUser();
-
         isLoading = false;
     });
 </script>
 
-{#if !userPresent}
+{#if !$currentUserPresent}
     {#if isLoading}
         <div class="loader-container">
             <Common.Loader size="large" color="var(--color-theme-2)" />
@@ -99,7 +90,7 @@
                 </div>
             {/if}
         </div>
-        {#if checkLocalStorageForVerificationStatus() && isLoading === false}
+        {#if $currentUserPresentAndVerified && isLoading === false}
             <div
                 class="verified"
                 title="Verified"

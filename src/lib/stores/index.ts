@@ -12,7 +12,8 @@ export {
     authSession,
     saveAuthUserAndSession,
     clearAuthUserAndSession,
-    checkLocalStorageForVerificationStatus
+    currentUserPresent,
+    currentUserPresentAndVerified,
 } from "./user/userAuthenticationStore";
 
 export {

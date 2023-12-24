@@ -7,6 +7,13 @@ const isBrowser = typeof window !== 'undefined';
 
 export const authUser: Writable<User> = writable({} as User);
 export const authSession: Writable<Session> = writable({} as Session);
+export const currentUserPresent: Writable<boolean> = writable(false);
+export const currentUserPresentAndVerified: Writable<boolean> = writable(false);
+
+authUser.subscribe(value => {
+    value && value.id ? currentUserPresent.set(true) : currentUserPresent.set(false);
+    value && value.email_confirmed_at ? currentUserPresentAndVerified.set(true) : currentUserPresentAndVerified.set(false);
+});
 
 if (isBrowser) {
     // Rehydrate only if in the browser
@@ -81,17 +88,3 @@ export const clearAuthUserAndSession = () => {
 //         console.log("authSession store changed:", value);
 //     }
 // });
-
-export const checkLocalStorageForVerificationStatus = (): boolean => {
-    if (isBrowser) {
-        const storedUser = localStorage.getItem('authUser');
-        if (storedUser) {
-            const user = JSON.parse(storedUser);
-            if (user && user.email_confirmed_at) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-};

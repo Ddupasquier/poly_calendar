@@ -1,9 +1,9 @@
-import { addToast } from '$lib/stores';
+import { addToast, currentUserPresent } from '$lib/stores';
+import { get } from 'svelte/store';
 import { logout } from '..';
 
 export const fetchGoogleCalendarEvents = async (timeMin: string | undefined, timeMax: string | undefined) => {
-    const authedUser = localStorage.getItem('authUser');
-    if (authedUser) {
+    if (get(currentUserPresent)) {
         try {
             if (typeof window === 'undefined') {
                 throw new Error('fetchGoogleCalendarEvents must be called from the browser');

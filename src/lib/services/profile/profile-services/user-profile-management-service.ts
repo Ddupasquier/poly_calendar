@@ -3,6 +3,7 @@ import type { AuthUser, User } from "@supabase/supabase-js";
 
 import { checkDate } from "$lib/utils";
 import type { UserProfileModel } from "$lib/models";
+import { fetchCurrentUser } from "$lib/services";
 
 export const upsertUserProfile = async (authUserData: AuthUser | null) => {
     if (!authUserData) {

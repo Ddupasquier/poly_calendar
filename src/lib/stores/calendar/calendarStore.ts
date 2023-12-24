@@ -279,9 +279,11 @@ const triggerFetchEvents = derived(
  * A subscription to the triggerFetchEvents store.
  * This ensures that the derived store runs when the app is loaded.
 */
-triggerFetchEvents.subscribe(() => {
-    // This is intentionally left blank. The subscription is just to ensure the derived store runs.
-});
+setTimeout(() => {
+    triggerFetchEvents.subscribe(() => {
+        // This is intentionally left blank. The subscription is just to ensure the derived store runs.
+    });
+}, 0);
 
 // ============================================================
 // Local Storage Persistence and Setters

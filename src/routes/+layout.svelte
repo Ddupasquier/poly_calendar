@@ -4,9 +4,8 @@
 	import { onMount } from "svelte";
 	import { siteName } from "../lib/constants";
 	import { initializeAuthListener } from "$lib/services";
-    import { authSession } from "$lib/stores";
 
-	onMount(() => {
+	onMount(async () => {
 		initializeAuthListener();
 	});
 </script>
