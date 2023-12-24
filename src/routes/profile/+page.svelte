@@ -25,9 +25,9 @@
     let selectedOption = "login";
 
     const buttonStyles: string = `
-    background: ${colors["--color-theme-1"]};
-    color: ${colors["--color-text-white"]};
-    width: 100%;
+        background: ${colors["--color-theme-1"]};
+        color: ${colors["--color-text-white"]};
+        width: 100%;
     `;
 
     $: authUserPresent = $storedAuthUser && !isObjectEmpty($storedAuthUser);
@@ -37,21 +37,48 @@
     });
 
     onMount(async () => {
-        if ($storedAuthUser) {
-            selectedOption = "profile";
+        console.log("Page loaded");
 
-            if (authUserPresent) {
-                profileData = await getUserProfile($storedAuthUser);
-                settingsData = await getUserSettings();
+        try {
+            if ($storedAuthUser) {
+                selectedOption = "profile";
+                console.log("Selected option:", selectedOption);
+
+                if (authUserPresent) {
+                    console.log(`authUserPresent: ${authUserPresent}`);
+
+                    console.log("Calling getUserProfile...");
+                    const profileResponse = await getUserProfile();
+                    profileData = profileResponse;
+                    console.log("Profile data received:", profileData);
+
+                    console.log("Calling getUserSettings...");
+                    const settingsResponse = await getUserSettings();
+                    settingsData = settingsResponse;
+                    console.log("Settings data received:", settingsData);
+                }
             }
-        }
 
-        if (profileData) {
-            componentProps.profileData = profileData;
-        }
+            if (!profileData) {
+                console.log("Profile data not received after call.");
+            }
 
-        if (settingsData) {
-            componentProps.settingsData = settingsData;
+            if (!settingsData) {
+                console.log("Settings data not received after call.");
+            }
+
+            console.log("Final profileData:", profileData);
+            console.log("Final settingsData:", settingsData);
+
+            if (profileData) {
+                componentProps.profileData = profileData;
+            }
+
+            if (settingsData) {
+                componentProps.settingsData = settingsData;
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
         }
 
         isLoading = false;

@@ -35,7 +35,7 @@
             </SettingsSection>
         {/each}
     {:else}
-        <Common.Loader size={"small"} color={"var(--color-theme-2-D1)"} />
+        <Common.Loader size="medium" color="var(--color-theme-2)" />
     {/if}
 </div>
 

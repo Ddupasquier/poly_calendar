@@ -24,7 +24,8 @@ export const upsertUserSettings = async (authUserData: AuthUser | null) => {
 export const getUserSettings = async (): Promise<UserSettingsModel | null> => {
     const authUserDataString = localStorage.getItem('authUser');
     if (!authUserDataString) {
-        throw new Error('Authentication data not found.');
+        console.error("No user data provided.");
+        return null;
     }
 
     const authUserData: User = JSON.parse(authUserDataString);
@@ -38,6 +39,7 @@ export const getUserSettings = async (): Promise<UserSettingsModel | null> => {
         .single();
 
     if (error) {
+        console.error("Supabase error while fetching user settings:", error);
         throw error;
     }
 

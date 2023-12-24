@@ -13,7 +13,7 @@ export {
     saveAuthUserAndSession,
     clearAuthUserAndSession,
     checkLocalStorageForVerificationStatus
-} from "./userStore";
+} from "./user/userAuthenticationStore";
 
 export {
     isLoadingEvents,
