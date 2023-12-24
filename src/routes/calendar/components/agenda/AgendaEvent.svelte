@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { GoogleCalendarEventModel } from "$lib/models";
+    import { fetchCurrentUser } from "$lib/services";
     import { attendeeActionEventStyle, getEventColor } from "$lib/utils";
     import { format, parseISO } from "date-fns";
 
@@ -29,10 +30,10 @@
           ? format(parseISO(event.end.date), "MMM d, yyyy")
           : "";
 
-    (() => {
-        const user = localStorage.getItem("authUser");
+    (async () => {
+        const user = await fetchCurrentUser();
         if (user) {
-            currentUserEmail = JSON.parse(user).email;
+            currentUserEmail = user.email;
         }
     })();
 

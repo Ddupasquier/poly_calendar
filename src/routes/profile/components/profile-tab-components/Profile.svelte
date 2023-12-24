@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import type { AuthUser } from "@supabase/supabase-js";
     import { Common } from "$lib/components";
     import { ProfileSection, ProfileInfoItem, profileStructure } from "../..";

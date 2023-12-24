@@ -7,6 +7,7 @@
         getEventColor,
         attendeeActionEventStyle,
     } from "$lib/utils";
+    import { fetchCurrentUser } from "$lib/services";
 
     export let event: GoogleCalendarEventModel;
 
@@ -21,10 +22,10 @@
     let currentUserEmail: string | undefined = "";
     let eventStyle = "";
 
-    (() => {
-        const user = localStorage.getItem("authUser");
+    (async () => {
+        const user = await fetchCurrentUser();
         if (user) {
-            currentUserEmail = JSON.parse(user).email;
+            currentUserEmail = user.email;
         }
     })();
 

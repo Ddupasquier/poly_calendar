@@ -2,6 +2,7 @@ import { supabase } from "$lib/supabase";
 import type { AuthUser, User } from "@supabase/supabase-js";
 import type { UserSettingsModel } from "$lib/models";
 import { browser } from "$app/environment";
+import { fetchCurrentUser } from "$lib/services";
 
 export const upsertUserSettings = async (authUserData: AuthUser | null) => {
     if (!authUserData) {
@@ -49,15 +50,9 @@ export const updateSingleUserSettingsField = async (
         value: boolean;
     }
 ): Promise<UpdateResponse<Partial<UserSettingsModel>[]>> => {
-    const authUserDataString = localStorage.getItem('authUser');
-    if (!authUserDataString) {
+    const user = await fetchCurrentUser();
+    if (!user) {
         throw new Error('Authentication data not found.');
-    }
-
-    const authUserData: User = JSON.parse(authUserDataString);
-
-    if (!authUserData.id) {
-        return { data: null, error: new Error('User ID is missing') };
     }
 
     const updatePayload = {
@@ -68,7 +63,7 @@ export const updateSingleUserSettingsField = async (
         const updateResponse = await supabase
             .from('settings')
             .update(updatePayload)
-            .eq('user_uuid', authUserData.id)
+            .eq('user_uuid', user.id)
             .select(formObject.field);
 
         if (updateResponse.error) {
@@ -89,21 +84,15 @@ export const updateSingleUserSettingsField = async (
 export const getSingleUserSettingField = async (
     field: keyof UserSettingsModel
 ): Promise<string | number | boolean | null> => {
-    const authUserDataString = localStorage.getItem('authUser');
-    if (!authUserDataString) {
+    const user = await fetchCurrentUser();
+    if (!user) {
         throw new Error('Authentication data not found.');
-    }
-
-    const authUserData: User = JSON.parse(authUserDataString);
-
-    if (!authUserData) {
-        throw new Error("No user data provided.");
     }
 
     const { data, error } = await supabase
         .from('settings')
         .select(field)
-        .eq('user_uuid', authUserData.id)
+        .eq('user_uuid', user.id)
         .single();
 
     if (error) {
