@@ -8,11 +8,11 @@
 
     import type { UserSettingsModel } from "$lib/models";
 
-    export let settingsData: UserSettingsModel | undefined;
+    export let settingsData: UserSettingsModel | null;
 
     const getValue = (item: {
         column: keyof UserSettingsModel;
-    }): string | number | boolean | undefined => {
+    }): string | number | boolean | null=> {
         if (!settingsData) return false;
         return settingsData[item.column];
     };

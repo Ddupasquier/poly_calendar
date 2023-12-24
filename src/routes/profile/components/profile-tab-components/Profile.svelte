@@ -12,7 +12,7 @@
 
     import { checkDate, formatDate } from "$lib/utils";
 
-    export let profileData: UserProfileModel | undefined = undefined;
+    export let profileData: UserProfileModel | null;
 
     const getValue = (item: {
         column: keyof UserProfileModel | keyof AuthUser | string;

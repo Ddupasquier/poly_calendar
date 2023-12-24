@@ -1,5 +1,5 @@
 import { supabase } from "$lib/supabase";
-import type { AuthUser } from "@supabase/supabase-js";
+import type { AuthUser, User } from "@supabase/supabase-js";
 
 import { checkDate } from "$lib/utils";
 import type { UserProfileModel } from "$lib/models";
@@ -28,39 +28,21 @@ export const upsertUserProfile = async (authUserData: AuthUser | null) => {
     return data;
 }
 
-export const getUserProfile = async (): Promise<UserProfileModel | null> => {
+export const getUserProfile = async (): Promise<UserProfileModel | undefined> => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (user)
-        console.log('[getUserProfile] Preparing to query Supabase for user_uuid:', user.id);
-    console.log('[getUserProfile] Preparing to query Supabase for user_uuid:', user);
 
-    if (!user) {
-        throw new Error("No user data provided.");
+    if (user) {
+        const { data: userProfile, error: profileError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('user_uuid', user.id)
+            .single();
+
+        if (profileError) throw new Error(profileError.message);
+
+        return userProfile
     }
-
-    const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('user_uuid', user.id)
-        .single();
-
-    if (error) {
-        console.error("Supabase error while fetching user profile:", error);
-        throw error;
-    }
-
-    if (!data) {
-        console.log("[getUserProfile] Query successful but no data returned from Supabase.");
-        return null;
-    }
-
-    if ('created_at' in data) {
-        data.created_at = checkDate(data.created_at as string);
-    }
-
-    return data;
 };
-
 
 export const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
     if (!authUserData) {

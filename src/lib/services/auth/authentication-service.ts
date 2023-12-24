@@ -119,6 +119,16 @@ export const checkAndRefreshSession = async () => {
     // }
 };
 
+export const checkCurrentUser = async (): Promise<boolean> => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export const signUp = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signUp({ email, password });

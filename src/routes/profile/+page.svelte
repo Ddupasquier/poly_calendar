@@ -6,23 +6,29 @@
     import { Button } from "mysvelte-ui";
     import { Profile, Settings } from ".";
     import { Common, Auth } from "$lib/components";
-    import { logout, getUserProfile, getUserSettings } from "$lib/services";
-    import type { UserProfileModel, UserSettingsModel } from "$lib/models";
+    import { logout, checkCurrentUser } from "$lib/services";
     import { navigationButtons, colors } from "$lib/constants";
-    import {
-        checkLocalStorageForVerificationStatus,
-        authUser as storedAuthUser,
-    } from "$lib/stores";
-    import { isObjectEmpty } from "$lib/utils";
-    import type { ComponentProps } from "./types";
+    import { checkLocalStorageForVerificationStatus } from "$lib/stores";
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";
+    import type { UserProfileModel, UserSettingsModel } from "$lib/models";
 
+    interface ProfilePageData {
+        userProfile: UserProfileModel | null;
+        userSettings: UserSettingsModel | null;
+    }
+
+    export let data: ProfilePageData;
+
+    $: userProfile = data.userProfile || null;
+    $: userSettings = data.userSettings || null;
+
+    let userPresent: boolean = false;
     let isLoading: boolean = true;
-    let profileData: UserProfileModel | null;
-    let settingsData: UserSettingsModel | null;
-    let componentProps: ComponentProps = {};
-
     let selectedOption = "login";
+
+    $: if (!userProfile) {
+        isLoading = true;
+    }
 
     const buttonStyles: string = `
         background: ${colors["--color-theme-1"]};
@@ -30,62 +36,22 @@
         width: 100%;
     `;
 
-    $: authUserPresent = $storedAuthUser && !isObjectEmpty($storedAuthUser);
-
     beforeUpdate(() => {
         goto(`/profile`);
     });
 
     onMount(async () => {
-        console.log("Page loaded");
-
-        try {
-            if ($storedAuthUser) {
-                selectedOption = "profile";
-                console.log("Selected option:", selectedOption);
-
-                if (authUserPresent) {
-                    console.log(`authUserPresent: ${authUserPresent}`);
-
-                    console.log("Calling getUserProfile...");
-                    const profileResponse = await getUserProfile();
-                    profileData = profileResponse;
-                    console.log("Profile data received:", profileData);
-
-                    console.log("Calling getUserSettings...");
-                    const settingsResponse = await getUserSettings();
-                    settingsData = settingsResponse;
-                    console.log("Settings data received:", settingsData);
-                }
-            }
-
-            if (!profileData) {
-                console.log("Profile data not received after call.");
-            }
-
-            if (!settingsData) {
-                console.log("Settings data not received after call.");
-            }
-
-            console.log("Final profileData:", profileData);
-            console.log("Final settingsData:", settingsData);
-
-            if (profileData) {
-                componentProps.profileData = profileData;
-            }
-
-            if (settingsData) {
-                componentProps.settingsData = settingsData;
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
+        if (userProfile) {
+            selectedOption = "profile";
         }
+
+        userPresent = await checkCurrentUser();
 
         isLoading = false;
     });
 </script>
 
-{#if !authUserPresent}
+{#if !userPresent}
     {#if isLoading}
         <div class="loader-container">
             <Common.Loader size="large" color="var(--color-theme-2)" />
@@ -98,39 +64,40 @@
 {:else}
     <div class="container">
         <div class="profile-table">
-            <div class="options">
-                {#each navigationButtons as button}
-                    <a href={button.path}>
-                        <Button
-                            on:click={() =>
-                                (selectedOption = button.label.toLowerCase())}
-                            style={buttonStyles}
-                        >
-                            {button.label}
-                        </Button>
-                    </a>
-                {/each}
-                <Button
-                    on:click={logout}
-                    background={"var(--color-theme-2-D1)"}
-                    style="width: 100%;"
-                >
-                    Logout
-                </Button>
-            </div>
-            <div class="content">
-                {#each navigationButtons as button}
-                    {#if selectedOption === button.label.toLowerCase()}
-                        {#if button.label.toLowerCase() === "profile"}
-                            <Profile profileData={componentProps.profileData} />
-                        {:else if button.label.toLowerCase() === "settings"}
-                            <Settings
-                                settingsData={componentProps.settingsData}
-                            />
+            {#if userProfile && userSettings}
+                <div class="options">
+                    {#each navigationButtons as button}
+                        <a href={button.path}>
+                            <Button
+                                on:click={() =>
+                                    (selectedOption =
+                                        button.label.toLowerCase())}
+                                style={buttonStyles}
+                            >
+                                {button.label}
+                            </Button>
+                        </a>
+                    {/each}
+                    <Button
+                        on:click={logout}
+                        background={"var(--color-theme-2-D1)"}
+                        style="width: 100%;"
+                    >
+                        Logout
+                    </Button>
+                </div>
+                <div class="content">
+                    {#each navigationButtons as button}
+                        {#if selectedOption === button.label.toLowerCase()}
+                            {#if button.label.toLowerCase() === "profile"}
+                                <Profile profileData={userProfile} />
+                            {:else if button.label.toLowerCase() === "settings"}
+                                <Settings settingsData={userSettings} />
+                            {/if}
                         {/if}
-                    {/if}
-                {/each}
-            </div>
+                    {/each}
+                </div>
+            {/if}
         </div>
         {#if checkLocalStorageForVerificationStatus() && isLoading === false}
             <div

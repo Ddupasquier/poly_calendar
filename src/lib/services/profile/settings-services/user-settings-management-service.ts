@@ -1,6 +1,7 @@
 import { supabase } from "$lib/supabase";
 import type { AuthUser, User } from "@supabase/supabase-js";
 import type { UserSettingsModel } from "$lib/models";
+import { browser } from "$app/environment";
 
 export const upsertUserSettings = async (authUserData: AuthUser | null) => {
     if (!authUserData) {
@@ -21,29 +22,20 @@ export const upsertUserSettings = async (authUserData: AuthUser | null) => {
     return data;
 };
 
-export const getUserSettings = async (): Promise<UserSettingsModel | null> => {
-    const authUserDataString = localStorage.getItem('authUser');
-    if (!authUserDataString) {
-        console.error("No user data provided.");
-        return null;
+export const getUserSettings = async (): Promise<UserSettingsModel | undefined> => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+        const { data: userSettings, error: settingsError } = await supabase
+            .from('settings')
+            .select('*')
+            .eq('user_uuid', user.id)
+            .single();
+
+        if (settingsError) throw new Error(settingsError.message);
+
+        return userSettings;
     }
-
-    const authUserData: User = JSON.parse(authUserDataString);
-
-    if (!authUserData) return null;
-
-    const { data, error } = await supabase
-        .from('settings')
-        .select('*')
-        .eq('user_uuid', authUserData.id)
-        .single();
-
-    if (error) {
-        console.error("Supabase error while fetching user settings:", error);
-        throw error;
-    }
-
-    return data;
 };
 
 export interface UpdateResponse<T> {
@@ -96,7 +88,7 @@ export const updateSingleUserSettingsField = async (
 
 export const getSingleUserSettingField = async (
     field: keyof UserSettingsModel
-): Promise<string | number | boolean | undefined> => {
+): Promise<string | number | boolean | null> => {
     const authUserDataString = localStorage.getItem('authUser');
     if (!authUserDataString) {
         throw new Error('Authentication data not found.');
