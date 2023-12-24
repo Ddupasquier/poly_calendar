@@ -1,26 +1,27 @@
 export interface UserProfileModel {
-    user_uuid: string; // UUID
-    email: string; // VARCHAR(255) UNIQUE NOT NULL
-    phone?: string; // VARCHAR(20) NULL
-    first_name?: string; // VARCHAR(100) NULL
-    last_name?: string; // VARCHAR(100) NULL
-    username?: string; // VARCHAR(100) UNIQUE NULL
-    image_url?: string; // TEXT NULL
-    time_zone?: string; // VARCHAR(50) NULL
-    language?: string; // VARCHAR(50) DEFAULT 'en' NULL
-    birthday?: string | Date; // ISO 8601 date string or Date object
-    about?: string; // TEXT NULL
-    role?: string; // VARCHAR(50) DEFAULT 'user' NULL
-    last_login_at?: string | Date; // TIMESTAMP WITH TIME ZONE NULL
-    account_type?: string; // VARCHAR(50) DEFAULT 'individual' NULL
-    subscription_type?: string; // VARCHAR(50) NULL
-    subscription_start?: string | Date; // DATE NULL
-    subscription_end?: string | Date; // DATE NULL
-    facebook_url?: string; // TEXT NULL
-    twitter_url?: string; // TEXT NULL
-    instagram_url?: string; // TEXT NULL
-    linkedin_url?: string; // TEXT NULL
-    created_at: string | Date; // TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-    updated_at: string | Date; // TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-    end_date?: string | Date; // TIMESTAMP WITH TIME ZONE NULL, Nullable end date for soft deletion
+    about: string | null
+    account_type: string | null
+    birthday: string | null
+    created_at: string | null
+    email: string
+    email_confirmed_at: string | null
+    end_date: string | null
+    facebook_url: string | null
+    first_name: string | null
+    image_url: string | null
+    instagram_url: string | null
+    language: string | null
+    last_login_at: string | null
+    last_name: string | null
+    linkedin_url: string | null
+    phone: string | null
+    role: string | null
+    subscription_end: string | null
+    subscription_start: string | null
+    subscription_type: string | null
+    time_zone: string | null
+    twitter_url: string | null
+    updated_at: string | null
+    user_uuid: string
+    username: string | null
 }

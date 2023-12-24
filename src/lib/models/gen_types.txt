@@ -1,0 +1,2 @@
+To generate types from supabase schema run this command using the supabase CLI:
+    supabase gen types typescript --linked --schema public > src/lib/models/supabase_schema.ts
