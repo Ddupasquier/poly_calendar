@@ -1,8 +1,5 @@
 <script lang="ts">
     import { Calendar } from ".";
-
-    export let data: CalendarPageData;
-    $: console.log(data?.props?.events)
 </script>
 
 <div class="calendar-container">

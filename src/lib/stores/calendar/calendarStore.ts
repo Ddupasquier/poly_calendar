@@ -337,3 +337,7 @@ export const setAllDatePartsToCurrent = (): void => {
         selectedYear: getYear(today)
     });
 };
+
+export const emptyEventsOnLogout = (): void => {
+    setCalendarEvents([]);
+}

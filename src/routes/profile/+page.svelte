@@ -10,6 +10,7 @@
     import { inRotateScale } from "$lib/transitions/in-rotate-scale";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
+    import { goto } from "$app/navigation";
 
     type ProfilePageData = {
         status: number;
@@ -59,7 +60,10 @@
                         </a>
                     {/each}
                     <Button
-                        on:click={logout}
+                        on:click={() => {
+                            logout();
+                            goto("/login");
+                        }}
                         background={"var(--color-theme-2-D1)"}
                         style="width: 100%;"
                     >

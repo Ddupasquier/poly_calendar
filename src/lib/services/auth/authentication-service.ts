@@ -1,4 +1,4 @@
-import { addToast, setHelperText } from "$lib/stores";
+import { addToast, emptyEventsOnLogout, setHelperText } from "$lib/stores";
 import { supabase } from "$lib/supabase";
 import { handleError, instanceOfError } from "$lib/utils";
 import type { AuthUser, Provider, Session, User } from "@supabase/supabase-js";
@@ -72,11 +72,11 @@ const welcomeMessage = (user: User): void => {
     addToast(message, { duration: 5000, closable: true });
 };
 
-const handleOAuthLogin = async (provider: Provider): Promise<void> => {
+const handleOAuthLogin = async (provider: Provider, redirectTo: string) => {
     if (!provider) return;
     try {
         const options = {
-            // redirectTo: `${window.location.origin}/profile?tab=profile`,
+            redirectTo: `${window.location.origin}/profile?tab=profile`,
             scopes: '',
         };
 
@@ -88,9 +88,6 @@ const handleOAuthLogin = async (provider: Provider): Promise<void> => {
             provider,
             options,
         })
-
-        // const user = fetchCurrentUser();
-        // welcomeMessage(user);
 
     } catch (error) {
         handleError({
@@ -107,12 +104,8 @@ const fetchCurrentUser = async (): Promise<User | null> => {
 
 const signInWithPassword = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    console.log("data", data);
-    console.log("error", error);
 
     if (data.user && !error) {
-
-
         return {
             email: data?.user?.email,
             redirect: "/profile"
@@ -120,7 +113,7 @@ const signInWithPassword = async (email: string, password: string) => {
     } else {
         handleError({
             error,
-            helperText: "An error occurred while logging in. Please try again."
+            helperText: error?.message || "An error occurred while signing in. Please try again."
         });
     }
 }
@@ -137,7 +130,7 @@ const signup = async (email: string, password: string): Promise<void> => {
         } else {
             handleError({
                 error,
-                helperText: "An error occurred while signing up. Please try again."
+                helperText: error?.message || "An error occurred while signing up. Please try again."
             });
         }
     } catch (error) {
@@ -151,12 +144,14 @@ const signup = async (email: string, password: string): Promise<void> => {
 const logout = async (): Promise<void> => {
     try {
         const { error } = await supabase.auth.signOut();
+
         if (error) {
             handleError({
                 error,
-                helperText: "Error logging out. Please try again."
+                helperText: error?.message || "Error logging out. Please try again."
             })
         } else {
+            emptyEventsOnLogout();
             addToast("Logged out successfully", { duration: 5000, closable: true });
         }
     } catch (error) {
@@ -221,7 +216,6 @@ const confirmSignup = async (token: string): Promise<SignupConfirmationReturnDat
     }
 };
 
-
 export {
     signInWithPassword,
     signup,
@@ -229,4 +223,5 @@ export {
     confirmSignup,
     fetchCurrentUser,
     initializeAuthListener,
+    handleOAuthLogin
 }

@@ -111,13 +111,15 @@ const profileStructure: ProfileStructure = [
                 label: "Member Since",
                 column: "created_at",
                 icon: faCalendar,
-                color: "var(--color-theme-2-D1"
+                color: "var(--color-theme-2-D1",
+                type: "date"
             },
             {
                 label: "Last Login",
                 column: "last_sign_in_at",
                 icon: faPowerOff,
-                color: "var(--color-theme-2-D1"
+                color: "var(--color-theme-2-D1",
+                type: "date"
             }
         ]
     },

@@ -26,10 +26,7 @@
   import { Common } from "$lib/components";
   import { fade } from "svelte/transition";
 
-  type DayWithEvents = {
-    date: Date;
-    events: GoogleCalendarEventModel[];
-  };
+  $: console.log($allFilteredEventsOccurringInSelectedMonthYear)
 
   const changeMonth = (increment: number) => {
     const newMonth = $combinedDateObject.selectedMonth + increment;

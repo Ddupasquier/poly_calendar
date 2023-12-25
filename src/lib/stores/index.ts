@@ -29,7 +29,8 @@ export {
     setSelectedYear,
     setAllDatePartsToCurrent,
     combinedDateObject,
-    fetchEvents
+    fetchEvents,
+    emptyEventsOnLogout
 } from "./calendar/calendarStore";
 
 export { eventContainers } from "./calendar/eventContainersStore";

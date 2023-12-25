@@ -1,6 +1,6 @@
 <script lang="ts">
 	import "$lib/styles/index-styles.scss";
-	import { Layout } from "$lib/components";
+	import { Common, Layout } from "$lib/components";
 	import { onMount } from "svelte";
 	import { siteName } from "../lib/constants";
 	// import { initializeAuthListener } from "$lib/services";
@@ -49,6 +49,8 @@
 		</p>
 	</footer> -->
 </div>
+
+<Common.Toast />
 
 <style>
 	.app {

@@ -1,6 +1,10 @@
 <script lang="ts">
     import { Button, Card } from "mysvelte-ui";
-    import { signInWithPassword, signup } from "$lib/services";
+    import {
+        handleOAuthLogin,
+        signInWithPassword,
+        signup,
+    } from "$lib/services";
     import {
         addToast,
         helperTextStore as helperText,
@@ -9,6 +13,8 @@
     import { Common } from "$lib/components";
     import LoginDivider from "./LoginDivider.svelte";
     import { goto } from "$app/navigation";
+    import type { Provider } from "@supabase/supabase-js";
+    import { uppercaseFirstLetter } from "$lib/utils";
 
     let email: string = "";
     let password: string = "";
@@ -45,6 +51,35 @@
 
                 goto(redirect);
             }
+        } catch (error) {
+            // Handle the error appropriately here
+        } finally {
+            isSubmitting = false;
+        }
+    };
+
+    const handleOAuthSignin = async (provider: Provider) => {
+        isSubmitting = true;
+
+        try {
+            await handleOAuthLogin(
+                provider,
+                `${window.location.origin}/profile?tab=profile`,
+            );
+
+            addToast(
+                `Logged in successfully with ${uppercaseFirstLetter(
+                    provider,
+                )}!!!`,
+                {
+                    duration: 5000,
+                    closable: true,
+                },
+            );
+            setHelperText({
+                error: false,
+                message: "Logged in successfully.",
+            });
         } catch (error) {
             // Handle the error appropriately here
         } finally {
@@ -88,13 +123,13 @@
                 >
             </div>
             <LoginDivider />
-            <!-- <div class="oauth-buttons">
+            <div class="oauth-buttons">
                 <Button
-                    on:click={() => handleOAuthLogin("google")}
+                    on:click={() => handleOAuthSignin("google")}
                     background={"var(--color-theme-2-D2)"}
                     style="width: 100%">Google</Button
                 >
-            </div> -->
+            </div>
         </Card.Foot>
     </form>
     {#if !!$helperText.message}

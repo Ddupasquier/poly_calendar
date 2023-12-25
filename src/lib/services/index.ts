@@ -4,7 +4,8 @@ export {
     logout,
     confirmSignup,
     fetchCurrentUser,
-    initializeAuthListener
+    initializeAuthListener,
+    handleOAuthLogin
 } from './auth/authentication-service';
 
 export {
