@@ -29,6 +29,7 @@ import type {
 } from '$lib/models';
 import {
     EventTypesEnum,
+    SupportedProvidersEnum,
     ViewTypesEnum
 } from '$lib/enums';
 import { fetchGoogleCalendarEvents } from '$lib/services';
@@ -41,10 +42,6 @@ interface CombinedDateObject {
     selectedMonth: number;
     selectedYear: number;
 }
-
-// ============================================================
-// Helper functions
-// ============================================================
 
 /**
  * Gets the date time of an event.
@@ -146,6 +143,7 @@ const initialCombinedDateObject = (): CombinedDateObject => {
  * They are used to store the current view, filter type, calendar events, and other values.
 */
 
+export const currentUserProviders: Writable<string[]> = writable([]);
 export const combinedDateObject: Writable<CombinedDateObject> = writable(initialCombinedDateObject());
 export const currentView: Writable<ViewTypesEnum> = writable<ViewTypesEnum>(initialCurrentView());
 export const filterType: Writable<EventTypesModel> = writable<EventTypesModel>(EventTypesEnum.All);
@@ -319,6 +317,14 @@ export const setCalendarEvents = (events: GoogleCalendarEventModel[]): void => c
 export const setNumberOfRecordsShown = (numRecords: number): void => numberOfRecordsShown.set(numRecords);
 
 export const setCombinedDate = (date: string, weekStart: Date, month: number, year: number): void => combinedDateObject.set({ selectedDate: date, selectedWeekStart: weekStart, selectedMonth: month, selectedYear: year });
+
+export const setCurrentUserProviders = (providers: string[]): void => {
+    const supportedProviders = providers.filter(provider =>
+        Object.values(SupportedProvidersEnum).includes(provider as SupportedProvidersEnum)
+    );
+
+    currentUserProviders.set(supportedProviders);
+};
 
 export const setSelectedDate = (date: string): void => combinedDateObject.update(obj => ({ ...obj, selectedDate: date }));
 

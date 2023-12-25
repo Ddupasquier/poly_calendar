@@ -49,7 +49,7 @@
             value: editedValue,
         };
 
-        updateSingleUserProfileField(currentUser, formObject).then(() => {
+        await updateSingleUserProfileField(currentUser, formObject).then(() => {
             value = editedValue;
         });
 

@@ -1,10 +1,8 @@
 import type { UserProfileModel } from "$lib/models";
 import { supabase } from "$lib/supabase";
 import { handleError } from "$lib/utils";
-import type { AuthUser } from "@supabase/supabase-js";
+import type { AuthUser, PostgrestError } from "@supabase/supabase-js";
 import { checkDate } from "$lib/utils";
-// import type { UserProfileModel } from "$lib/models";
-// import { fetchCurrentUser } from "$lib/services";
 
 const upsertUserProfile = async (authUserData: AuthUser): Promise<UserProfileModel | null> => {
     if (!authUserData) {
@@ -53,7 +51,7 @@ const getUserProfile = async (): Promise<UserProfileModel | undefined> => {
     }
 };
 
-export const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
+export const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }): Promise<UserProfileModel | PostgrestError | null> => {
     if (!authUserData) {
         throw new Error("No user data provided.");
     }
@@ -72,7 +70,7 @@ export const updateSingleUserProfileField = async (authUserData: AuthUser | null
 
     if (error) {
         console.error("Supabase error:", error);
-        return null;
+        return error;
     }
 
     return data;
@@ -82,3 +80,70 @@ export {
     upsertUserProfile,
     getUserProfile,
 }
+
+
+
+
+/*
+
+const validationMessages = [
+    {
+        error: "duplicate key value violates unique constraint 'user_username_key'",
+        validationMessage: "Username already exists. Please choose another username."
+    },
+    {
+        error: "violates check constraint 'users_username_check'",
+        validationMessage: "Username cannot contain special characters besides [$, !, _, -]."
+    },
+    {
+        error: "duplicate key value violates unique constraint 'user_email_key'",
+        validationMessage: "Email already exists. Please choose another email."
+    },
+    {
+        error: "duplicate key value violates unique constraint 'user_phone_key'",
+        validationMessage: "Phone number already exists. Please choose another phone number."
+    },
+];
+
+interface CustomError {
+    message: string;
+}
+
+export const updateSingleUserProfileField = async (
+    authUserData: AuthUser | null,
+    formObject: {
+        field: string, value: string | boolean | number | Date
+    }
+): Promise<{
+    data: UserProfileModel | null,
+    error: CustomError | null
+}> => {
+    if (!authUserData) {
+        throw new Error("No user data provided.");
+    }
+
+    if (formObject.field === "birthday") {
+        formObject.value = checkDate(formObject.value as string) as string;
+    }
+
+    const { data, error } = await supabase
+        .from('users')
+        .update({
+            [formObject.field.toLowerCase()]: formObject.value,
+            updated_at: new Date().toISOString(),
+        })
+        .eq('user_uuid', authUserData.id);
+
+    if (error) {
+        const userFriendlyError = validationMessages.find(vm => error.message.includes(vm.error));
+        const messageToShow = userFriendlyError ? userFriendlyError.validationMessage : error.message;
+
+        addToast(messageToShow, { duration: 5000, closable: true, openTilClosed: true });
+        // Use the error object structure you've defined
+        return { data: null, error: { message: messageToShow } };
+    }
+
+    return { data, error: null };
+};
+
+*/

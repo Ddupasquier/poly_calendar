@@ -8,6 +8,7 @@ export {
 } from "./common/reactive-text/reactiveTextStore";
 
 export {
+    currentUserProviders,
     isLoadingEvents,
     isCurrentViewLoading,
     calendarEvents,
@@ -28,6 +29,7 @@ export {
     setSelectedMonth,
     setSelectedYear,
     setAllDatePartsToCurrent,
+    setCurrentUserProviders,
     combinedDateObject,
     fetchEvents,
     emptyEventsOnLogout

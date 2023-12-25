@@ -1,14 +1,18 @@
 import { addToast, emptyEventsOnLogout, setHelperText } from "$lib/stores";
 import { supabase } from "$lib/supabase";
-import { handleError, instanceOfError } from "$lib/utils";
-import type { AuthUser, Provider, Session, User } from "@supabase/supabase-js";
-import { set } from "date-fns";
+import { handleError } from "$lib/utils";
+import type { Provider, Session, User } from "@supabase/supabase-js";
 
-
+// Interfaces
 interface SignupConfirmationReturnData {
     confirmed: boolean;
     error: AuthError;
     data?: VerificationData;
+}
+
+interface PasswordSigninReturnData {
+    email?: string | null;
+    redirect?: string;
 }
 
 interface AuthError {
@@ -21,39 +25,15 @@ interface VerificationData {
     user: User | null;
     session?: Session | null;
 }
-// import {
-//     addToast,
-//     clearAuthUserAndSession,
-//     currentUserPresent,
-//     saveAuthUserAndSession,
-//     setHelperText,
-// } from "$lib/stores";
-// import { upsertUserProfile } from "$lib/services";
-// import type { Provider, Session, User } from "@supabase/supabase-js";
 
-// const processAuthResult = async (result: any): Promise<void> => {
-//     const { user, error, session } = result;
+// ============================================================
+// Helper functions
+// ============================================================
 
-//     if (error) {
-//         handleError(error);
-//         return;
-//     }
-
-//     if (user) {
-//         await handleUserSession(user, session);
-//     }
-// };
-
-// const handleUserSession = async (user: User, session: Session): Promise<void> => {
-//     saveAuthUserAndSession(user, session);
-
-//     await upsertUserProfile(user).catch((error) => {
-//         handleError(error);
-//     });
-
-//     welcomeMessage(user);
-// };
-
+/**
+ * Displays a welcome message to the user after successful sign-in, with a context-specific message.
+ * @param {User} user - The authenticated user's information.
+ */
 const welcomeMessage = (user: User): void => {
     const currentContext = localStorage.getItem('auth_context');
 
@@ -72,8 +52,22 @@ const welcomeMessage = (user: User): void => {
     addToast(message, { duration: 5000, closable: true });
 };
 
-const handleOAuthLogin = async (provider: Provider, redirectTo: string) => {
-    if (!provider) return;
+// ============================================================
+// Authentication methoda
+// ============================================================
+
+/**
+ * Initiates the sign-in process with an OAuth provider and sets appropriate scopes for access.
+ * @param {Provider} provider - The OAuth provider to authenticate with (e.g., 'google').
+ * @param {string} redirectTo - The URL where the user should be redirected after authentication.
+ * @returns {Promise<void>} - A promise that resolves when the OAuth login process is complete.
+ * @throws {Error} If the OAuth login process fails or the provider is not supported.
+ */
+const handleOAuthLogin = async (provider: Provider, redirectTo: string): Promise<void> => {
+    if (!provider) {
+        throw new Error('No OAuth provider provided.');
+    };
+    
     try {
         const options = {
             redirectTo: `${window.location.origin}/profile?tab=profile`,
@@ -97,12 +91,23 @@ const handleOAuthLogin = async (provider: Provider, redirectTo: string) => {
     }
 };
 
+/**
+ * Retrieves the current user from the authentication session.
+ * @returns {Promise<User | null>} A promise resolving to the current user or null if not authenticated.
+ */
 const fetchCurrentUser = async (): Promise<User | null> => {
     const { data: { user } } = await supabase.auth.getUser();
     return user || null;
 }
 
-const signInWithPassword = async (email: string, password: string) => {
+/**
+ * Authenticates a user using their email and password.
+ * @param {string} email - The user's email address.
+ * @param {string} password - The user's password.
+ * @returns {Promise<PasswordSigninReturnData | undefined>} A promise resolving to the sign-in data or undefined if sign-in fails.
+ * @throws {Error} If sign-in fails due to invalid credentials or other reasons.
+ */
+const signInWithPassword = async (email: string, password: string): Promise<PasswordSigninReturnData | undefined> => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (data.user && !error) {
@@ -118,6 +123,13 @@ const signInWithPassword = async (email: string, password: string) => {
     }
 }
 
+/**
+ * Registers a new user with an email and password.
+ * @param {string} email - The new user's email address.
+ * @param {string} password - The new user's password.
+ * @returns {Promise<void>} A promise that resolves when the registration process is complete.
+ * @throws {Error} If registration fails due to issues such as email already in use.
+ */
 const signup = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signUp({ email, password });
@@ -141,6 +153,11 @@ const signup = async (email: string, password: string): Promise<void> => {
     }
 };
 
+/**
+ * Logs the current user out of the application.
+ * @returns {Promise<void>} A promise that resolves when the logout process is complete.
+ * @throws {Error} If logout fails, typically due to network issues or server errors.
+ */
 const logout = async (): Promise<void> => {
     try {
         const { error } = await supabase.auth.signOut();
@@ -162,6 +179,9 @@ const logout = async (): Promise<void> => {
     }
 };
 
+/**
+ * Sets up a listener to handle authentication state changes, such as when a user signs in or out.
+ */
 const initializeAuthListener = (): void => {
     supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
@@ -173,6 +193,12 @@ const initializeAuthListener = (): void => {
     });
 };
 
+/**
+ * Verifies a sign-up token, typically used in email confirmation flows.
+ * @param {string} token - The token to verify the user's email address.
+ * @returns {Promise<VerificationData>} A promise resolving to the user and session data if the token is valid.
+ * @throws {Error} If the token is invalid or verification fails.
+ */
 const verifyOTPSignUpToken = async (token: string): Promise<VerificationData> => {
     if (!token) {
         handleError({
@@ -192,6 +218,12 @@ const verifyOTPSignUpToken = async (token: string): Promise<VerificationData> =>
     };
 };
 
+/**
+ * Confirms a user's sign-up process, often after they have verified their email through a token.
+ * @param {string} token - The token used for confirming the user's signup.
+ * @returns {Promise<SignupConfirmationReturnData>} A promise resolving to the result of the signup confirmation.
+ * @throws {Error} If confirmation fails, such as when the token is invalid or expired.
+ */
 const confirmSignup = async (token: string): Promise<SignupConfirmationReturnData> => {
     try {
         const verificationData = await verifyOTPSignUpToken(token);
