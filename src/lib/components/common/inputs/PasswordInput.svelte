@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import HideShowPassword from "./hideShowPassword.svelte";
+    import { Common } from "$lib/components";
 
     export let background: string = "#fff";
     export let color: string = "#000";
@@ -31,7 +31,7 @@
         on:click={() => (showPassword = !showPassword)}
         class="show-password"
     >
-        <HideShowPassword {showPassword} />
+        <Common.HideShowPassword {showPassword} />
     </button>
 </div>
 
