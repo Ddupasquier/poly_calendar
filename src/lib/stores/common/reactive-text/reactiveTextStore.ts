@@ -3,16 +3,16 @@ import type { Writable } from 'svelte/store';
 
 let helperText: HelperText = {
     error: false,
-    text: null,
+    message: undefined,
 };
 
 export const helperTextStore: Writable<HelperText> = writable(helperText);
 
-export const setHelperText = (error: boolean, text: string | null): void => {
-    helperTextStore.set({ error, text });
+export const setHelperText = ({ error, message }: HelperText): void => {
+    helperTextStore.set({ error, message });
 
     setTimeout(() => {
-        helperTextStore.set({ error: false, text: '' });
+        helperTextStore.set({ error: false, message: '' });
     }, 5000);
 };
 

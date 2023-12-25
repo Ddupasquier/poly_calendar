@@ -1,104 +1,104 @@
-import { supabase } from "$lib/supabase";
-import type { AuthUser, User } from "@supabase/supabase-js";
-import type { UserSettingsModel } from "$lib/models";
-import { browser } from "$app/environment";
-import { fetchCurrentUser } from "$lib/services";
+// import { supabase } from "$lib/supabase";
+// import type { AuthUser, User } from "@supabase/supabase-js";
+// import type { UserSettingsModel } from "$lib/models";
+// import { browser } from "$app/environment";
+// import { fetchCurrentUser } from "$lib/services";
 
-export const upsertUserSettings = async (authUserData: AuthUser | null) => {
-    if (!authUserData) {
-        throw new Error("No user data provided.");
-    }
+// export const upsertUserSettings = async (authUserData: AuthUser | null) => {
+//     if (!authUserData) {
+//         throw new Error("No user data provided.");
+//     }
 
-    const { data, error } = await supabase.from("settings").upsert([
-        {
-            user_uuid: authUserData.id,
-            // Include other settings fields here as needed
-        },
-    ]);
+//     const { data, error } = await supabase.from("settings").upsert([
+//         {
+//             user_uuid: authUserData.id,
+//             // Include other settings fields here as needed
+//         },
+//     ]);
 
-    if (error) {
-        throw error;
-    }
+//     if (error) {
+//         throw error;
+//     }
 
-    return data;
-};
+//     return data;
+// };
 
-export const getUserSettings = async (): Promise<UserSettingsModel | undefined> => {
-    const { data: { user } } = await supabase.auth.getUser();
+// export const getUserSettings = async (): Promise<UserSettingsModel | undefined> => {
+//     const { data: { user } } = await supabase.auth.getUser();
 
-    if (user) {
-        const { data: userSettings, error: settingsError } = await supabase
-            .from('settings')
-            .select('*')
-            .eq('user_uuid', user.id)
-            .single();
+//     if (user) {
+//         const { data: userSettings, error: settingsError } = await supabase
+//             .from('settings')
+//             .select('*')
+//             .eq('user_uuid', user.id)
+//             .single();
 
-        if (settingsError) throw new Error(settingsError.message);
+//         if (settingsError) throw new Error(settingsError.message);
 
-        return userSettings;
-    }
-};
+//         return userSettings;
+//     }
+// };
 
-export interface UpdateResponse<T> {
-    data: T | null;
-    error: Error | null;
-}
+// export interface UpdateResponse<T> {
+//     data: T | null;
+//     error: Error | null;
+// }
 
-export const updateSingleUserSettingsField = async (
-    formObject: {
-        field: keyof UserSettingsModel;
-        value: boolean;
-    }
-): Promise<UpdateResponse<Partial<UserSettingsModel>[]>> => {
-    const user = await fetchCurrentUser();
-    if (!user) {
-        throw new Error('Authentication data not found.');
-    }
+// export const updateSingleUserSettingsField = async (
+//     formObject: {
+//         field: keyof UserSettingsModel;
+//         value: boolean;
+//     }
+// ): Promise<UpdateResponse<Partial<UserSettingsModel>[]>> => {
+//     const user = await fetchCurrentUser();
+//     if (!user) {
+//         throw new Error('Authentication data not found.');
+//     }
 
-    const updatePayload = {
-        [formObject.field]: formObject.value,
-    };
+//     const updatePayload = {
+//         [formObject.field]: formObject.value,
+//     };
 
-    try {
-        const updateResponse = await supabase
-            .from('settings')
-            .update(updatePayload)
-            .eq('user_uuid', user.id)
-            .select(formObject.field);
+//     try {
+//         const updateResponse = await supabase
+//             .from('settings')
+//             .update(updatePayload)
+//             .eq('user_uuid', user.id)
+//             .select(formObject.field);
 
-        if (updateResponse.error) {
-            throw updateResponse.error;
-        }
+//         if (updateResponse.error) {
+//             throw updateResponse.error;
+//         }
 
-        if (!updateResponse.data) {
-            return { data: null, error: new Error('No rows updated') };
-        }
+//         if (!updateResponse.data) {
+//             return { data: null, error: new Error('No rows updated') };
+//         }
 
-        return { data: updateResponse.data, error: null };
-    } catch (error) {
-        console.error("Error while updating settings from updateSingleUserSettingsField:", error);
-        return { data: null, error: error instanceof Error ? error : new Error(String(error)) };
-    }
-};
+//         return { data: updateResponse.data, error: null };
+//     } catch (error) {
+//         console.error("Error while updating settings from updateSingleUserSettingsField:", error);
+//         return { data: null, error: error instanceof Error ? error : new Error(String(error)) };
+//     }
+// };
 
-export const getSingleUserSettingField = async (
-    field: keyof UserSettingsModel
-): Promise<string | number | boolean | null> => {
-    const user = await fetchCurrentUser();
-    if (!user) {
-        throw new Error('Authentication data not found.');
-    }
+// export const getSingleUserSettingField = async (
+//     field: keyof UserSettingsModel
+// ): Promise<string | number | boolean | null> => {
+//     const user = await fetchCurrentUser();
+//     if (!user) {
+//         throw new Error('Authentication data not found.');
+//     }
 
-    const { data, error } = await supabase
-        .from('settings')
-        .select(field)
-        .eq('user_uuid', user.id)
-        .single();
+//     const { data, error } = await supabase
+//         .from('settings')
+//         .select(field)
+//         .eq('user_uuid', user.id)
+//         .single();
 
-    if (error) {
-        throw error;
-    }
+//     if (error) {
+//         throw error;
+//     }
 
-    const settingsData = data as UserSettingsModel;
-    return settingsData[field];
-};
+//     const settingsData = data as UserSettingsModel;
+//     return settingsData[field];
+// };

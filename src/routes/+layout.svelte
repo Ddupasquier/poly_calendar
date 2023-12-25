@@ -3,10 +3,20 @@
 	import { Layout } from "$lib/components";
 	import { onMount } from "svelte";
 	import { siteName } from "../lib/constants";
-	import { initializeAuthListener } from "$lib/services";
+	// import { initializeAuthListener } from "$lib/services";
+	import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+
+	$: currentPath = $page.url.pathname;
+
+	export let data: AppLayoutData;
+	const { status, redirect, props } = data;
 
 	onMount(async () => {
-		initializeAuthListener();
+		console.log("layout", data);
+		if (redirect && currentPath !== "/confirm-signup") goto(redirect);
+
+		// initializeAuthListener();
 	});
 </script>
 

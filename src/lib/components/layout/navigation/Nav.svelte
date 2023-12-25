@@ -1,40 +1,37 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { Layout } from "$lib/components";
-	import { authUser } from "$lib/stores";
-	import { isObjectEmpty } from "$lib/utils";
 
-	$: currentTab = $page.url.pathname;
-	$: authUserPresent = $authUser && !isObjectEmpty($authUser);
+	$: currentPath = $page.url.pathname;
 
 	const tabs = [
 		{
 			name: "Profile",
 			path: "/profile",
 		},
-		{
-			name: "Partners",
-			path: "/partners",
-		},
-		{
-			name: "Calendar",
-			path: "/calendar",
-		},
-		{
-			name: "Albums",
-			path: "/albums",
-		},
+		// {
+		// 	name: "Partners",
+		// 	path: "/partners",
+		// },
+		// {
+		// 	name: "Calendar",
+		// 	path: "/calendar",
+		// },
+		// {
+		// 	name: "Albums",
+		// 	path: "/albums",
+		// },
 	];
 </script>
 
 <header>
 	<nav>
 		{#each tabs as tab}
-			{#if authUserPresent || (!authUserPresent && tab.path === "/profile")}
+			{#if currentPath === tab.path}
 				<Layout.NavTab
 					tabName={tab.name}
 					tabPath={tab.path}
-					{currentTab}
+					{currentPath}
 				/>
 			{/if}
 		{/each}

@@ -1,6 +1,6 @@
-interface HelperText {
+type HelperText = {
     error: boolean;
-    text: string | null;
+    message: string | undefined;
 }
 
 interface ToastAlertOptions {

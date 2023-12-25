@@ -1,44 +1,40 @@
-import { setHelperText } from "$lib/stores";
+import { addToast, setHelperText } from "$lib/stores";
 import type { AuthUser } from "@supabase/supabase-js";
 
-type HSL = {
-    h: number;
-    s: number;
-    l: number;
-};
+type ErrorForHandleFunction = {
+    error: any;
+    helperText?: string;
+    toastText?: string;
+}
 
-const parseHSL = (hslString: string): HSL => {
-    const components = hslString.match(/\d+\.?\d*/g);
-    if (!components || components.length !== 3) {
-        throw new Error('Invalid HSL format');
+const handleError = ({ error, helperText, toastText }: ErrorForHandleFunction): void => {
+    const defaultErrorMessage = "An unknown error occurred.";
+    const errorMessage = error.message || defaultErrorMessage;
+    const rateLimitMatch = errorMessage.match(/after (\d+) seconds/);
+    const rateLimitMessage = rateLimitMatch ? `Please try again in ${rateLimitMatch[1]} seconds.` : errorMessage;
+
+    const displayMessage = (message: string, isToast: boolean) => {
+        if (isToast) {
+            addToast(toastText || message, { duration: 5000, closable: true });
+        } else {
+            setHelperText({
+                error: true,
+                message: helperText || message
+            });
+        }
+    };
+
+    if (toastText || rateLimitMatch) {
+        displayMessage(rateLimitMessage, true);
     }
-    return {
-        h: parseInt(components[0], 10), // Hue is a degree between 0 and 360
-        s: parseInt(components[1], 10), // Saturation is a percentage
-        l: parseInt(components[2], 10)  // Lightness is a percentage
-    };
-};
 
-const clampPercentage = (value: number): number => Math.min(100, Math.max(0, value));
+    if (helperText || rateLimitMatch) {
+        displayMessage(rateLimitMessage, false);
+    }
 
-const adjustLightness = (hsl: HSL, factor: number): HSL => {
-    return {
-        h: hsl.h, // Hue does not change when lightening or darkening
-        s: hsl.s, // Saturation does not change when lightening or darkening
-        l: clampPercentage(hsl.l + factor) // Adjust lightness by the factor, clamping between 0% and 100%
-    };
-};
-
-const lighten = (hslString: string, factor: number): string => {
-    const hsl = parseHSL(hslString);
-    const adjusted = adjustLightness(hsl, factor);
-    return `hsl(${adjusted.h}, ${adjusted.s}%, ${adjusted.l}%)`;
-};
-
-const darken = (hslString: string, factor: number): string => {
-    const hsl = parseHSL(hslString);
-    const adjusted = adjustLightness(hsl, -factor);
-    return `hsl(${adjusted.h}, ${adjusted.s}%, ${adjusted.l}%)`;
+    if (!toastText && !helperText && !rateLimitMatch) {
+        throw new Error(errorMessage);
+    }
 };
 
 const startCountdownWithMessage = (seconds: number, messageTemplate: string): void => {
@@ -48,7 +44,10 @@ const startCountdownWithMessage = (seconds: number, messageTemplate: string): vo
     countdown = setInterval(() => {
         if (remainingSeconds > 0) {
             const message = messageTemplate.replace('{timer}', remainingSeconds.toString());
-            setHelperText(false, message);
+            setHelperText({
+                error: true,
+                message,
+            });
             remainingSeconds--;
         } else {
             stopCountdown(countdown);
@@ -59,7 +58,10 @@ const startCountdownWithMessage = (seconds: number, messageTemplate: string): vo
 const stopCountdown = (countdown: string | number | NodeJS.Timeout | null | undefined): void => {
     clearInterval(countdown as NodeJS.Timeout);
     countdown = null;
-    setHelperText(false, "")
+    setHelperText({
+        error: false,
+        message: '',
+    })
 };
 
 const getConfirmedStatus = (user: AuthUser): string => {
@@ -75,11 +77,10 @@ const uppercaseFirstLetter = (str: string): string => {
 }
 
 export {
-    lighten,
-    darken,
     startCountdownWithMessage,
     stopCountdown,
     getConfirmedStatus,
     isObjectEmpty,
-    uppercaseFirstLetter
+    uppercaseFirstLetter,
+    handleError,
 };

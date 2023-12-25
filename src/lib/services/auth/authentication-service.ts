@@ -1,72 +1,88 @@
+import { addToast, setHelperText } from "$lib/stores";
 import { supabase } from "$lib/supabase";
-import {
-    addToast,
-    clearAuthUserAndSession,
-    currentUserPresent,
-    saveAuthUserAndSession,
-    setHelperText,
-} from "$lib/stores";
-import { upsertUserProfile } from "$lib/services";
-import type { Provider, Session, User } from "@supabase/supabase-js";
+import { handleError, instanceOfError } from "$lib/utils";
+import type { AuthUser, Provider, Session, User } from "@supabase/supabase-js";
+import { set } from "date-fns";
 
-const processAuthResult = async (result: any): Promise<void> => {
-    const { user, error, session } = result;
 
-    if (error) {
-        handleError(error);
-        return;
-    }
+interface SignupConfirmationReturnData {
+    confirmed: boolean;
+    error: AuthError;
+    data?: VerificationData;
+}
 
-    if (user) {
-        await handleUserSession(user, session);
-    }
-};
+interface AuthError {
+    isError: boolean;
+    message?: string;
+    status?: string;
+}
 
-const handleUserSession = async (user: User, session: Session): Promise<void> => {
-    saveAuthUserAndSession(user, session);
+interface VerificationData {
+    user: User | null;
+    session?: Session | null;
+}
+// import {
+//     addToast,
+//     clearAuthUserAndSession,
+//     currentUserPresent,
+//     saveAuthUserAndSession,
+//     setHelperText,
+// } from "$lib/stores";
+// import { upsertUserProfile } from "$lib/services";
+// import type { Provider, Session, User } from "@supabase/supabase-js";
 
-    await upsertUserProfile(user).catch((error) => {
-        handleError(error);
-    });
+// const processAuthResult = async (result: any): Promise<void> => {
+//     const { user, error, session } = result;
 
-    welcomeMessage(user);
-};
+//     if (error) {
+//         handleError(error);
+//         return;
+//     }
 
-const welcomeMessage = (user: User): void => {
-    const currentContext = localStorage.getItem('auth_context');
+//     if (user) {
+//         await handleUserSession(user, session);
+//     }
+// };
 
-    const provider = user.app_metadata?.provider;
-    const username = user.user_metadata?.full_name || user.user_metadata?.username;
-    const isNewUser = user.created_at === user.last_sign_in_at;
-    let message = `Welcome back, ${username || user.email}!`;
+// const handleUserSession = async (user: User, session: Session): Promise<void> => {
+//     saveAuthUserAndSession(user, session);
 
-    if (currentContext === 'google_calendar_integration') {
-        message = `Google Calendar integrated successfully for ${username || user.email}!`;
-        localStorage.removeItem('auth_context');
-    } else if (isNewUser && provider === 'google') {
-        message = `First time ${provider} sign in as ${username || user.email}`;
-    }
+//     await upsertUserProfile(user).catch((error) => {
+//         handleError(error);
+//     });
 
-    addToast(message, { duration: 5000, closable: true });
-};
+//     welcomeMessage(user);
+// };
 
-const handleError = (error: any): void => {
-    const rateLimitMatch = error.message.match(/after (\d+) seconds/);
-    if (rateLimitMatch) {
-        setHelperText(true, `Please try again in ${rateLimitMatch[1]} seconds.`);
-    } else {
-        setHelperText(true, error.message || "An unknown error occurred.");
-    }
-};
+// const welcomeMessage = (user: User): void => {
+//     const currentContext = localStorage.getItem('auth_context');
 
-export const signIn = async (email: string, password: string): Promise<void> => {
-    try {
-        const result = await supabase.auth.signInWithPassword({ email, password });
-        await processAuthResult(result);
-    } catch (error) {
-        handleError(error);
-    }
-};
+//     const provider = user.app_metadata?.provider;
+//     const username = user.user_metadata?.full_name || user.user_metadata?.username;
+//     const isNewUser = user.created_at === user.last_sign_in_at;
+//     let message = `Welcome back, ${username || user.email}!`;
+
+//     if (currentContext === 'google_calendar_integration') {
+//         message = `Google Calendar integrated successfully for ${username || user.email}!`;
+//         localStorage.removeItem('auth_context');
+//     } else if (isNewUser && provider === 'google') {
+//         message = `First time ${provider} sign in as ${username || user.email}`;
+//     }
+
+//     addToast(message, { duration: 5000, closable: true });
+// };
+
+
+
+
+// export const signIn = async (email: string, password: string): Promise<void> => {
+//     try {
+//         const result = await supabase.auth.signInWithPassword({ email, password });
+//         await processAuthResult(result);
+//     } catch (error) {
+//         handleError(error);
+//     }
+// };
 
 export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
     if (!provider) return;
@@ -84,61 +100,145 @@ export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
             provider,
             options,
         });
-        await processAuthResult(result);
     } catch (error) {
-        handleError(error);
+        handleError({
+            error,
+            helperText: "Error logging in with OAuth. Please try again."
+        });
     }
 };
 
-export const checkAndRefreshSession = async () => {
+// export const checkAndRefreshSession = async () => {
 
-};
+// };
 
-export const fetchCurrentUser = async (): Promise<User | null> => {
+const fetchCurrentUser = async (): Promise<User | null> => {
     const { data: { user } } = await supabase.auth.getUser();
+    return user || null;
+}
 
-    if (user) {
-        return user;
+const signInWithPassword = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log("data", data);
+    console.log("error", error);
+
+    if (data.user && !error) {
+
+
+        return {
+            email: data?.user?.email,
+            redirect: "/profile"
+        }
     } else {
-        return null;
+        handleError({
+            error,
+            helperText: "An error occurred while logging in. Please try again."
+        });
     }
 }
 
-export const signUp = async (email: string, password: string): Promise<void> => {
+const signup = async (email: string, password: string): Promise<void> => {
     try {
         const result = await supabase.auth.signUp({ email, password });
         const { error, data } = result;
         if (data.user && !error) {
-            setHelperText(false, "A confirmation email has been sent. Please check your inbox.");
+            setHelperText({
+                error: false,
+                message: "A confirmation email has been sent. Please check your inbox."
+            });
         } else {
-            handleError(error);
+            handleError({
+                error,
+                helperText: "An error occurred while signing up. Please try again."
+            });
         }
     } catch (error) {
-        handleError(error);
+        handleError({
+            error,
+            helperText: "An error occurred while signing up. Please try again."
+        });
     }
 };
 
-export const logout = async (): Promise<void> => {
+const logout = async (): Promise<void> => {
     try {
         const { error } = await supabase.auth.signOut();
         if (error) {
-            handleError(error);
+            handleError({
+                error,
+                helperText: "Error logging out. Please try again."
+            })
         } else {
-            clearAuthUserAndSession();
             addToast("Logged out successfully", { duration: 5000, closable: true });
         }
     } catch (error) {
-        handleError(error);
+        handleError({
+            error,
+            helperText: "Error logging out. Please try again."
+        })
     }
 };
 
-export const initializeAuthListener = (): void => {
+const initializeAuthListener = (): void => {
     supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
-            await handleUserSession(session.user, session);
+            // await handleUserSession(session.user, session);
         } else if (event === "SIGNED_OUT") {
-            clearAuthUserAndSession();
-            setHelperText(true, "You have been signed out.");
+            // clearAuthUserAndSession();
+            // setHelperText(true, "You have been signed out.");
         }
     });
 };
+
+const verifyOTPSignUpToken = async (token: string): Promise<VerificationData> => {
+    if (!token) {
+        handleError({
+            error: new Error("No access token provided."),
+            helperText: "verifySignUpToken: No access token provided.",
+        });
+    }
+
+    const { data } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: "email",
+    });
+
+    return {
+        user: data.user ?? null,
+        session: data.session ?? null,
+    };
+};
+
+const confirmSignup = async (token: string): Promise<SignupConfirmationReturnData> => {
+    try {
+        const verificationData = await verifyOTPSignUpToken(token);
+        return {
+            confirmed: true,
+            error: {
+                isError: false
+            },
+            data: {
+                user: verificationData.user
+            }
+        };
+    } catch (error) {
+        return {
+            confirmed: false,
+            error: {
+                isError: true,
+                message: (error as Error).message || "Error verifying the signup token. Please try again.",
+                status: (error as Error).message || "Error verifying the signup token. Please try again.",
+            },
+        };
+    }
+};
+
+
+export {
+    signInWithPassword,
+    signup,
+    logout,
+    confirmSignup,
+    fetchCurrentUser,
+    initializeAuthListener,
+}

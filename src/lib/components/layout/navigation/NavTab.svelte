@@ -1,23 +1,15 @@
 <script lang="ts">
-    import { authUser } from "$lib/stores";
-
     export let tabName: string;
     export let tabPath: string;
-    export let currentTab: string;
+    export let currentPath: string;
 
-    $: thisTabActive = tabPath === currentTab;
+    $: thisTabActive = tabPath === currentPath;
 </script>
 
 <div aria-current={thisTabActive ? "page" : undefined} class="tab" role="tab">
     <div class="folder-tab" />
     <a href={tabPath}>
-        {#if tabName === "Profile" && $authUser}
-            {tabName}
-        {:else if tabName === "Profile" && !$authUser}
-            Login
-        {:else}
-            {tabName}
-        {/if}
+        {tabName}
     </a>
 </div>
 

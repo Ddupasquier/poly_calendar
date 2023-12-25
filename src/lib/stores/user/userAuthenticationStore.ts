@@ -35,37 +35,37 @@ if (isBrowser) {
     }
 }
 
-export const saveAuthUserAndSession = (user: User, session: Session) => {
-    if (!user || !session) throw new Error("User and session must be provided.");
+// export const saveAuthUserAndSession = (user: User, session: Session) => {
+//     if (!user || !session) throw new Error("User and session must be provided.");
 
-    let formattedUser = { ...user };
+//     let formattedUser = { ...user };
 
-    if (formattedUser.confirmed_at) {
-        formattedUser.confirmed_at = checkDate(formattedUser.confirmed_at);
-    }
-    if (formattedUser.last_sign_in_at) {
-        formattedUser.last_sign_in_at = checkDate(formattedUser.last_sign_in_at);
-    }
+//     if (formattedUser.confirmed_at) {
+//         formattedUser.confirmed_at = checkDate(formattedUser.confirmed_at);
+//     }
+//     if (formattedUser.last_sign_in_at) {
+//         formattedUser.last_sign_in_at = checkDate(formattedUser.last_sign_in_at);
+//     }
 
-    if (isBrowser) {
-        localStorage.setItem('authUser', JSON.stringify(formattedUser));
-        localStorage.setItem('authSession', JSON.stringify(session));
+//     if (isBrowser) {
+//         localStorage.setItem('authUser', JSON.stringify(formattedUser));
+//         localStorage.setItem('authSession', JSON.stringify(session));
 
-        if (user.app_metadata.provider === 'google') {
-            const storedProviderTokenAndRefreshData = {
-                google_provider_token: session.provider_token,
-                google_provider_refresh_token: session.refresh_token,
-                google_provider_expires_at: session.expires_at,
-                google_provider_expires_in: session.expires_in
-            }
+//         if (user.app_metadata.provider === 'google') {
+//             const storedProviderTokenAndRefreshData = {
+//                 google_provider_token: session.provider_token,
+//                 google_provider_refresh_token: session.refresh_token,
+//                 google_provider_expires_at: session.expires_at,
+//                 google_provider_expires_in: session.expires_in
+//             }
 
-            localStorage.setItem('auth_provider_refresh_token_and_timeouts', JSON.stringify(storedProviderTokenAndRefreshData));
-        }
-    }
+//             localStorage.setItem('auth_provider_refresh_token_and_timeouts', JSON.stringify(storedProviderTokenAndRefreshData));
+//         }
+//     }
 
-    authUser.set(formattedUser);
-    authSession.set(session);
-};
+//     authUser.set(formattedUser);
+//     authSession.set(session);
+// };
 
 export const clearAuthUserAndSession = () => {
     if (isBrowser) {

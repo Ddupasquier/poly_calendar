@@ -1,4 +1,8 @@
 <script lang="ts">
+    import { Common, Auth } from "$lib/components";
+</script>
+
+<!-- <script lang="ts">
     import { onMount } from "svelte";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -40,9 +44,11 @@
 
         isLoading = false;
     });
-</script>
+</script> -->
 
-{#if !$currentUserPresent}
+
+
+<!-- {#if !$currentUserPresent}
     {#if isLoading}
         <div class="loader-container">
             <Common.Loader size="large" color="var(--color-theme-2)" />
@@ -103,7 +109,7 @@
             </div>
         {/if}
     </div>
-{/if}
+{/if} -->
 
 <style lang="scss">
     .profile-table {

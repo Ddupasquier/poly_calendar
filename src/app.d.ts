@@ -1,12 +1,32 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
-declare global {
-	namespace App {
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface Platform {}
-	}
+// ============================================================
+// Base Definitions
+// ============================================================
+
+interface BaseLayoutData {
+	status: number;
+	error: boolean;
+	message?: string;
+	redirect?: string;
 }
 
-export { };
+// ============================================================
+// Layout And Page Data
+// ============================================================
+
+interface AppLayoutData extends BaseLayoutData {
+	props: AppLayoutDataProps;
+}
+
+interface ConfirmSignupPageData extends BaseLayoutData {
+	props: ConfirmSignupPageDataProps;
+}
+
+// ============================================================
+// Layout And Page Data Props
+// ============================================================
+
+interface AppLayoutDataProps {
+	currentUser: User | null;
+}
+
+interface ConfirmSignupPageDataProps {}
