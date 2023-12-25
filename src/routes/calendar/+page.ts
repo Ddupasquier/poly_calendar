@@ -1,20 +1,14 @@
-// src/routes/calendar/+page.ts or src/routes/calendar/+page.server.ts
-import type { Load } from '@sveltejs/kit';
-import { setCalendarEvents } from '$lib/stores';
+import type { PageLoad } from './$types';
+import { fetchEvents } from '$lib/stores';
 
+export const load: PageLoad = async () => {
+    const events = await fetchEvents();
 
-// TEMPORARY
-// import { calendarEvents as events } from './seeds';
-
-export const load: Load = async ({ fetch }) => {
-    // Replace this URL with the endpoint you're using to fetch calendar events
-    // const eventsUrl = 'https://api.yourdomain.com/events';
-
-    // // Fetch the initial calendar data from an API
-    // const response = await fetch(eventsUrl);
-    // const events = await response.json();
-
-    // if (events) {
-    //     setCalendarEvents(events);
-    // }
+    return {
+        props: {
+            events
+        }
+    };
 };
+
+

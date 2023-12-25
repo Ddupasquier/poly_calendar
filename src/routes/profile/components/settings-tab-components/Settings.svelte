@@ -5,21 +5,20 @@
         SettingsInfoItem,
         settingsStructure,
     } from "../..";
-
     import type { UserSettingsModel } from "$lib/models";
 
-    export let settingsData: UserSettingsModel | null;
+    export let userSettings: UserSettingsModel;
 
     const getValue = (item: {
         column: keyof UserSettingsModel;
     }): string | number | boolean | null => {
-        if (!settingsData) return false;
-        return settingsData[item.column];
+        if (!userSettings) return false;
+        return userSettings[item.column];
     };
 </script>
 
 <div class="settings-container">
-    {#if settingsData}
+    {#if userSettings}
         {#each settingsStructure as section}
             <SettingsSection header={section.sectionTitle}>
                 {#each section.infoSections as item}

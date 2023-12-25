@@ -21,6 +21,10 @@ interface ConfirmSignupPageData extends BaseLayoutData {
 	props: ConfirmSignupPageDataProps;
 }
 
+interface CalendarPageData extends BaseLayoutData {
+	props: CalendarPageDataProps;
+}
+
 // ============================================================
 // Layout And Page Data Props
 // ============================================================
@@ -29,4 +33,8 @@ interface AppLayoutDataProps {
 	currentUser: User | null;
 }
 
-interface ConfirmSignupPageDataProps {}
+interface ConfirmSignupPageDataProps { }
+
+interface CalendarPageDataProps { 
+	events: GoogleCalendarEvent[];
+}

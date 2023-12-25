@@ -2,8 +2,7 @@ import type { UserProfileModel } from "$lib/models";
 import { supabase } from "$lib/supabase";
 import { handleError } from "$lib/utils";
 import type { AuthUser } from "@supabase/supabase-js";
-
-// import { checkDate } from "$lib/utils";
+import { checkDate } from "$lib/utils";
 // import type { UserProfileModel } from "$lib/models";
 // import { fetchCurrentUser } from "$lib/services";
 
@@ -38,47 +37,48 @@ const upsertUserProfile = async (authUserData: AuthUser): Promise<UserProfileMod
     }
 }
 
-// export const getUserProfile = async (): Promise<UserProfileModel | undefined> => {
-//     const { data: { user } } = await supabase.auth.getUser();
+const getUserProfile = async (): Promise<UserProfileModel | undefined> => {
+    const { data: { user } } = await supabase.auth.getUser();
 
-//     if (user) {
-//         const { data: userProfile, error: profileError } = await supabase
-//             .from('users')
-//             .select('*')
-//             .eq('user_uuid', user.id)
-//             .single();
+    if (user) {
+        const { data: userProfile, error: profileError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('user_uuid', user.id)
+            .single();
 
-//         if (profileError) throw new Error(profileError.message);
+        if (profileError) throw new Error(profileError.message);
 
-//         return userProfile
-//     }
-// };
+        return userProfile
+    }
+};
 
-// export const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
-//     if (!authUserData) {
-//         throw new Error("No user data provided.");
-//     }
+export const updateSingleUserProfileField = async (authUserData: AuthUser | null, formObject: { field: string, value: string | boolean | number | Date }) => {
+    if (!authUserData) {
+        throw new Error("No user data provided.");
+    }
 
-//     if (formObject.field === "birthday") {
-//         formObject.value = checkDate(formObject.value as string) as string;
-//     }
+    if (formObject.field === "birthday") {
+        formObject.value = checkDate(formObject.value as string) as string;
+    }
 
-//     const { data, error } = await supabase
-//         .from('users')
-//         .update({
-//             [formObject.field.toLowerCase()]: formObject.value,
-//             updated_at: new Date().toISOString(),
-//         })
-//         .eq('user_uuid', authUserData.id);
+    const { data, error } = await supabase
+        .from('users')
+        .update({
+            [formObject.field.toLowerCase()]: formObject.value,
+            updated_at: new Date().toISOString(),
+        })
+        .eq('user_uuid', authUserData.id);
 
-//     if (error) {
-//         console.error("Supabase error:", error);
-//         return null;
-//     }
+    if (error) {
+        console.error("Supabase error:", error);
+        return null;
+    }
 
-//     return data;
-// };
+    return data;
+};
 
 export {
     upsertUserProfile,
+    getUserProfile,
 }

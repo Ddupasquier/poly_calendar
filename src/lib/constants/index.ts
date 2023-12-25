@@ -1,5 +1,3 @@
-export { colors } from './common/palette';
-
 export {
     siteName,
     siteUrl,

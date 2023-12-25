@@ -14,6 +14,7 @@ export {
 
 export {
     instanceOfError,
+    userEmailVerified
 } from "./common/auth-utils";
 
 export {
@@ -23,7 +24,7 @@ export {
     eventDayIndicator
 } from "./common/date-time-utils";
 
-// export { eventFallsOnDay } from "./calendar/calendar-event-utils";
-// export { getEventColor, attendeeActionEventStyle } from "./calendar/calendar-event-style-utils";
+export { eventFallsOnDay } from "./calendar/calendar-event-utils";
+export { getEventColor, attendeeActionEventStyle } from "./calendar/calendar-event-style-utils";
 
-// export { } from "./common/form-utils";
+export { } from "./common/form-utils";

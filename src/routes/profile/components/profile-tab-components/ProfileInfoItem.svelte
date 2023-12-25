@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Common } from "$lib/components";
-    import { authUser } from "$lib/stores";
     import { updateSingleUserProfileField } from "$lib/services";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import {
@@ -12,6 +11,8 @@
     import type { AuthUser } from "@supabase/supabase-js";
     import type { UserProfileModel } from "$lib/models";
 
+    export let currentUser: AuthUser;
+    
     export let icon: IconDefinition;
     export let label: string;
     export let column: keyof UserProfileModel | keyof AuthUser | string;
@@ -48,7 +49,7 @@
             value: editedValue,
         };
 
-        updateSingleUserProfileField($authUser, formObject).then(() => {
+        updateSingleUserProfileField(currentUser, formObject).then(() => {
             value = editedValue;
         });
 

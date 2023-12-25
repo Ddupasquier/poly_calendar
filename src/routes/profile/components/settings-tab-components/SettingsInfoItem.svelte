@@ -1,14 +1,11 @@
 <script lang="ts">
     import { Toggle } from "mysvelte-ui";
-
     import {
-        integrateGoogleCalendar,
-        disableGoogleCalendarIntegration,
         updateSingleUserSettingsField,
         getSingleUserSettingField,
+        disableGoogleCalendarIntegration,
+        integrateGoogleCalendar,
     } from "$lib/services";
-    import { authUser } from "$lib/stores";
-
     import { faCheck } from "@fortawesome/free-solid-svg-icons";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -18,7 +15,7 @@
     export let icon: IconDefinition | string;
     export let label: string;
     export let column: string | null = null;
-    export let value: boolean;
+    export let value: string | number | boolean | null;
     export let color: string;
     export let editable: boolean;
 
@@ -84,7 +81,6 @@
         const isIntegrated = await getSingleUserSettingField(
             "google_calendar_integration",
         );
-
         if (isIntegrated) {
             if (
                 confirm(

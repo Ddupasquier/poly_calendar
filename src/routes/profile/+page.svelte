@@ -1,63 +1,46 @@
 <script lang="ts">
-    import { Common, Auth } from "$lib/components";
-</script>
-
-<!-- <script lang="ts">
-    import { onMount } from "svelte";
-    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
-    import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
-    import { Button } from "mysvelte-ui";
-    import { Profile, Settings } from ".";
+    import { navigationButtons } from "$lib/constants";
     import { Common, Auth } from "$lib/components";
     import { logout } from "$lib/services";
-    import { navigationButtons, colors } from "$lib/constants";
-    import {
-        currentUserPresent,
-        currentUserPresentAndVerified,
-    } from "$lib/stores";
-    import { inRotateScale } from "$lib/transitions/in-rotate-scale";
+    import { Button } from "mysvelte-ui";
+    import { Profile, Settings } from ".";
     import type { UserProfileModel, UserSettingsModel } from "$lib/models";
+    import type { AuthUser } from "@supabase/supabase-js";
+    import { userEmailVerified } from "$lib/utils";
+    import { inRotateScale } from "$lib/transitions/in-rotate-scale";
+    import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
+    import { faHeartCircleCheck } from "@fortawesome/free-solid-svg-icons";
 
-    interface ProfilePageData {
+    type ProfilePageData = {
+        status: number;
+        error: string | null;
+        props: {
+            currentUser: AuthUser;
+        } | null;
         userProfile: UserProfileModel | null;
         userSettings: UserSettingsModel | null;
-    }
+    };
 
     export let data: ProfilePageData;
+    const { status, error, props, userProfile, userSettings } = data;
 
-    $: userProfile = data.userProfile;
-    $: userSettings = data.userSettings;
+    $: currentUser = props?.currentUser;
+    $: isLoading = !currentUser || !userProfile || !userSettings;
+    $: verified = currentUser ? userEmailVerified(currentUser) : false;
 
-    let isLoading: boolean = true;
     let selectedOption = "profile";
 
     const buttonStyles: string = `
-        background: ${colors["--color-theme-1"]};
-        color: ${colors["--color-text-white"]};
+        background: var(--color-theme-1);
+        color: var(--color-text-white);
         width: 100%;
     `;
+</script>
 
-    onMount(async () => {
-        if (userProfile) {
-            selectedOption = "profile";
-        }
-
-        isLoading = false;
-    });
-</script> -->
-
-
-
-<!-- {#if !$currentUserPresent}
-    {#if isLoading}
-        <div class="loader-container">
-            <Common.Loader size="large" color="var(--color-theme-2)" />
-        </div>
-    {:else}
-        <div class="container">
-            <Auth.AuthLoginSignup />
-        </div>
-    {/if}
+{#if !currentUser || isLoading}
+    <div class="loader-container">
+        <Common.Loader size="large" color="var(--color-theme-2)" />
+    </div>
 {:else}
     <div class="container">
         <div class="profile-table">
@@ -87,16 +70,16 @@
                     {#each navigationButtons as button}
                         {#if selectedOption === button.label.toLowerCase()}
                             {#if button.label.toLowerCase() === "profile"}
-                                <Profile profileData={userProfile} />
+                                <Profile {userProfile} {currentUser} />
                             {:else if button.label.toLowerCase() === "settings"}
-                                <Settings settingsData={userSettings} />
+                                <Settings {userSettings} />
                             {/if}
                         {/if}
                     {/each}
                 </div>
             {/if}
         </div>
-        {#if $currentUserPresentAndVerified && isLoading === false}
+        {#if verified && isLoading === false}
             <div
                 class="verified"
                 title="Verified"
@@ -109,7 +92,7 @@
             </div>
         {/if}
     </div>
-{/if} -->
+{/if}
 
 <style lang="scss">
     .profile-table {

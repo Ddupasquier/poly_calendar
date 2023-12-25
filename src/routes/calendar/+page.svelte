@@ -1,11 +1,8 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
-    import { fetchEvents } from "$lib/stores";
     import { Calendar } from ".";
 
-    $: if (browser) {
-        fetchEvents();
-    }
+    export let data: CalendarPageData;
+    $: console.log(data?.props?.events)
 </script>
 
 <div class="calendar-container">

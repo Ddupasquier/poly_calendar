@@ -54,37 +54,25 @@ interface VerificationData {
 //     welcomeMessage(user);
 // };
 
-// const welcomeMessage = (user: User): void => {
-//     const currentContext = localStorage.getItem('auth_context');
+const welcomeMessage = (user: User): void => {
+    const currentContext = localStorage.getItem('auth_context');
 
-//     const provider = user.app_metadata?.provider;
-//     const username = user.user_metadata?.full_name || user.user_metadata?.username;
-//     const isNewUser = user.created_at === user.last_sign_in_at;
-//     let message = `Welcome back, ${username || user.email}!`;
+    const provider = user.app_metadata?.provider;
+    const username = user.user_metadata?.full_name || user.user_metadata?.username;
+    const isNewUser = user.created_at === user.last_sign_in_at;
+    let message = `Welcome back, ${username || user.email}!`;
 
-//     if (currentContext === 'google_calendar_integration') {
-//         message = `Google Calendar integrated successfully for ${username || user.email}!`;
-//         localStorage.removeItem('auth_context');
-//     } else if (isNewUser && provider === 'google') {
-//         message = `First time ${provider} sign in as ${username || user.email}`;
-//     }
+    if (currentContext === 'google_calendar_integration') {
+        message = `Google Calendar integrated successfully for ${username || user.email}!`;
+        localStorage.removeItem('auth_context');
+    } else if (isNewUser && provider === 'google') {
+        message = `First time ${provider} sign in as ${username || user.email}`;
+    }
 
-//     addToast(message, { duration: 5000, closable: true });
-// };
+    addToast(message, { duration: 5000, closable: true });
+};
 
-
-
-
-// export const signIn = async (email: string, password: string): Promise<void> => {
-//     try {
-//         const result = await supabase.auth.signInWithPassword({ email, password });
-//         await processAuthResult(result);
-//     } catch (error) {
-//         handleError(error);
-//     }
-// };
-
-export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
+const handleOAuthLogin = async (provider: Provider): Promise<void> => {
     if (!provider) return;
     try {
         const options = {
@@ -99,7 +87,11 @@ export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
         const result = await supabase.auth.signInWithOAuth({
             provider,
             options,
-        });
+        })
+
+        // const user = fetchCurrentUser();
+        // welcomeMessage(user);
+
     } catch (error) {
         handleError({
             error,
@@ -107,10 +99,6 @@ export const handleOAuthLogin = async (provider: Provider): Promise<void> => {
         });
     }
 };
-
-// export const checkAndRefreshSession = async () => {
-
-// };
 
 const fetchCurrentUser = async (): Promise<User | null> => {
     const { data: { user } } = await supabase.auth.getUser();

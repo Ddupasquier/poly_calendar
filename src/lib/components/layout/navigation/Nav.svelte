@@ -9,25 +9,25 @@
 			name: "Profile",
 			path: "/profile",
 		},
-		// {
-		// 	name: "Partners",
-		// 	path: "/partners",
-		// },
-		// {
-		// 	name: "Calendar",
-		// 	path: "/calendar",
-		// },
-		// {
-		// 	name: "Albums",
-		// 	path: "/albums",
-		// },
+		{
+			name: "Partners",
+			path: "/partners",
+		},
+		{
+			name: "Calendar",
+			path: "/calendar",
+		},
+		{
+			name: "Albums",
+			path: "/albums",
+		},
 	];
 </script>
 
 <header>
 	<nav>
 		{#each tabs as tab}
-			{#if currentPath === tab.path}
+			{#if currentPath !== "/login" && currentPath !== "/confirm-signup"}
 				<Layout.NavTab
 					tabName={tab.name}
 					tabPath={tab.path}

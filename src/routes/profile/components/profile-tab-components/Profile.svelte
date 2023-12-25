@@ -3,25 +3,24 @@
     import { Common } from "$lib/components";
     import { ProfileSection, ProfileInfoItem, profileStructure } from "../..";
     import type { UserProfileModel } from "$lib/models";
-    import {
-        authUser,
-        currentUserPresent,
+    // import {
+    //     authUser,
+    //     currentUserPresent,
+    //     currentUserPresentAndVerified,
+    // } from "$lib/stores";
+    import { checkDate, formatDate, userEmailVerified } from "$lib/utils";
 
-        currentUserPresentAndVerified
-
-    } from "$lib/stores";
-    import { checkDate, formatDate } from "$lib/utils";
-
-    export let profileData: UserProfileModel | null;
+    export let userProfile: UserProfileModel;
+    export let currentUser: AuthUser;
 
     const getValue = (item: {
         column: keyof UserProfileModel | keyof AuthUser | string;
         type?: string;
         label?: string;
     }): string | number | boolean | undefined => {
-        if (profileData && item.column in profileData) {
+        if (userProfile && item.column in userProfile) {
             const profileValue =
-                profileData[item.column as keyof UserProfileModel];
+                userProfile[item.column as keyof UserProfileModel];
             if (item.type === "date") {
                 const dateString = profileValue as string;
                 const formattedDate = checkDate(dateString)
@@ -37,8 +36,8 @@
             }
         }
 
-        if ($currentUserPresent && item.column in $authUser) {
-            const authUserValue = $authUser[item.column as keyof AuthUser];
+        if (userProfile && item.column in currentUser) {
+            const authUserValue = currentUser[item.column as keyof AuthUser];
             if (item.type === "date") {
                 const dateString = authUserValue as string;
                 const formattedDate = checkDate(dateString)
@@ -47,7 +46,7 @@
                 return formattedDate;
             } else if (item.label === "Account Status") {
                 const accountStatus = `${
-                    $currentUserPresentAndVerified ? "Secure" : "Not Secure"
+                    userEmailVerified(currentUser) ? "Secure" : "Not Secure"
                 }`;
                 return accountStatus;
             } else if (
@@ -67,7 +66,7 @@
     }): string | undefined => {
         if (item.column === "email") {
             const emailStatus = `${
-                $currentUserPresentAndVerified ? "(Verified)" : "(Unverified)"
+                userEmailVerified(currentUser) ? "(Verified)" : "(Unverified)"
             }`;
             return emailStatus;
         } else {
@@ -77,7 +76,7 @@
 </script>
 
 <div class="profile-container">
-    {#if profileData}
+    {#if userProfile}
         {#each profileStructure as section}
             <ProfileSection header={section.sectionTitle}>
                 {#each section.infoSections as item}
@@ -90,6 +89,7 @@
                         color={item.color}
                         type={item.type}
                         editable={item.editable}
+                        {currentUser}
                     />
                 {/each}
             </ProfileSection>
