@@ -20,17 +20,17 @@
 
 <svelte:head>
 	<title>{siteName}</title>
-	<meta name="description" content="A SvelteKit app" />
+	<meta name="description" content="Yada yada, calendar sharing app" />
 	<meta name="og:title" content={siteName} />
 	<!-- <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@sveltejs" />
     <meta name="twitter:title" content="{siteName}" />
     <meta name="twitter:description" content="A SvelteKit app" />
     <meta name="twitter:image" content="/twitter-image.png" /> -->
-	<meta name="og:description" content="A SvelteKit app" />
+	<!-- <meta name="og:description" content="A SvelteKit app" />
 	<meta name="og:image" content="/og-image.png" />
 	<meta name="og:url" content="https://svelte.dev" />
-	<link rel="icon" type="image/png" href="/favicon.png" />
+	<link rel="icon" type="image/png" href="/favicon.png" /> -->
 </svelte:head>
 
 <div class="app">
