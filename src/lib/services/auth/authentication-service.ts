@@ -75,7 +75,7 @@ const handleOAuthLogin = async (provider: Provider, redirectTo: string): Promise
         };
 
         if (provider === 'google') {
-            options.scopes = 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events';
+            options.scopes = 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly';
         }
 
         const result = await supabase.auth.signInWithOAuth({

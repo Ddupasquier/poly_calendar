@@ -49,8 +49,8 @@
         eventStyle = getEventColor(event);
     } else {
         eventStyle = `
-            --primary: var(--color-theme-2-L1);
-            --secondary: var(--color-theme-2-L3);
+            --background: var(--color-theme-2-L1);
+            --background-light: var(--color-theme-2-L3);
         `;
     }
 </script>
@@ -73,8 +73,8 @@
     .event {
         padding: 0.5rem;
         margin: 0.5rem 0;
-        background-color: var(--secondary);
-        border: 1px solid var(--primary);
+        background-color: var(--background-light, var(--color-theme-2-L3));
+        border: 1px solid var(--background, var(--color-theme-2-L1));
         border-radius: 4px;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         transition: background-color 0.5s ease-in-out;
@@ -121,7 +121,7 @@
 
     .event.ended {
         background-color: var(--color-bg-2);
-        border-color: var(--secondary);
+        border-color: var(--background);
         color: var(--color-text-light);
         text-decoration: line-through;
     }

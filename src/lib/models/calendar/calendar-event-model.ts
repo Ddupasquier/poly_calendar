@@ -1,8 +1,10 @@
+import type { EventTypesModel } from "$lib/models";
+
 // Define a base interface for common properties
 export interface BaseEventModel {
     id: string;
     summary: string;
-    created: string; // Google uses string for dates
+    created: string;
     updated: string;
     description?: string;
     location?: string;
@@ -58,6 +60,3 @@ export interface Attendee {
     comment?: string;
     additionalGuests?: number;
 }
-
-// Define EventTypesModel based on your application's requirements
-export type EventTypesModel = 'meeting' | 'appointment' | 'birthday' | 'date' | 'default';

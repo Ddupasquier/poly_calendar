@@ -59,8 +59,9 @@
         flex-direction: column;
         gap: 0.25rem;
         padding: 0.5rem;
-        background-color: var(--primary, var(--color-theme-2-L3));
-        border: 1px solid var(--primary, var(--color-theme-2-L2));
+        background-color: var(--background, var(--color-theme-2-L3));
+        border: 1px solid var(--background, var(--color-theme-2-L2));
+        color: var(--foreground, var(--color-text-dark));
         border-radius: 4px;
         box-shadow: inset 0 2px 4px hsl(0, 0%, 0%, 0.051);
         transition:
@@ -77,12 +78,12 @@
         }
 
         &:hover {
-            background-color: var(--secondary, var(--color-theme-2-L4));
+            background-color: var(--background-light, var(--color-theme-2-L4));
             z-index: 2;
         }
 
         &.active {
-            background-color: var(--secondary, var(--color-theme-2-L4));
+            background-color: var(--background-light, var(--color-theme-2-L4));
             transform: scale(1.1);
             z-index: 2;
         }

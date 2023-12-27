@@ -12,6 +12,6 @@ interface ToastAlertOptions {
 
 interface ToastAlert {
     id: number;
-    message: string;
+    message: string
     options: ToastAlertOptions;
 }

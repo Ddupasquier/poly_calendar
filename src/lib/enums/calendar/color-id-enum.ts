@@ -1,4 +1,4 @@
-export enum ColorIdEnum {
+export enum EventColorIdEnum {
     Lavender = '1',
     Sage = '2',
     Grape = '3',
@@ -9,9 +9,5 @@ export enum ColorIdEnum {
     Graphite = '8',
     Blueberry = '9',
     Basil = '10',
-    Tomato = '11',
-    Mandarin = '12',
-    Blueberry2 = '13',
-    Sage2 = '14',
-    Custom = '15'
+    Tomato = '11'
 }

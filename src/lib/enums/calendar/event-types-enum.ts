@@ -4,5 +4,7 @@ export enum EventTypesEnum {
     Appointment = 'appointment',
     Birthday = 'birthday',
     Date = 'date',
-    Default = 'default'
+    Holiday = 'holiday',
+    Default = 'default',
+    Google = 'google'
 }

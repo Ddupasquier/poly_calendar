@@ -29,12 +29,15 @@
         on:change={() => setFilterType($filterType)}
       >
         {#each eventTypes as eventType (eventType)}
-          <option value={eventType}>{capitalizeFirstLetter(eventType)}</option>
+          {#if eventType !== "default"}
+            <option value={eventType}>{capitalizeFirstLetter(eventType)}</option
+            >
+          {/if}
         {/each}
       </select>
     </div>
 
-    {#if $page.url.searchParams.get("view") === "agenda"}
+    {#if $page.url.search === "?view=agenda"}
       <div class="filter-item">
         <label for="number-of-records">Number:</label>
         <select
@@ -63,13 +66,15 @@
         {capitalizeFirstLetter(viewType)}
       </Button>
     {/each}
-    <Button
-      background={"var(--color-theme-1)"}
-      size="small"
-      on:click={setAllDatePartsToCurrent}
-    >
-      Now
-    </Button>
+    {#if $page.url.search !== "?view=agenda"}
+      <Button
+        background={"var(--color-theme-1)"}
+        size="small"
+        on:click={setAllDatePartsToCurrent}
+      >
+        Now
+      </Button>
+    {/if}
   </div>
 </div>
 

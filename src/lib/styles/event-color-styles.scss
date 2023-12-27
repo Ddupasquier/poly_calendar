@@ -1,63 +1,158 @@
 :root {
-    // EVENT BG COLORS
-    $base-lavender: #E6E6FA;
-    --lavender: #{$base-lavender};
-    --lavender-light: #{lighten($base-lavender, 10%)};
+    // ============================================================
+    // Event bg colors
+    // ============================================================
 
-    $base-sage: #87A96B;
-    --sage: #{$base-sage};
-    --sage-light: #{lighten($base-sage, 10%)};
+    // Lavender = '1'
+    $base-lavender-background: #a4bdfc;
+    --lavender-background: #{$base-lavender-background};
+    --lavender-background-light: #{lighten($base-lavender-background, 10%)};
 
-    $base-grape: #a695b6;
-    --grape: #{$base-grape};
-    --grape-light: #{lighten($base-grape, 10%)};
+    $base-lavender-foreground: #1d1d1d;
+    --lavender-foreground: #{$base-lavender-foreground};
+    --lavender-foreground-light: #{lighten($base-lavender-foreground, 10%)};
 
-    $base-flamingo: #FC8EAC;
-    --flamingo: #{$base-flamingo};
-    --flamingo-light: #{lighten($base-flamingo, 10%)};
+    // Sage = '2'
+    $base-sage-background: #7ae7bf;
+    --sage-background: #{$base-sage-background};
+    --sage-background-light: #{lighten($base-sage-background, 10%)};
 
-    $base-banana: #FFE135;
-    --banana: #{$base-banana};
-    --banana-light: #{lighten($base-banana, 10%)};
+    $base-sage-foreground: #1d1d1d;
+    --sage-foreground: #{$base-sage-foreground};
+    --sage-foreground-light: #{lighten($base-sage-foreground, 10%)};
 
-    $base-tangerine: #F28500;
-    --tangerine: #{$base-tangerine};
-    --tangerine-light: #{lighten($base-tangerine, 10%)};
+    // Grape = '3'
+    $base-grape-background: #dbadff;
+    --grape-background: #{$base-grape-background};
+    --grape-background-light: #{lighten($base-grape-background, 10%)};
 
-    $base-peacock: #333399;
-    --peacock: #{$base-peacock};
-    --peacock-light: #{lighten($base-peacock, 10%)};
+    $base-grape-foreground: #1d1d1d;
+    --grape-foreground: #{$base-grape-foreground};
+    --grape-foreground-light: #{lighten($base-grape-foreground, 10%)};
 
-    $base-graphite: #474A51;
-    --graphite: #{$base-graphite};
-    --graphite-light: #{lighten($base-graphite, 10%)};
+    // Flamingo = '4'
+    $base-flamingo-background: #ff887c;
+    --flamingo-background: #{$base-flamingo-background};
+    --flamingo-background-light: #{lighten($base-flamingo-background, 10%)};
 
-    $base-blueberry: #4F86F7;
-    --blueberry: #{$base-blueberry};
-    --blueberry-light: #{lighten($base-blueberry, 10%)};
+    $base-flamingo-foreground: #1d1d1d;
+    --flamingo-foreground: #{$base-flamingo-foreground};
+    --flamingo-foreground-light: #{lighten($base-flamingo-foreground, 10%)};
 
-    $base-basil: #719f91;
-    --basil: #{$base-basil};
-    --basil-light: #{lighten($base-basil, 10%)};
+    // Banana = '5'
+    $base-banana-background: #fbd75b;
+    --banana-background: #{$base-banana-background};
+    --banana-background-light: #{lighten($base-banana-background, 10%)};
 
-    $base-tomato: #FF6347;
-    --tomato: #{$base-tomato};
-    --tomato-light: #{lighten($base-tomato, 10%)};
+    $base-banana-foreground: #1d1d1d;
+    --banana-foreground: #{$base-banana-foreground};
+    --banana-foreground-light: #{lighten($base-banana-foreground, 10%)};
 
-    $base-mandarin: #F37A48;
-    --mandarin: #{$base-mandarin};
-    --mandarin-light: #{lighten($base-mandarin, 10%)};
+    // Tangerine = '6'
+    $base-tangerine-background: #ffb878;
+    --tangerine-background: #{$base-tangerine-background};
+    --tangerine-background-light: #{lighten($base-tangerine-background, 10%)};
 
-    $base-blueberry2: #536895;
-    --blueberry2: #{$base-blueberry2};
-    --blueberry2-light: #{lighten($base-blueberry2, 10%)};
+    $base-tangerine-foreground: #1d1d1d;
+    --tangerine-foreground: #{$base-tangerine-foreground};
+    --tangerine-foreground-light: #{lighten($base-tangerine-foreground, 10%)};
 
-    $base-sage2: #688f63;
-    --sage2: #{$base-sage2};
-    --sage2-light: #{lighten($base-sage2, 10%)};
+    // Peacock = '7'
+    $base-peacock-background: #46d6db;
+    --peacock-background: #{$base-peacock-background};
+    --peacock-background-light: #{lighten($base-peacock-background, 10%)};
 
+    $base-peacock-foreground: #1d1d1d;
+    --peacock-foreground: #{$base-peacock-foreground};
+    --peacock-foreground-light: #{lighten($base-peacock-foreground, 10%)};
 
-    // ATTENDEE ACTION TYPE COLORS
+    // Graphite = '8'
+    $base-graphite-background: #e1e1e1;
+    --graphite-background: #{$base-graphite-background};
+    --graphite-background-light: #{lighten($base-graphite-background, 10%)};
+
+    $base-graphite-foreground: #1d1d1d;
+    --graphite-foreground: #{$base-graphite-foreground};
+    --graphite-foreground-light: #{lighten($base-graphite-foreground, 10%)};
+
+    // Blueberry = '9'
+    $base-blueberry-background: #5484ed;
+    --blueberry-background: #{$base-blueberry-background};
+    --blueberry-background-light: #{lighten($base-blueberry-background, 10%)};
+
+    $base-blueberry-foreground: #1d1d1d;
+    --blueberry-foreground: #{$base-blueberry-foreground};
+    --blueberry-foreground-light: #{lighten($base-blueberry-foreground, 10%)};
+
+    // Basil = '10'
+    $base-basil-background: #51b749;
+    --basil-background: #{$base-basil-background};
+    --basil-background-light: #{lighten($base-basil-background, 10%)};
+
+    $base-basil-foreground: #1d1d1d;
+    --basil-foreground: #{$base-basil-foreground};
+    --basil-foreground-light: #{lighten($base-basil-foreground, 10%)};
+
+    // Tomato = '11'
+    $base-tomato-background: #dc2127;
+    --tomato-background: #{$base-tomato-background};
+    --tomato-background-light: #{lighten($base-tomato-background, 10%)};
+
+    $base-tomato-foreground: #1d1d1d;
+    --tomato-foreground: #{$base-tomato-foreground};
+    --tomato-foreground-light: #{lighten($base-tomato-foreground, 10%)};
+
+    // $base-blue-moon: #9fc6e7; // BlueMoon
+    // --blue-moon: #{$base-blue-moon};
+    // --blue-moon-light: #{lighten($base-blue-moon, 10%)};
+
+    // $base-hot-pink: #cd74e6; // HotPink
+    // --hot-pink: #{$base-hot-pink};
+    // --hot-pink-light: #{lighten($base-hot-pink, 10%)};
+
+    // $base-magenta: #f691b2; // Magenta
+    // --magenta: #{$base-magenta};
+    // --magenta-light: #{lighten($base-magenta, 10%)};
+
+    // $base-mauve: #b99aff; // Mauve
+    // --mauve: #{$base-mauve};
+    // --mauve-light: #{lighten($base-mauve, 10%)};
+
+    // $base-night-sky: #4986e7; // NightSky
+    // --night-sky: #{$base-night-sky};
+    // --night-sky-light: #{lighten($base-night-sky, 10%)};
+
+    // $base-orchid: #a47ae2; // Orchid
+    // --orchid: #{$base-orchid};
+    // --orchid-light: #{lighten($base-orchid, 10%)};
+
+    // $base-purple: #a47ae2; // Purple
+    // --purple: #{$base-purple};
+    // --purple-light: #{lighten($base-purple, 10%)};
+
+    // $base-red: #d06b64; // Red
+    // --red: #{$base-red};
+    // --red-light: #{lighten($base-red, 10%)};
+
+    // $base-shadow: #cca6ac; // Shadow
+    // --shadow: #{$base-shadow};
+    // --shadow-light: #{lighten($base-shadow, 10%)};
+
+    // $base-spruce: #688f63; // Spruce
+    // --spruce: #{$base-spruce};
+    // --spruce-light: #{lighten($base-spruce, 10%)};
+
+    // $base-sunset: #9a9cff; // Sunset
+    // --sunset: #{$base-sunset};
+    // --sunset-light: #{lighten($base-sunset, 10%)};
+
+    // $base-taupe: #c2c2c2; // Taupe
+    // --taupe: #{$base-taupe};
+    // --taupe-light: #{lighten($base-taupe, 10%)};
+
+    // ============================================================
+    //  Attendee status colors
+    // ============================================================
     $base-accepted: #8aa476;
     --accepted: #{$base-accepted};
     --accepted-light: #{lighten($base-accepted, 10%)};

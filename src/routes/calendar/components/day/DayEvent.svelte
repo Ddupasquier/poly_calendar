@@ -41,8 +41,8 @@
         eventStyle = getEventColor(event);
     } else {
         eventStyle = `
-            --primary: var(--color-theme-2-L3);
-            --secondary: var(--color-bg-2);
+            --background: var(--color-theme-2-L3);
+            --background-light: var(--color-bg-2);
         `;
     }
 </script>
@@ -133,14 +133,15 @@
 <style lang="scss">
     .event {
         padding: 0.5rem;
-        background-color: var(--secondary);
+        background-color: var(--background-light, var(--color-bg-2));
+        box-shadow: inset 10px 0 0 -10px var(--background, var(--color-theme-2-L3));
+        color: var(--foreground, var(--color-text-dark));
         border-radius: 4px;
-        box-shadow: inset 10px 0 0 -10px var(--primary);
         transition: box-shadow 1s ease-in;
         cursor: pointer;
 
         &:hover {
-            box-shadow: inset 15px 0 0 -10px var(--primary);
+            box-shadow: inset 15px 0 0 -10px var(--background, var(--color-theme-2-L3));
         }
 
         .event-header {

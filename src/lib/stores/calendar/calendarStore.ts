@@ -32,7 +32,7 @@ import {
     SupportedProvidersEnum,
     ViewTypesEnum
 } from '$lib/enums';
-import { fetchGoogleCalendarEvents } from '$lib/services';
+import { fetchEventsFromCalendar, fetchGoogleCalendarEvents } from '$lib/services';
 import { browser } from '$app/environment';
 
 // Interfaces
@@ -50,12 +50,17 @@ interface CombinedDateObject {
  * @throws {Error} - If the event has no start or end time.
 */
 const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => {
-    if (event.dateTime) {
-        return new Date(event.dateTime);
-    } else if (event.date) {
-        return startOfDay(parseISO(event.date));
+    try {
+        if (event.dateTime) {
+            return new Date(event.dateTime);
+        } else if (event.date) {
+            return startOfDay(parseISO(event.date));
+        }
+        throw new Error('Both dateTime and date are missing from the event');
+    } catch (error) {
+        console.error("Error in getEventDateTime:", error);
+        throw error;
     }
-    throw new Error('Both dateTime and date are missing from the event');
 };
 
 /**
@@ -65,8 +70,13 @@ const getEventDateTime = (event: { dateTime?: string; date?: string }): Date => 
  * @throws {Error} - If the event has no start or end time.
 */
 const isEventValid = (event: GoogleCalendarEventModel): boolean => {
-    if (!event.start || !event.end) throw new Error('Event start or end time is missing');
-    return !!(event.start && (event.start.dateTime || event.start.date) && event.end && (event.end.dateTime || event.end.date));
+    try {
+        if (!event.start || !event.end) throw new Error('Event start or end time is missing');
+        return !!(event.start && (event.start.dateTime || event.start.date) && event.end && (event.end.dateTime || event.end.date));
+    } catch (error) {
+        console.error("Error in isEventValid:", error);
+        throw error;
+    }
 };
 
 /**
@@ -86,6 +96,16 @@ const sortEventsByStartTime = (events: GoogleCalendarEventModel[]): GoogleCalend
 const updateLocalStorage = (key: string, value: any): void => {
     localStorage.setItem(key, JSON.stringify(value));
 };
+
+/**
+ * Maps the default event type to the Google event type.
+ * @param {EventTypesModel} eventType - The event type to map.
+ * @returns {EventTypesModel} - The mapped event type.
+*/
+const mapDefaultToGoogle = (eventType: EventTypesModel): EventTypesModel => {
+    return eventType === EventTypesEnum.Default ? 'google' : eventType;
+};
+
 
 // ============================================================
 // Store Initialization with Local Storage Integration
@@ -127,6 +147,7 @@ const initialCombinedDateObject = (): CombinedDateObject => {
     }
 
     const today = new Date();
+    console.log("Initial Combined Date Object:", storedObject || today);
     return {
         selectedDate: storedObject?.selectedDate ?? format(today, 'yyyy-MM-dd'),
         selectedWeekStart: storedObject?.selectedWeekStart ?? startOfWeek(today, { weekStartsOn: 0 }),
@@ -161,7 +182,14 @@ export const isLoadingEvents: Writable<boolean> = writable(false);
 
 export const filteredEvents: Readable<GoogleCalendarEventModel[]> = derived(
     [calendarEvents, filterType],
-    ([$calendarEvents, $filterType]) => $filterType === EventTypesEnum.All ? $calendarEvents : $calendarEvents.filter(event => event.eventType === $filterType)
+    ([$calendarEvents, $filterType]) => {
+        if ($filterType === EventTypesEnum.All) {
+            return $calendarEvents;
+        }
+        
+        const mappedFilterType = mapDefaultToGoogle($filterType);
+        return $calendarEvents.filter(event => mapDefaultToGoogle(event.eventType as EventTypesModel) === mappedFilterType);
+    }
 );
 
 export const limitedEvents: Readable<GoogleCalendarEventModel[]> = derived(
@@ -174,13 +202,15 @@ export const allFilteredEventsOccurringOnTheSelectedDate = derived(
     ([$filteredEvents, $combinedDateObject]) => {
         const selectedDateLocal = new Date($combinedDateObject.selectedDate + 'T00:00:00');
         const selectedDateObject = startOfDay(selectedDateLocal);
-
-        return $filteredEvents.filter(event => {
+        const filtered = $filteredEvents.filter(event => {
             const startDateTime = getEventDateTime(event.start);
             const endDateTime = getEventDateTime(event.end);
 
             return isSameDay(startDateTime, selectedDateObject) || isSameDay(endDateTime, selectedDateObject);
         });
+
+        console.log("Filtered Day Events:", filtered);
+        return filtered;
     }
 );
 
@@ -189,21 +219,27 @@ export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEv
     ([$filteredEvents, $combinedDateObject]) => {
         const weekStart = $combinedDateObject.selectedWeekStart;
         const weekEnd = endOfWeek(weekStart);
-        return $filteredEvents.filter(event => {
+        const filtered = $filteredEvents.filter(event => {
             const startDate = getEventDateTime(event.start);
             const endDate = getEventDateTime(event.end);
             return (startDate >= weekStart && startDate <= weekEnd) || (endDate >= weekStart && endDate <= weekEnd);
         });
+
+        console.log("Filtered Week Events:", filtered);
+        return filtered;
     }
 );
 
 export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalendarEventModel[]> = derived(
     [filteredEvents, combinedDateObject],
     ([$filteredEvents, $combinedDateObject]) => {
-        return $filteredEvents.filter(event => {
+        const filtered = $filteredEvents.filter(event => {
             const eventStartDate = getEventDateTime(event.start);
             return eventStartDate.getFullYear() === $combinedDateObject.selectedYear && eventStartDate.getMonth() + 1 === $combinedDateObject.selectedMonth;
         });
+
+        console.log("Filtered Month Events:", filtered);
+        return filtered;
     }
 );
 
@@ -249,10 +285,22 @@ export const fetchEvents = async (): Promise<void> => {
         const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
 
         if (Array.isArray(eventsFromGoogle)) {
-            calendarEvents.set(sortEventsByStartTime(eventsFromGoogle.filter(isEventValid)));
+            const validEvents = eventsFromGoogle
+                .filter(isEventValid)
+                .map(event => {
+                    // Apply the mapping for each event type
+                    return {
+                        ...event,
+                        eventType: mapDefaultToGoogle(event.eventType as EventTypesModel),
+                    };
+                });
+
+            const sortedEvents = sortEventsByStartTime(validEvents);
+            calendarEvents.set(sortedEvents);
         } else {
             calendarEvents.set([]);
         }
+
     } catch (error) {
         console.error("Error fetching Google Calendar events:", error);
     } finally {

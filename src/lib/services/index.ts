@@ -27,5 +27,9 @@ export {
 } from './calendar/google-calendar-integration-service';
 
 export {
-    fetchGoogleCalendarEvents
+    fetchGoogleCalendarEvents,
+    fetchEventsFromCalendar,
+    insertCalendar,
+    deleteCalendar,
+    listCalendars
 } from './calendar/google-calendar-event-management-service';

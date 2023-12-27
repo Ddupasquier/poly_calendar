@@ -26,8 +26,6 @@
   import { Common } from "$lib/components";
   import { fade } from "svelte/transition";
 
-  $: console.log($allFilteredEventsOccurringInSelectedMonthYear)
-
   const changeMonth = (increment: number) => {
     const newMonth = $combinedDateObject.selectedMonth + increment;
     setSelectedMonth(newMonth > 12 ? 1 : newMonth < 1 ? 12 : newMonth);
