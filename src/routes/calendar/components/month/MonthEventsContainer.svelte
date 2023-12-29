@@ -4,6 +4,7 @@
     import { eventContainers } from "$lib/stores";
 
     export let getEventsForDay: (day: Date) => CalendarEventModel[] = () => [];
+
     export let day: Date;
     export let activeEvent: CalendarEventModel | null;
     export let setActiveEvent: (event: CalendarEventModel | null) => void;

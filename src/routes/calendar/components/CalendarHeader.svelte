@@ -54,6 +54,15 @@
   </div>
 
   <div class="set-view-types">
+    {#if $page.url.search !== "?view=agenda"}
+      <Button
+        background={"var(--color-theme-1)"}
+        size="small"
+        on:click={setAllDatePartsToCurrent}
+      >
+        Now
+      </Button>
+    {/if}
     {#each viewTypes as viewType (viewType)}
       <Button
         background="var(--color-theme-2)"
@@ -66,15 +75,6 @@
         {capitalizeFirstLetter(viewType)}
       </Button>
     {/each}
-    {#if $page.url.search !== "?view=agenda"}
-      <Button
-        background={"var(--color-theme-1)"}
-        size="small"
-        on:click={setAllDatePartsToCurrent}
-      >
-        Now
-      </Button>
-    {/if}
   </div>
 </div>
 

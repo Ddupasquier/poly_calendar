@@ -32,7 +32,10 @@ import {
     SupportedProvidersEnum,
     ViewTypesEnum
 } from '$lib/enums';
-import { fetchEventsFromCalendar, fetchGoogleCalendarEvents } from '$lib/services';
+import {
+    fetchEventsFromCalendar,
+    fetchGoogleCalendarEvents
+} from '$lib/services';
 import { browser } from '$app/environment';
 
 // Interfaces
@@ -147,7 +150,7 @@ const initialCombinedDateObject = (): CombinedDateObject => {
     }
 
     const today = new Date();
-    console.log("Initial Combined Date Object:", storedObject || today);
+
     return {
         selectedDate: storedObject?.selectedDate ?? format(today, 'yyyy-MM-dd'),
         selectedWeekStart: storedObject?.selectedWeekStart ?? startOfWeek(today, { weekStartsOn: 0 }),
@@ -186,7 +189,7 @@ export const filteredEvents: Readable<GoogleCalendarEventModel[]> = derived(
         if ($filterType === EventTypesEnum.All) {
             return $calendarEvents;
         }
-        
+
         const mappedFilterType = mapDefaultToGoogle($filterType);
         return $calendarEvents.filter(event => mapDefaultToGoogle(event.eventType as EventTypesModel) === mappedFilterType);
     }
@@ -209,7 +212,6 @@ export const allFilteredEventsOccurringOnTheSelectedDate = derived(
             return isSameDay(startDateTime, selectedDateObject) || isSameDay(endDateTime, selectedDateObject);
         });
 
-        console.log("Filtered Day Events:", filtered);
         return filtered;
     }
 );
@@ -225,7 +227,6 @@ export const allFilteredEventsOccurringInSelectedWeek: Readable<GoogleCalendarEv
             return (startDate >= weekStart && startDate <= weekEnd) || (endDate >= weekStart && endDate <= weekEnd);
         });
 
-        console.log("Filtered Week Events:", filtered);
         return filtered;
     }
 );
@@ -238,7 +239,6 @@ export const allFilteredEventsOccurringInSelectedMonthYear: Readable<GoogleCalen
             return eventStartDate.getFullYear() === $combinedDateObject.selectedYear && eventStartDate.getMonth() + 1 === $combinedDateObject.selectedMonth;
         });
 
-        console.log("Filtered Month Events:", filtered);
         return filtered;
     }
 );
@@ -285,17 +285,17 @@ export const fetchEvents = async (): Promise<void> => {
         const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
 
         if (Array.isArray(eventsFromGoogle)) {
-            const validEvents = eventsFromGoogle
-                .filter(isEventValid)
-                .map(event => {
-                    // Apply the mapping for each event type
-                    return {
-                        ...event,
-                        eventType: mapDefaultToGoogle(event.eventType as EventTypesModel),
-                    };
-                });
+            const validEvents = eventsFromGoogle.filter(isEventValid);
 
-            const sortedEvents = sortEventsByStartTime(validEvents);
+            const uniqueSummaries = new Set();
+
+            const uniqueEvents = validEvents.filter(event => {
+                const isDuplicate = uniqueSummaries.has(event.summary);
+                uniqueSummaries.add(event.summary);
+                return !isDuplicate;
+            });
+
+            const sortedEvents = sortEventsByStartTime(uniqueEvents);
             calendarEvents.set(sortedEvents);
         } else {
             calendarEvents.set([]);
