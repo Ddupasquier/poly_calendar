@@ -1,4 +1,5 @@
 /*===== COMMON COMPONENTS =====*/
+import RadioGroupDefault from "./common/radio-groups/RadioGroupDefault.svelte";
 import DateInput from "./common/inputs/DateInput.svelte";
 import TextInput from "./common/inputs/TextInput.svelte";
 import EmailInput from "./common/inputs/EmailInput.svelte";
@@ -9,6 +10,7 @@ import Loader from "./common/loaders/Loader.svelte";
 import Toast from "./common/toast-alerts/ToastContainer.svelte";
 
 export const Common = {
+    RadioGroupDefault,
     DateInput,
     TextInput,
     EmailInput,
@@ -44,4 +46,10 @@ export const Auth = {
 export const Images = {}
 
 /*===== SVG ICONS =====*/
-export { default as Google } from "./svg/Google.svelte";
+import Google from "./svg/Google.svelte";
+import Settings from "./svg/Settings.svelte";
+
+export const SVG = {
+    Google,
+    Settings
+}

@@ -33,7 +33,6 @@ import {
     ViewTypesEnum
 } from '$lib/enums';
 import {
-    fetchEventsFromCalendar,
     fetchGoogleCalendarEvents
 } from '$lib/services';
 import { browser } from '$app/environment';

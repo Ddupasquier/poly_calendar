@@ -1,4 +1,4 @@
-interface GoogleCalendarEventModel {
+export interface GoogleCalendarEventModel {
     kind: string;
     etag: string;
     id: string;
@@ -43,20 +43,20 @@ interface GoogleCalendarEventModel {
     eventType: string;
 }
 
-interface GoogleCalendarPerson {
+export interface GoogleCalendarPerson {
     id: string;
     email: string;
     displayName: string;
     self: boolean;
 }
 
-interface GoogleCalendarEventDateTime {
+export interface GoogleCalendarEventDateTime {
     date?: string; // date
     dateTime?: string; // datetime
     timeZone?: string;
 }
 
-interface GoogleCalendarAttendee {
+export interface GoogleCalendarAttendee {
     id: string;
     email: string;
     displayName: string;
@@ -69,12 +69,12 @@ interface GoogleCalendarAttendee {
     additionalGuests?: number; // integer
 }
 
-interface GoogleCalendarExtendedProperties {
+export interface GoogleCalendarExtendedProperties {
     private?: Record<string, string>;
     shared?: Record<string, string>;
 }
 
-interface GoogleCalendarConferenceData {
+export interface GoogleCalendarConferenceData {
     createRequest?: {
         requestId: string;
         conferenceSolutionKey: {
@@ -97,7 +97,7 @@ interface GoogleCalendarConferenceData {
     notes?: string;
 }
 
-interface GoogleCalendarEntryPoint {
+export interface GoogleCalendarEntryPoint {
     entryPointType: string;
     uri: string;
     label?: string;
@@ -108,7 +108,7 @@ interface GoogleCalendarEntryPoint {
     password?: string;
 }
 
-interface GoogleCalendarGadget {
+export interface GoogleCalendarGadget {
     type: string;
     title: string;
     link: string;
@@ -119,22 +119,22 @@ interface GoogleCalendarGadget {
     preferences?: Record<string, string>;
 }
 
-interface GoogleCalendarReminders {
+export interface GoogleCalendarReminders {
     useDefault: boolean;
     overrides?: GoogleCalendarReminderOverride[];
 }
 
-interface GoogleCalendarReminderOverride {
+export interface GoogleCalendarReminderOverride {
     method: string;
     minutes: number; // integer
 }
 
-interface GoogleCalendarSource {
+export interface GoogleCalendarSource {
     url: string;
     title: string;
 }
 
-interface GoogleCalendarWorkingLocationProperties {
+export interface GoogleCalendarWorkingLocationProperties {
     type: string;
     homeOffice?: any; // The type for this property should be specified more clearly
     customLocation?: {
@@ -149,18 +149,18 @@ interface GoogleCalendarWorkingLocationProperties {
     };
 }
 
-interface GoogleCalendarOutOfOfficeProperties {
+export interface GoogleCalendarOutOfOfficeProperties {
     autoDeclineMode: string;
     declineMessage: string;
 }
 
-interface GoogleCalendarFocusTimeProperties {
+export interface GoogleCalendarFocusTimeProperties {
     autoDeclineMode: string;
     declineMessage: string;
     chatStatus: string;
 }
 
-interface GoogleCalendarAttachment {
+export interface GoogleCalendarAttachment {
     fileUrl: string;
     title: string;
     mimeType: string;

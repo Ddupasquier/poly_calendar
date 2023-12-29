@@ -49,7 +49,7 @@
                     message: "Logged in successfully.",
                 });
 
-                goto(redirect);
+                if (redirect) goto(redirect);
             }
         } catch (error) {
             // Handle the error appropriately here

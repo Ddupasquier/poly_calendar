@@ -6,6 +6,28 @@ export type { EventTypesModel } from './calendar/event-types-model';
 
 export type { ViewTypesModel } from './calendar/view-types-model';
 
-export type { CalendarEventModel, GoogleCalendarEventModel, Attendee, BaseEventModel } from './calendar/calendar-event-model';
+export type {
+    GoogleCalendarEventModel,
+    GoogleCalendarAttachment,
+    GoogleCalendarAttendee,
+    GoogleCalendarConferenceData,
+    GoogleCalendarEntryPoint,
+    GoogleCalendarEventDateTime,
+    GoogleCalendarExtendedProperties,
+    GoogleCalendarFocusTimeProperties,
+    GoogleCalendarGadget,
+    GoogleCalendarOutOfOfficeProperties,
+    GoogleCalendarPerson,
+    GoogleCalendarReminderOverride,
+    GoogleCalendarReminders,
+    GoogleCalendarSource,
+    GoogleCalendarWorkingLocationProperties
+} from './calendar/calendar-event-model';
 
-// export type { from './calendar/google-calendar-event-model';
+export type {
+    GoogleCalendarListEntry,
+    GoogleCalendarListEntryReminder,
+    GoogleCalendarListEntryNotificationSettings,
+    GoogleCalendarListEntryNotification,
+    GoogleCalendarListEntryConferenceProperties
+} from './calendar/google-calendar-list-model';

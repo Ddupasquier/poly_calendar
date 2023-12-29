@@ -5,7 +5,7 @@ export {
     addToast,
     removeToast,
     transitionDuration
-} from "./common/reactive-text/reactiveTextStore";
+} from "./common/reactive-text/reactive-text-store";
 
 export {
     currentUserProviders,
@@ -33,6 +33,10 @@ export {
     combinedDateObject,
     fetchEvents,
     emptyEventsOnLogout
-} from "./calendar/calendarStore";
+} from "./calendar/calendar-store";
 
-export { eventContainers } from "./calendar/eventContainersStore";
+export {
+    googleCalendarListEntryOptions
+} from "./calendar/calendar-settings-store";
+
+export { eventContainers } from "./calendar/calendar-event-container-store";

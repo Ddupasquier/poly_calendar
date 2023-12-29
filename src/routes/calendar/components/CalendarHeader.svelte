@@ -12,6 +12,7 @@
   import { ViewTypesEnum, EventTypesEnum } from "$lib/enums";
   import { Button } from "mysvelte-ui";
   import { goto } from "$app/navigation";
+  import CalendarFilterSettingsModal from "./CalendarFilterSettingsModal.svelte";
 
   const viewTypes = Object.values(ViewTypesEnum);
   const eventTypes = Object.values(EventTypesEnum);
@@ -75,6 +76,7 @@
         {capitalizeFirstLetter(viewType)}
       </Button>
     {/each}
+    <CalendarFilterSettingsModal />
   </div>
 </div>
 

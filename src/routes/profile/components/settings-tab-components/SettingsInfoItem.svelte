@@ -9,7 +9,7 @@
     import { faCheck } from "@fortawesome/free-solid-svg-icons";
     import { FontAwesomeIcon } from "@fortawesome/svelte-fontawesome";
     import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-    import { Google } from "$lib/components";
+    import { SVG } from "$lib/components";
     import type { UserSettingsModel } from "$lib/models";
 
     export let icon: IconDefinition | string;
@@ -106,7 +106,7 @@
                 }`}
                 on:click={handleIntegrationClick}
             >
-                <Google />
+                <SVG.Google />
                 {#if value === true}
                     <div class="checkmark">
                         <FontAwesomeIcon

@@ -12,7 +12,7 @@ interface SignupConfirmationReturnData {
 
 interface PasswordSigninReturnData {
     email?: string | null;
-    redirect?: string;
+    redirect?: string | URL;
 }
 
 interface AuthError {
