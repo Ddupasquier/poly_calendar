@@ -12,4 +12,5 @@ export { default as WeekdayBar } from './components/month/WeekdayBar.svelte';
 export { default as WeekView } from './components/week/WeekView.svelte';
 export { default as WeekEventsContainer } from './components/week/WeekEventsContainer.svelte';
 export { default as WeekEvent } from './components/week/WeekEvent.svelte';
-export { default as CalendarFilterSettingsModal } from './components/CalendarFilterSettingsModal.svelte';
+export { default as CalendarFilterSettingsModal } from './components/calendar-settings/CalendarFilterSettingsModal.svelte';
+export { default as CalendarListEntryOptionsRadios } from './components/calendar-settings/CalendarListEntryOptionsRadios.svelte';

@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { googleCalendarListEntryOptions } from "$lib/stores";
-    import { Common, SVG } from "$lib/components";
+    import { SVG } from "$lib/components";
     import { Modal, Button } from "mysvelte-ui";
+    import { CalendarListEntryOptionsRadios } from "../..";
 
     let open: boolean = false;
 
@@ -20,11 +20,9 @@
     </Button>
 
     <div class="calendar-settings-filter-content" slot="content">
-        {#if $googleCalendarListEntryOptions && $googleCalendarListEntryOptions.length > 0}
-            <Common.RadioGroupDefault
-                groupId="fetched-calendar-view-settings"
-            />
-        {/if}
+        <CalendarListEntryOptionsRadios
+            groupId="fetched-calendar-view-settings"
+        />
     </div>
 
     <div class="calendar-settings-filter-footer" slot="footer"></div>

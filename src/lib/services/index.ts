@@ -27,5 +27,8 @@ export {
 } from './calendar/google-calendar-integration-service';
 
 export {
-    fetchGoogleCalendarEvents
+    calendarListEndpoint,
+    fetchEachEventsForGoogleCalendar,
+    fetchAndValidateSession,
+    fetchGoogleCalendarList
 } from './calendar/google-calendar-event-management-service';

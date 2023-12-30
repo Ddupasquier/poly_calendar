@@ -33,7 +33,7 @@ import {
     ViewTypesEnum
 } from '$lib/enums';
 import {
-    fetchGoogleCalendarEvents
+    fetchEachEventsForGoogleCalendar
 } from '$lib/services';
 import { browser } from '$app/environment';
 
@@ -281,7 +281,7 @@ export const fetchEvents = async (): Promise<void> => {
                 break;
         }
 
-        const eventsFromGoogle = await fetchGoogleCalendarEvents(timeMin, timeMax);
+        const eventsFromGoogle = await fetchEachEventsForGoogleCalendar(timeMin, timeMax);
 
         if (Array.isArray(eventsFromGoogle)) {
             const validEvents = eventsFromGoogle.filter(isEventValid);

@@ -1,4 +1,4 @@
-export interface GoogleCalendarListEntry {
+export interface GoogleCalendarListEntryModel {
     kind: "calendar#calendarListEntry";
     etag: string;
     id: string;

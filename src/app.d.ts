@@ -36,5 +36,7 @@ interface AppLayoutDataProps {
 interface ConfirmSignupPageDataProps { }
 
 interface CalendarPageDataProps { 
-	events: GoogleCalendarEvent[];
+	session?: Session | null;
+	calendars?: GoogleCalendarListEntry[] | null;
+	events?: GoogleCalendarEvent[] | null;
 }

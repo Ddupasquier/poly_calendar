@@ -25,7 +25,7 @@ export type {
 } from './calendar/calendar-event-model';
 
 export type {
-    GoogleCalendarListEntry,
+    GoogleCalendarListEntryModel,
     GoogleCalendarListEntryReminder,
     GoogleCalendarListEntryNotificationSettings,
     GoogleCalendarListEntryNotification,

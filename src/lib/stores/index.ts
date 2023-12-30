@@ -36,7 +36,8 @@ export {
 } from "./calendar/calendar-store";
 
 export {
-    googleCalendarListEntryOptions
+    googleCalendarListEntryOptions,
+    googleCalendarListEntryOptionsSelected,
 } from "./calendar/calendar-settings-store";
 
 export { eventContainers } from "./calendar/calendar-event-container-store";
