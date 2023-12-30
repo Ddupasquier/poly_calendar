@@ -1,4 +1,4 @@
-interface calendarListEntryRadioOption {
-    id?: string | null;
-    summary: string;
+interface CalendarListEntryRadioOption {
+    id: string;
+    label?: string;
 }

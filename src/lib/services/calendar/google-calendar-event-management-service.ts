@@ -1,9 +1,10 @@
 import type { GoogleCalendarEventModel, GoogleCalendarListEntryModel } from '$lib/models';
-import { addToast, googleCalendarListEntryOptions } from '$lib/stores';
+import { addToast, googleCalendarListEntryOptions, googleCalendarListEntryOptionsSelected } from '$lib/stores';
 import { SupportedProvidersEnum } from '$lib/enums';
 import { supabase } from '$lib/supabase';
 import { logout } from '..';
 import type { Session } from '@supabase/supabase-js';
+import { get } from 'svelte/store';
 
 export const calendarListEndpoint = 'https://www.googleapis.com/calendar/v3/users/me/calendarList?showDeleted=false&showHidden=true';
 
@@ -101,12 +102,26 @@ export const fetchEachEventsForGoogleCalendar = async (
     const { provider_token } = sessionData;
 
     if (provider_token) {
-        const calendarItems = await fetchGoogleCalendarList(provider_token);
+        let calendarItems = await fetchGoogleCalendarList(provider_token);
+        // console.log('calendarItems', calendarItems);
+
+        const selectedCalendars = get(googleCalendarListEntryOptionsSelected); // Synchronously get the value of the selected options store
+        // console.log('selectedCalendars', selectedCalendars);
+
+        // If there are selected calendars, filter the calendarItems, otherwise, use all calendarItems
+        if (selectedCalendars.length > 0) {
+            calendarItems = calendarItems.filter(calendar => selectedCalendars.includes(calendar.summary));
+            // console.log('Filtered calendarItems based on selection', calendarItems);
+        }
+
+        // console.log('Filtered calendarItems based on selection', calendarItems);
 
         const eventsResults = await Promise.all(calendarItems.map(calendar =>
             fetchSpecificEventsForGoogleCalendar(calendar.id, provider_token, timeMin, timeMax)
         ));
 
+        // console.log('eventsResults', eventsResults);
         return eventsResults.flat();
     }
+
 };
