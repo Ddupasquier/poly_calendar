@@ -4,8 +4,6 @@
 
     export let groupId: string;
     export let options: CalendarListEntryRadioOption[] = [];
-
-    // * Selected is to always be a store where we keep the selected state, which simultaneously handles setting selected state to localStorage
     export let selected: string[];
 
     const dispatch = createEventDispatcher();
@@ -17,9 +15,10 @@
 
 <Radio
     {groupId}
-    options={options.map((option) => option.summary)}
+    options={options.map((option) => option.label)}
     {selected}
     size="small"
     use="many"
+    checkbox
     on:updateSelected={handleUpdateSelected}
 />

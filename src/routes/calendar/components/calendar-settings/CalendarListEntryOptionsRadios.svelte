@@ -1,4 +1,3 @@
-<!-- CalendarListEntryOptionsRadios.svelte -->
 <script lang="ts">
     import {
         googleCalendarListEntryOptions,
