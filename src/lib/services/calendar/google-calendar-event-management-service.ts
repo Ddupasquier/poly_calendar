@@ -106,7 +106,11 @@ export const fetchEachEventsForGoogleCalendar = async (
 
         const selectedCalendars = get(googleCalendarListEntryOptionsSelected);
         if (selectedCalendars.length > 0) {
-            calendarItems = calendarItems.filter(calendar => selectedCalendars.includes(calendar.summary));
+            calendarItems = calendarItems.filter(
+                (calendar) => selectedCalendars.some(
+                    (selectedCalendar) => selectedCalendar.id === calendar.id
+                )
+            );
         }
 
         const eventsResults = await Promise.all(calendarItems.map(calendar =>

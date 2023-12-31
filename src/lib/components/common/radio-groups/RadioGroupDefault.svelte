@@ -6,17 +6,23 @@
     export let options: CalendarListEntryRadioOption[] = [];
     export let selected: CalendarListEntryRadioOption[];
 
+    $: console.log(
+        "RadioGroupDefault.svelte selected",
+        selected,
+    )
+
     const dispatch = createEventDispatcher();
 
-    const handleUpdateSelected = (e: { detail: string[] }) => {
-        console.log("handleUpdateSelected", e.detail);
+    const handleUpdateSelected = (e: {
+        detail: CalendarListEntryRadioOption[];
+    }) => {
         dispatch("selectionChange", e.detail);
     };
 </script>
 
 <Radio
     {groupId}
-    options={options.map((option) => option.label)}
+    {options}
     {selected}
     size="small"
     use="many"

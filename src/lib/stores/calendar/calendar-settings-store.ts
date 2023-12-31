@@ -17,6 +17,7 @@ if (browser) {
     }
 
     googleCalendarListEntryOptionsSelected.subscribe((selected) => {
+        console.log('googleCalendarListEntryOptionsSelected', selected)
         localStorage.setItem('googleCalendarListEntryOptionsSelected', JSON.stringify(selected));
     });
 }
