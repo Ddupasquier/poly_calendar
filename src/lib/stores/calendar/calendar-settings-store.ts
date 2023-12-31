@@ -4,7 +4,7 @@ import type { Writable } from "svelte/store";
 
 export const googleCalendarListEntryOptions: Writable<CalendarListEntryRadioOption[]> = writable<CalendarListEntryRadioOption[]>([])
 
-export const googleCalendarListEntryOptionsSelected: Writable<string[]> = writable<string[]>([]);
+export const googleCalendarListEntryOptionsSelected: Writable<CalendarListEntryRadioOption[]> = writable<CalendarListEntryRadioOption[]>([]);
 
 googleCalendarListEntryOptions.subscribe((value) => {
     console.log('googleCalendarListEntryOptions', value);

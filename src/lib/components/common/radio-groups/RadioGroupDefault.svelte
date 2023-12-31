@@ -4,11 +4,12 @@
 
     export let groupId: string;
     export let options: CalendarListEntryRadioOption[] = [];
-    export let selected: string[];
+    export let selected: CalendarListEntryRadioOption[];
 
     const dispatch = createEventDispatcher();
 
     const handleUpdateSelected = (e: { detail: string[] }) => {
+        console.log("handleUpdateSelected", e.detail);
         dispatch("selectionChange", e.detail);
     };
 </script>

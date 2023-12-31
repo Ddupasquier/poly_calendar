@@ -7,7 +7,7 @@
 
     export let groupId: string;
 
-    const updateSelected = (newSelected: string[]): void => {
+    const updateSelected = (newSelected: CalendarListEntryRadioOption[]): void => {
         googleCalendarListEntryOptionsSelected.set(newSelected);
     };
 </script>
