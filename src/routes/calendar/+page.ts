@@ -27,7 +27,7 @@ export const load: PageLoad = async ({ fetch }): Promise<CalendarPageData> => {
         googleCalendarListEntryOptions.set(
             calendarListEntriesData.map((entry) => ({
                 id: entry.id,
-                label: entry.summary
+                summary: entry.summary
             }))
         );
     }

@@ -17,7 +17,7 @@
 
 <Radio
     {groupId}
-    {options}
+    options={options.map((option) => option.summary)}
     {selected}
     size="small"
     use="many"

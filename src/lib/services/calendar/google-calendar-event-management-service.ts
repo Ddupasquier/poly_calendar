@@ -103,25 +103,16 @@ export const fetchEachEventsForGoogleCalendar = async (
 
     if (provider_token) {
         let calendarItems = await fetchGoogleCalendarList(provider_token);
-        // console.log('calendarItems', calendarItems);
 
-        const selectedCalendars = get(googleCalendarListEntryOptionsSelected); // Synchronously get the value of the selected options store
-        // console.log('selectedCalendars', selectedCalendars);
-
-        // If there are selected calendars, filter the calendarItems, otherwise, use all calendarItems
+        const selectedCalendars = get(googleCalendarListEntryOptionsSelected);
         if (selectedCalendars.length > 0) {
             calendarItems = calendarItems.filter(calendar => selectedCalendars.includes(calendar.summary));
-            // console.log('Filtered calendarItems based on selection', calendarItems);
         }
-
-        // console.log('Filtered calendarItems based on selection', calendarItems);
 
         const eventsResults = await Promise.all(calendarItems.map(calendar =>
             fetchSpecificEventsForGoogleCalendar(calendar.id, provider_token, timeMin, timeMax)
         ));
 
-        // console.log('eventsResults', eventsResults);
         return eventsResults.flat();
     }
-
 };
